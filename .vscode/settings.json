@@ -1,0 +1,21 @@
+{
+    "cSpell.words": [
+        "argsenv",
+        "bindenvs",
+        "bytelength",
+        "cond",
+        "downcase",
+        "elif",
+        "fdenvs",
+        "fromjson",
+        "fromstring",
+        "gsub",
+        "labelenv",
+        "println",
+        "readline",
+        "rtrimstr",
+        "tonumber"
+    ],
+    "go.lintTool": "golangci-lint",
+    "files.trimTrailingWhitespace": true
+}
