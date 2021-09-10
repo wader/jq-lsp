@@ -110,6 +110,7 @@ func (i *interp) Eval(src string) (gojq.Iter, error) {
 			if err != nil {
 				return nil, err
 			}
+			defer f.Close()
 			b, err := io.ReadAll(f)
 			if err != nil {
 				return nil, err
