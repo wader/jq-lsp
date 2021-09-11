@@ -64,32 +64,37 @@ func Run(readFileFn func(string) ([]byte, error), stdin io.Reader, stdout io.Wri
 		stderrW:    stderr,
 		environ:    environ,
 	}
-	iter, err := i.Eval("main")
-	if err != nil {
-		return err
-	}
+
+	var state interface{}
+
+	// TODO: currently the main serve loop is done in go until
+	// https://github.com/itchyny/gojq/issues/86 has been resolved
+	// TODO: could probably reuse *gojq.Code instance
 	for {
-		v, ok := iter.Next()
-		if !ok {
-			break
+		iter, err := i.Eval("serve", state)
+		if err != nil {
+			return err
 		}
+		for {
+			v, ok := iter.Next()
+			if !ok {
+				break
+			}
 
-		switch v := v.(type) {
-		case error:
-			fmt.Fprintln(stderr, v)
-			return v
-		case [2]interface{}:
-			fmt.Fprintln(stderr, v[:]...)
-		default:
-			// TODO: can this happen?
-			fmt.Fprintln(stderr, v)
+			switch v := v.(type) {
+			case error:
+				fmt.Fprintln(stderr, v)
+				return v
+			case [2]interface{}:
+				fmt.Fprintln(stderr, v[:]...)
+			default:
+				state = v
+			}
 		}
 	}
-
-	return nil
 }
 
-func (i *interp) Eval(src string) (gojq.Iter, error) {
+func (i *interp) Eval(src string, c interface{}) (gojq.Iter, error) {
 	gq, err := gojq.Parse(src)
 	if err != nil {
 		return nil, err
@@ -135,7 +140,7 @@ func (i *interp) Eval(src string) (gojq.Iter, error) {
 		return nil, err
 	}
 
-	return gc.RunWithContext(context.Background(), nil), nil
+	return gc.RunWithContext(context.Background(), c), nil
 }
 
 func (i *interp) readFile(c interface{}, a []interface{}) interface{} {

@@ -669,24 +669,23 @@ def handle($state):
   );
 
 def serve:
-  ( {}
-  | loop(
-      ( . as $state
-      | jsonrpc_read as $request
-      | debug({$request})
-      | $request
-      | try handle($state)
-        catch
-          if (type != "object" or .response or .state | not) then error end
-      | ( .response[]?
-        | debug({response: .})
-        | jsonrpc_write
-        )
-      , .state // $state
-      #| debug({state: .})
-      )
+  ( . as $state
+  | jsonrpc_read as $request
+  | debug({$request})
+  | $request
+  | try handle($state)
+    catch
+      if (type != "object" or .response or .state | not) then error end
+  | ( .response[]?
+    | debug({response: .})
+    | jsonrpc_write
     )
+  , .state // $state
+  #| debug({state: .})
   );
 
+# TODO: not used atm, see comment in lsp.go
 def main:
-  serve;
+  ( {}
+  | loop(serve)
+  );

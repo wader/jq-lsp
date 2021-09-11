@@ -13,7 +13,7 @@ It can currently do:
 - Goto definition of functions and variables
 - Auto complete functions and variables
 - Include/Import support
-- Hover defintions of functions
+- Hover definitions of functions
 - Hover documentation for builtins
 - Function symbols per document
 
@@ -43,9 +43,8 @@ URI="$PWD" tests/test.jq | go run main.go
 ### TODO
 
 - Shutdown correctly?
-- Upstream token position somehow
-- Upstream query JSON marhalling?
-- Seems to leak memory
+- Own parser or modified gojq parser to be able to recover and give more useful errors
+- Server loop and https://github.com/itchyny/gojq/issues/86
 - Warn about unused/missing functions and variables
 - Better at handling broken syntax while typing
    - `$<cursor>` auto complete, add temp name?
