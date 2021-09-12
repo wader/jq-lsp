@@ -34,6 +34,9 @@ cp $(go env GOPATH)/bin/jq-lsp /usr/local/bin
 jq-lsp uses a [fork](https://github.com/wader/gojq/tree/jq-lsp) of
 [itchyny](https://github.com/itchyny)'s [gojq](github.com/itchyny/gojq).
 
+jq documentation is based on https://github.com/stedolan/jq/blob/master/docs/content/manual/manual.yml
+and is licensed under https://github.com/stedolan/jq/blob/master/COPYING
+
 ### Development
 
 ```sh

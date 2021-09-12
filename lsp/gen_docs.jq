@@ -1,4 +1,4 @@
-#!/usr/bin/env fq -f
+#!/usr/bin/env fq -rf
 # ./lsp/gen_docs.jq <(gojq --yaml-input . ../jq/docs/content/manual/manual.yml)
 
 
@@ -22,7 +22,8 @@ def map_titles:
     "'I/O'": "`stdout`"
   };
 
-( ("def docs:\n" | stdout)
+( "# based on https://github.com/stedolan/jq/blob/master/docs/content/manual/manual.yml"
+, "def docs:"
 , ( [ ..
     | select(.title)?
     | .body as $doc
@@ -36,5 +37,5 @@ def map_titles:
     ]
     | add
   )
-, (";\n" | stdout)
+, ";"
 )
