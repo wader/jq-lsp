@@ -477,7 +477,6 @@ def handle($state):
         );
 
       if $method == "initialize" then
-
         { response: [{
             id: $id,
             result: {
@@ -496,40 +495,49 @@ def handle($state):
                 workspace: {
                   workspaceFolders: {
                     supported: true,
-                    # changeNotifications: true
+                    changeNotifications: true
                   }
                 }
               }
             }
-          }
-        ]}
+          }]
+        }
       elif $method == "initialized" then
         { response: [{
             method: "client/registerCapability",
+            id:1234,
             params: {
-              registrations:
-                [
-                  {
-                    "id": "79eee87c-c409-4664-8102-e03263673f6f",
-                    "method": "workspace/didChangeConfiguration",
-                    "registerOptions": {
-                      "documentSelector": [
-                        { "language": "jq" }
-                      ]
-                    }
-			            }
-                ]
+              registrations: [{
+                "method": "workspace/didChangeConfiguration",
+                "registerOptions": {
+                  "documentSelector": [
+                    { "language": "jq" }
+                  ]
+                }
+			        }]
             }
           },
           {
             method: "workspace/configuration",
+            id: 123,
             params: {
-                items: [
-                  {scopeURI: "resource", section: "jqlsp"}
-                ]
+              items: [
+                {section: "jqlsp"}
+              ]
             }
-          }
-        ]}
+          }]
+        }
+      elif $method == "workspace/didChangeConfiguration" then
+        { response: [{
+            method: "workspace/configuration",
+            id: 124,
+            params: {
+              items: [
+                {section: "jqlsp"}
+              ]
+            }
+          }]
+        }
       # TODO: exit
       elif $method == "shutdown" then null_result
       elif (
@@ -597,7 +605,17 @@ def handle($state):
                             end
                           ]
                       }
-                  } ]
+                  }
+                    # {
+                    #   method: "workspace/configuration",
+                    #   id: 123,
+                    #   params: {
+                    #       items: [
+                    #         {section: "jqlsp"}
+                    #       ]
+                    #   }
+                    # }
+                  ]
               }
             )
           catch
