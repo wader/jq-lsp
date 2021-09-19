@@ -61,18 +61,18 @@ def jsonrpc_write:
   );
 
 # line/character to position
-def lc_to_pos($l; $c):
+def lc_to_byte_pos($l; $c):
   ( split("\n")
   | .[0:$l]
-  | map(length+1)
+  | map(utf8bytelength+1)
   | add
   | . + $c
   );
 
 # pos to line/character
-def pos_to_lc($pos):
+def byte_pos_to_lc($pos):
   ( split("\n")
-  | map(length+1)
+  | map(utf8bytelength+1)
   | . as $lens
   | [ {i: 0, p: $pos}
     | while(
@@ -440,7 +440,7 @@ def handle($state):
         | $params.position as $pos
         | _readfile_uri($state; $uri) as $def_file
         | if ($def_file | not) then null_result end
-        | ($def_file.text | lc_to_pos($pos.line; $pos.character)) as $file_pos
+        | ($def_file.text | lc_to_byte_pos($pos.line; $pos.character)) as $file_pos
         | ( $def_file.query
           | first(query_walk(
               $uri;
@@ -529,8 +529,8 @@ def handle($state):
                     { uri: $doc.uri,
                       diagnostics:
                         [ { range: {
-                              start: ($text | pos_to_lc($err.offset)),
-                              end: ($text | pos_to_lc($err.offset))
+                              start: ($text | byte_pos_to_lc($err.offset)),
+                              end: ($text | byte_pos_to_lc($err.offset))
                             },
                             message: $err.error
                         } ]
@@ -553,8 +553,8 @@ def handle($state):
                 location: {
                   uri: $uri,
                   range: {
-                    start: ($file.text | pos_to_lc($f.name.start)),
-                    end: ($file.text | pos_to_lc($f.name.stop))
+                    start: ($file.text | byte_pos_to_lc($f.name.start)),
+                    end: ($file.text | byte_pos_to_lc($f.name.stop))
                   }
                 },
               }
@@ -628,8 +628,8 @@ def handle($state):
         | result({
             uri: $def.uri,
             range: {
-              start: ($def_file.text | pos_to_lc($def.start)),
-              end: ($def_file.text | pos_to_lc($def.stop))
+              start: ($def_file.text | byte_pos_to_lc($def.start)),
+              end: ($def_file.text | byte_pos_to_lc($def.stop))
             }
           })
         )
