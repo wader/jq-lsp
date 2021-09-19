@@ -24,7 +24,7 @@ It can currently do:
 go build -o jq-lsp main.go
 
 # install directly
-go install github.com/wader/jq-lsp@latest
+go install github.com/wader/jq-lsp@master
 # copy binary to $PATH
 cp $(go env GOPATH)/bin/jq-lsp /usr/local/bin
 ```
