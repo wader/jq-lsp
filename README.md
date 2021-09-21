@@ -45,6 +45,7 @@ URI="$PWD" tests/test.jq | go run main.go
 
 ### TODO
 
+- Semantic tokens
 - Shutdown correctly?
 - Own parser or modified gojq parser to be able to recover and give more useful errors
 - Server loop and https://github.com/itchyny/gojq/issues/86
