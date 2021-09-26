@@ -8,7 +8,8 @@ import (
 	"fmt"
 	"io"
 
-	"github.com/wader/gojq"
+	"github.com/itchyny/gojq"
+	gojqparser "github.com/wader/jq-lsp/gojqparser"
 )
 
 //go:embed builtin_env.jq
@@ -201,7 +202,7 @@ func (i *interp) queryFromString(c interface{}, a []interface{}) interface{} {
 	if err != nil {
 		return err
 	}
-	q, err := gojq.Parse(s)
+	q, err := gojqparser.Parse(s)
 	if err != nil {
 		offset := queryErrorPosition(err)
 		return parseError{
@@ -229,7 +230,7 @@ func (i *interp) queryToString(c interface{}, a []interface{}) interface{} {
 		return err
 	}
 
-	var q gojq.Query
+	var q gojqparser.Query
 	if err := json.Unmarshal(b, &q); err != nil {
 		return err
 	}
