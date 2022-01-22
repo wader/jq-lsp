@@ -87,6 +87,21 @@ func (l *lexer) Lex(lval *yySymType) (tokenType int) {
 		}
 		return tokIdent
 	case isNumber(ch):
+		if ch == '0' {
+			// TODO: fractions etc?
+			switch l.peek() {
+			case 'b', 'o', 'x':
+				i := l.offset - 1
+				l.offset++
+				for isInteger(l.peek()) {
+					l.offset++
+				}
+				l.token = l.source[i:l.offset]
+				lval.token.Str = l.token
+				return tokNumber
+			}
+		}
+
 		i := l.offset - 1
 		j := l.scanNumber(numberStateLead)
 		if j < 0 {
@@ -531,6 +546,12 @@ func isIdent(ch byte, tail bool) bool {
 
 func isNumber(ch byte) bool {
 	return '0' <= ch && ch <= '9'
+}
+
+func isInteger(ch byte) bool {
+	return '0' <= ch && ch <= '9' ||
+		'a' <= ch && ch <= 'z' ||
+		'A' <= ch && ch <= 'Z' || ch == '_'
 }
 
 func isNewLine(ch byte) bool {
