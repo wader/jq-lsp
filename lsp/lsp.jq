@@ -163,6 +163,19 @@ def func_def_signature:
   | join("")
   );
 
+def func_term_name:
+  ( .term.func
+  | [ .name.str
+    , if .args and (.args | length) > 0 then
+        ( "/"
+        , (.args | length)
+        )
+      else empty
+      end
+    ]
+  | join("")
+  );
+
 def env_func_name:
   ( [ .str
     , "/"
@@ -464,22 +477,59 @@ def handle($state):
         );
 
       if $method == "initialize" then
-        result({
-          capabilities: {
-            textDocumentSync: TextDocumentSyncFull,
-            definitionProvider: true,
-            completionProvider: {
-              #resolveProvider: true
-              # completionItem: {
-              #   labelDetailsSupport: true
-              # }
-            },
-            hoverProvider: true,
-            publishDiagnostics: {},
-            documentSymbolProvider: true
+
+        { response: [{
+            id: $id,
+            result: {
+              capabilities: {
+                textDocumentSync: TextDocumentSyncFull,
+                definitionProvider: true,
+                completionProvider: {
+                  #resolveProvider: true
+                  # completionItem: {
+                  #   labelDetailsSupport: true
+                  # }
+                },
+                hoverProvider: true,
+                publishDiagnostics: {},
+                documentSymbolProvider: true,
+                workspace: {
+                  workspaceFolders: {
+                    supported: true,
+                    # changeNotifications: true
+                  }
+                }
+              }
+            }
           }
-        })
-      elif $method == "initialized" then null
+        ]}
+      elif $method == "initialized" then
+        { response: [{
+            method: "client/registerCapability",
+            params: {
+              registrations:
+                [
+                  {
+                    "id": "79eee87c-c409-4664-8102-e03263673f6f",
+                    "method": "workspace/didChangeConfiguration",
+                    "registerOptions": {
+                      "documentSelector": [
+                        { "language": "jq" }
+                      ]
+                    }
+			            }
+                ]
+            }
+          },
+          {
+            method: "workspace/configuration",
+            params: {
+                items: [
+                  {scopeURI: "resource", section: "jqlsp"}
+                ]
+            }
+          }
+        ]}
       # TODO: exit
       elif $method == "shutdown" then null_result
       elif (
@@ -507,16 +557,45 @@ def handle($state):
         ( $params.textDocument as $doc
         | ($doc.text // $params.contentChanges[0].text // "") as $text
         | try
-            ( ($text | query_fromstring) as $q
+            ( ($text | query_fromstring) as $text_query
             | { state:
                   ( $state
-                  | .files[$doc.uri] = {text: $text, query: $q}
+                  | .files[$doc.uri] = {text: $text, query: $text_query}
                   ),
                 response:
                   [ { method: "textDocument/publishDiagnostics",
                       params: {
                         uri: $doc.uri,
-                        diagnostics: []
+                        diagnostics:
+                          [ $text_query
+                          | query_walk($doc.uri; builtin_env; .term.func) as {$env, $q}
+                          | ($q | query_token.str) as $name
+                          | ($q | query_args) as $args
+                          | if isempty(
+                                ( $env
+                                | env_iter_entries
+                                | .value
+                                | select(
+                                    # TODO refactor share with definition
+                                    .str == $name and
+                                    ( ( .args == null and $args == null) or
+                                      ( .args != null and $args != null and
+                                        (.args | length) == ($args | length)
+                                      )
+                                    )
+                                  )
+                                )
+                              )
+                            then
+                              { range: {
+                                  start: ($text | pos_to_lc($q.term.func.name.start)),
+                                  end: ($text | pos_to_lc($q.term.func.name.stop))
+                                },
+                                message: "\($q | func_term_name) not found"
+                              }
+                            else empty
+                            end
+                          ]
                       }
                   } ]
               }
