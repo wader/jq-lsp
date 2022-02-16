@@ -376,13 +376,17 @@ def query_walk($uri; $start_env; f):
         end
       );
 
-    ( ( (.imports // [])
+    ( # inject #include ".jq.lsp" to allow adding additional builtins
+      ( [{include_path: {str: ".jq-lsp"}}]
+      | map(_import_env)
+      ) as $dotjqlsp_envs
+    | ( (.imports // [])
       | map(_import_env)
       ) as $imports_envs
     | ( (.func_defs // [])
       | map(_func_def_env($uri))
       ) as $funcdef_envs
-    | ($start_env + $imports_envs + $funcdef_envs) as $env
+    | ($start_env + $dotjqlsp_envs + $imports_envs + $funcdef_envs) as $env
     # | debug({_t: .})
     # | debug({$start_env})
     # | debug({$imports_envs})
