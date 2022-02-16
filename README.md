@@ -10,12 +10,14 @@ You probably don't want to use this directly but instead use it thru an IDE exte
 
 It can currently do:
 - Syntax checking
+- Error on missing function and variable
 - Goto definition of functions and variables
 - Auto complete functions and variables
 - Include/Import support
 - Hover definitions of functions
 - Hover documentation for builtins
 - Function symbols per document
+- Read additional builtins from  `.jq-lsp.jq`
 
 ### Install
 
@@ -49,7 +51,7 @@ URI="$PWD" tests/test.jq | go run main.go
 - Shutdown correctly?
 - Own parser or modified gojq parser to be able to recover and give more useful errors
 - Server loop and https://github.com/itchyny/gojq/issues/86
-- Warn about unused/missing functions and variables
+- Warn about unused function and variable
 - Better at handling broken syntax while typing
    - `$<cursor>` auto complete, add temp name?
    - `a | n<cursor> f`, add temp name?
