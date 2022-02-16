@@ -592,8 +592,8 @@ def handle($state):
                               )
                             then
                               { range: {
-                                  start: ($text | pos_to_lc($q.term.func.name.start)),
-                                  end: ($text | pos_to_lc($q.term.func.name.stop))
+                                  start: ($text | byte_pos_to_lc($q.term.func.name.start)),
+                                  end: ($text | byte_pos_to_lc($q.term.func.name.stop))
                                 },
                                 message: "\($q | func_term_name) not found"
                               }
