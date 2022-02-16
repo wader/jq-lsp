@@ -1,5 +1,5 @@
 #!/usr/bin/env fq -d raw -nf
-# ./lsp/gen_builtin_env.jq ../jq/src/builtin.jq <(jq -rn 'builtins | tojson') <(gojq --yaml-input . ../jq/docs/content/manual/manual.yml)
+# ./lsp/gen_builtin_env.jq ../gojq/builtin.jq <(jq -rn 'builtins | tojson') <(gojq --yaml-input . ../jq/docs/content/manual/manual.yml)
 
 def gen_args:
   [range(.)] | map(.+97) | map([.] | implode);
@@ -34,7 +34,7 @@ def _builtins_doc:
   | {(.): ($doc | ltrimstr("\n") | rtrimstr("\n"))}
   );
 
-( ("def builtin_env:\n[{\n" | stdout)
+( ("def builtin_env:\n[{\n" | print)
 , ( ( ( input | tobytes | tostring | _builtins_json)
     + ( input | tobytes | tostring | _builtins_jq)
     | to_entries
@@ -45,5 +45,5 @@ def _builtins_doc:
     | println
     )
   )
-, ("}];\n" | stdout)
+, ("}];\n" | print)
 )
