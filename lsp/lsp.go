@@ -9,7 +9,7 @@ import (
 	"io"
 
 	"github.com/itchyny/gojq"
-	gojqparser "github.com/wader/jq-lsp/gojqparser"
+	"github.com/wader/jq-lsp/gojqparser"
 )
 
 //go:embed builtin_env.jq

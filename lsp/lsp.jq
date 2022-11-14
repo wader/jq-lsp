@@ -207,9 +207,9 @@ def query_walk($uri; $start_env; f):
             .array[] | _f
           elif .object then
             ( .object[] |
-              ( if .key_only then
-                  { (.key_only.str):
-                    (.key_only + {type: "var", uri: $uri, args: []})
+              ( if .key then
+                  { (.key.str):
+                    (.key + {type: "var", uri: $uri, args: []})
                   }
                 else empty
                 end
@@ -307,7 +307,7 @@ def query_walk($uri; $start_env; f):
           )
         elif .object then
           ( .object.key_vals[]?
-          | ( (.key_only // empty)
+          | ( (.key // empty)
             , (.key_query // empty)
             , .val.queries[]?
             )
@@ -751,6 +751,9 @@ def handle($state):
     )
   );
 
+
+# def serve: "../jqjq/jqjq.jq" | readfile | query_fromstring | query_walk(""; []; .);
+
 def serve:
   ( . as $state
   | jsonrpc_read as $request
@@ -767,8 +770,8 @@ def serve:
   #| debug({state: .})
   );
 
-# TODO: not used atm, see comment in lsp.go
-def main:
-  ( {}
-  | loop(serve)
-  );
+# # TODO: not used atm, see comment in lsp.go
+# def main:
+#   ( {}
+#   | loop(serve)
+#   );

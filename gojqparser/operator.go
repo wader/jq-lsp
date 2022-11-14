@@ -1,4 +1,4 @@
-package gojq
+package gojqparser
 
 import (
 	"encoding/json"

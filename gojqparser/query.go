@@ -1,8 +1,6 @@
-package gojq
+package gojqparser
 
 import (
-	"encoding/json"
-	"strconv"
 	"strings"
 )
 
@@ -76,13 +74,6 @@ func (e *Query) minify() {
 	}
 }
 
-func (e *Query) toIndices() []interface{} {
-	if e.FuncDefs != nil || e.Right != nil || e.Term == nil {
-		return nil
-	}
-	return e.Term.toIndices()
-}
-
 // Import ...
 type Import struct {
 	ImportPath  *Token       `json:"import_path,omitempty"`
@@ -100,12 +91,12 @@ func (e *Import) String() string {
 func (e *Import) writeTo(s *strings.Builder) {
 	if e.ImportPath != nil {
 		s.WriteString("import ")
-		s.WriteString(strconv.Quote(e.ImportPath.Str))
+		jsonEncodeString(s, e.ImportPath.Str)
 		s.WriteString(" as ")
 		s.WriteString(e.ImportAlias.Str)
 	} else {
 		s.WriteString("include ")
-		s.WriteString(strconv.Quote(e.IncludePath.Str))
+		jsonEncodeString(s, e.IncludePath.Str)
 	}
 	if e.Meta != nil {
 		s.WriteByte(' ')
@@ -291,27 +282,6 @@ func (e *Term) toFunc() string {
 	}
 }
 
-func (e *Term) toIndices() []interface{} {
-	if e.Index != nil {
-		xs := e.Index.toIndices()
-		if xs == nil {
-			return nil
-		}
-		for _, s := range e.SuffixList {
-			x := s.toIndices()
-			if x == nil {
-				return nil
-			}
-			xs = append(xs, x...)
-		}
-		return xs
-	} else if e.Query != nil && len(e.SuffixList) == 0 {
-		return e.Query.toIndices()
-	} else {
-		return nil
-	}
-}
-
 // Unary ...
 type Unary struct {
 	Op   Operator `json:"op,omitempty"`
@@ -376,7 +346,6 @@ type PatternObject struct {
 	KeyString *String  `json:"key_string,omitempty"`
 	KeyQuery  *Query   `json:"key_query,omitempty"`
 	Val       *Pattern `json:"val,omitempty"`
-	KeyOnly   *Token   `json:"key_only,omitempty"`
 }
 
 func (e *PatternObject) String() string {
@@ -399,9 +368,6 @@ func (e *PatternObject) writeTo(s *strings.Builder) {
 		s.WriteString(": ")
 		e.Val.writeTo(s)
 	}
-	if e.KeyOnly != nil {
-		s.WriteString(e.KeyOnly.Str)
-	}
 }
 
 // Index ...
@@ -409,8 +375,8 @@ type Index struct {
 	Name    *Token  `json:"name,omitempty"`
 	Str     *String `json:"str,omitempty"`
 	Start   *Query  `json:"start,omitempty"`
-	IsSlice bool    `json:"is_slice,omitempty"`
 	End     *Query  `json:"end,omitempty"`
+	IsSlice bool    `json:"is_slice,omitempty"`
 }
 
 func (e *Index) String() string {
@@ -433,25 +399,22 @@ func (e *Index) writeTo(s *strings.Builder) {
 func (e *Index) writeSuffixTo(s *strings.Builder) {
 	if e.Name != nil {
 		s.WriteString(e.Name.Str)
+	} else if e.Str != nil {
+		e.Str.writeTo(s)
 	} else {
-		if e.Str != nil {
-			e.Str.writeTo(s)
-		} else {
-			s.WriteByte('[')
+		s.WriteByte('[')
+		if e.IsSlice {
 			if e.Start != nil {
 				e.Start.writeTo(s)
-				if e.IsSlice {
-					s.WriteByte(':')
-					if e.End != nil {
-						e.End.writeTo(s)
-					}
-				}
-			} else if e.End != nil {
-				s.WriteByte(':')
+			}
+			s.WriteByte(':')
+			if e.End != nil {
 				e.End.writeTo(s)
 			}
-			s.WriteByte(']')
+		} else {
+			e.Start.writeTo(s)
 		}
+		s.WriteByte(']')
 	}
 }
 
@@ -465,13 +428,6 @@ func (e *Index) minify() {
 	if e.End != nil {
 		e.End.minify()
 	}
-}
-
-func (e *Index) toIndices() []interface{} {
-	if e.Name == nil {
-		return nil
-	}
-	return []interface{}{e.Name.Str}
 }
 
 // Func ...
@@ -527,7 +483,7 @@ func (e *String) String() string {
 
 func (e *String) writeTo(s *strings.Builder) {
 	if e.Queries == nil {
-		s.WriteString(strconv.Quote(e.Str.Str))
+		jsonEncodeString(s, e.Str.Str)
 		return
 	}
 	s.WriteByte('"')
@@ -583,12 +539,10 @@ func (e *Object) minify() {
 
 // ObjectKeyVal ...
 type ObjectKeyVal struct {
-	Key           *Token     `json:"key,omitempty"`
-	KeyString     *String    `json:"key_string,omitempty"`
-	KeyQuery      *Query     `json:"key_query,omitempty"`
-	Val           *ObjectVal `json:"val,omitempty"`
-	KeyOnly       *Token     `json:"key_only,omitempty"`
-	KeyOnlyString *String    `json:"key_only_string,omitempty"`
+	Key       *Token     `json:"key,omitempty"`
+	KeyString *String    `json:"key_string,omitempty"`
+	KeyQuery  *Query     `json:"key_query,omitempty"`
+	Val       *ObjectVal `json:"val,omitempty"`
 }
 
 func (e *ObjectKeyVal) String() string {
@@ -611,11 +565,6 @@ func (e *ObjectKeyVal) writeTo(s *strings.Builder) {
 		s.WriteString(": ")
 		e.Val.writeTo(s)
 	}
-	if e.KeyOnly != nil {
-		s.WriteString(e.KeyOnly.Str)
-	} else if e.KeyOnlyString != nil {
-		e.KeyOnlyString.writeTo(s)
-	}
 }
 
 func (e *ObjectKeyVal) minify() {
@@ -626,9 +575,6 @@ func (e *ObjectKeyVal) minify() {
 	}
 	if e.Val != nil {
 		e.Val.minify()
-	}
-	if e.KeyOnlyString != nil {
-		e.KeyOnlyString.minify()
 	}
 }
 
@@ -719,23 +665,6 @@ func (e *Suffix) minify() {
 	} else if e.Bind != nil {
 		e.Bind.minify()
 	}
-}
-
-func (e *Suffix) toTerm() (*Term, bool) {
-	if e.Index != nil {
-		return &Term{Type: TermTypeIndex, Index: e.Index}, true
-	} else if e.Iter {
-		return &Term{Type: TermTypeIdentity, SuffixList: []*Suffix{{Iter: true}}}, true
-	} else {
-		return nil, false
-	}
-}
-
-func (e *Suffix) toIndices() []interface{} {
-	if e.Index == nil {
-		return nil
-	}
-	return e.Index.toIndices()
 }
 
 // Bind ...
@@ -982,14 +911,14 @@ func (e *ConstTerm) writeTo(s *strings.Builder) {
 		e.Array.writeTo(s)
 	} else if e.Number != nil {
 		s.WriteString(e.Number.Str)
-	} else if e.Str != nil {
-		s.WriteString(strconv.Quote(e.Str.Str))
 	} else if e.Null {
 		s.WriteString("null")
 	} else if e.True {
 		s.WriteString("true")
 	} else if e.False {
 		s.WriteString("false")
+	} else {
+		jsonEncodeString(s, e.Str.Str)
 	}
 }
 
@@ -999,7 +928,7 @@ func (e *ConstTerm) toValue() interface{} {
 	} else if e.Array != nil {
 		return e.Array.toValue()
 	} else if e.Number != nil {
-		return normalizeNumbers(json.Number(e.Number.Str))
+		return toNumber(e.Number.Str)
 	} else if e.Null {
 		return nil
 	} else if e.True {
@@ -1007,7 +936,7 @@ func (e *ConstTerm) toValue() interface{} {
 	} else if e.False {
 		return false
 	} else {
-		return e.Str.Str
+		return e.Str
 	}
 }
 
@@ -1044,13 +973,11 @@ func (e *ConstObject) ToValue() map[string]interface{} {
 	}
 	v := make(map[string]interface{}, len(e.KeyVals))
 	for _, e := range e.KeyVals {
-		var key string
-		if e.Key != nil {
-			key = e.Key.Str
-		} else if e.KeyString != nil {
-			key = e.KeyString.Str
+		key := e.Key
+		if key == nil {
+			key = e.KeyString
 		}
-		v[key] = e.Val.toValue()
+		v[key.Str] = e.Val.toValue()
 	}
 	return v
 }

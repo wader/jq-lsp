@@ -1,13 +1,32 @@
 %{
-package gojq
+package gojqparser
 
-// Parse parses a query.
+// Parse a query string, and returns the query struct.
+//
+// If parsing failed, the returned error has the method Token() (string, int),
+// which reports the invalid token and the byte offset in the query string. The
+// token is empty if the error occurred after scanning the entire query string.
+// The byte offset is the scanned bytes when the error occurred.
 func Parse(src string) (*Query, error) {
 	l := newLexer(src)
 	if yyParse(l) > 0 {
 		return nil, l.err
 	}
 	return l.result, nil
+}
+
+func reverseFuncDef(xs []*FuncDef) []*FuncDef {
+	for i, j := 0, len(xs)-1; i < j; i, j = i+1, j-1 {
+		xs[i], xs[j] = xs[j], xs[i]
+	}
+	return xs
+}
+
+func prependFuncDef(xs []*FuncDef, x *FuncDef) []*FuncDef {
+	xs = append(xs, nil)
+	copy(xs[1:], xs)
+	xs[0] = x
+	return xs
 }
 %}
 
@@ -27,13 +46,14 @@ func Parse(src string) (*Query, error) {
 %token<token> tokModule tokImport tokInclude tokDef tokAs tokLabel tokBreak
 %token<token> tokNull tokTrue tokFalse
 %token<token> tokIdent tokVariable tokModuleIdent tokModuleVariable
-%token<token> tokIndex tokNumber tokFormat tokInvalid
+%token<token> tokIndex tokNumber tokFormat
 %token<token> tokString tokStringStart tokStringQuery tokStringEnd
 %token<token> tokIf tokThen tokElif tokElse tokEnd
 %token<token> tokTry tokCatch tokReduce tokForeach
 %token tokRecurse tokFuncDefPost tokTermPost tokEmptyCatch
+%token tokInvalid tokInvalidEscapeSequence tokUnterminatedString
 
-%nonassoc tokFuncDefPost tokTermPost tokEmptyCatch
+%nonassoc tokFuncDefPost tokTermPost
 %right '|'
 %left ','
 %right tokAltOp
@@ -43,7 +63,7 @@ func Parse(src string) (*Query, error) {
 %nonassoc tokCompareOp
 %left '+' '-'
 %left '*' '/' '%'
-%nonassoc tokAs tokIndex '.' '?'
+%nonassoc tokAs tokIndex '.' '?' tokEmptyCatch
 %nonassoc '[' tokTry tokCatch
 
 %%
@@ -68,7 +88,7 @@ moduleheader
 programbody
     : imports funcdefs
     {
-        $$ = &Query{Imports: $1.([]*Import), FuncDefs: $2.([]*FuncDef), Term: &Term{Type: TermTypeIdentity}}
+        $$ = &Query{Imports: $1.([]*Import), FuncDefs: reverseFuncDef($2.([]*FuncDef)), Term: &Term{Type: TermTypeIdentity}}
     }
     | imports query
     {
@@ -81,9 +101,9 @@ imports
     {
         $$ = []*Import(nil)
     }
-    | import imports
+    | imports import
     {
-        $$ = prependImport($2.([]*Import), $1.(*Import))
+        $$ = append($1.([]*Import), $2.(*Import))
     }
 
 import
@@ -110,7 +130,7 @@ funcdefs
     }
     | funcdef funcdefs
     {
-        $$ = prependFuncDef($2.([]*FuncDef), $1.(*FuncDef))
+        $$ = append($2.([]*FuncDef), $1.(*FuncDef))
     }
 
 funcdef
@@ -292,7 +312,7 @@ objectpattern
     }
     | tokVariable
     {
-        $$ = &PatternObject{KeyOnly: $1}
+        $$ = &PatternObject{Key: $1}
     }
 
 term
@@ -465,11 +485,11 @@ suffix
     }
     | '[' ':' query ']'
     {
-        $$ = &Suffix{Index: &Index{End: $3.(*Query)}}
+        $$ = &Suffix{Index: &Index{End: $3.(*Query), IsSlice: true}}
     }
     | '[' query ':' query ']'
     {
-        $$ = &Suffix{Index: &Index{Start: $2.(*Query), IsSlice: true, End: $4.(*Query)}}
+        $$ = &Suffix{Index: &Index{Start: $2.(*Query), End: $4.(*Query), IsSlice: true}}
     }
 
 args
@@ -487,9 +507,9 @@ ifelifs
     {
         $$ = []*IfElif(nil)
     }
-    | tokElif query tokThen query ifelifs
+    | ifelifs tokElif query tokThen query
     {
-        $$ = prependIfElif($5.([]*IfElif), &IfElif{$2.(*Query), $4.(*Query)})
+        $$ = append($1.([]*IfElif), &IfElif{$3.(*Query), $5.(*Query)})
     }
 
 ifelse
@@ -537,11 +557,11 @@ objectkeyval
     }
     | objectkey
     {
-        $$ = &ObjectKeyVal{KeyOnly: $1}
+        $$ = &ObjectKeyVal{Key: $1}
     }
     | string
     {
-        $$ = &ObjectKeyVal{KeyOnlyString: $1.(*String)}
+        $$ = &ObjectKeyVal{KeyString: $1.(*String)}
     }
 
 objectkey
