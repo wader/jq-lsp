@@ -202,14 +202,14 @@ def query_walk($uri; $start_env; f):
     def _pattern_env:
       def _f:
         ( if .name then
-            {(.name.str): (.name + {type: "var", uri: $uri, args: []})}
+            {(.name.str): (.name + {type: "binding", uri: $uri, args: []})}
           elif .array then
             .array[] | _f
           elif .object then
             ( .object[] |
               ( if .key then
                   { (.key.str):
-                    (.key + {type: "var", uri: $uri, args: []})
+                    (.key + {type: "binding", uri: $uri, args: []})
                   }
                 else empty
                 end
@@ -246,7 +246,7 @@ def query_walk($uri; $start_env; f):
       # {"func/2":  name token (has .str etc) + {args: #}
       | { ("\(.name.str)/\($args | length)"):
           ( .name
-          + {type: "func", uri: $uri, args: ($args | _func_args)}
+          + {type: "function", uri: $uri, args: ($args | _func_args)}
           )
         }
       );
@@ -398,7 +398,7 @@ def query_walk($uri; $start_env; f):
           | map(
               {(.str): (
                 . + {
-                  type: (if (.str | startswith("$")) then "var" else "func" end),
+                  type: (if (.str | startswith("$")) then "binding" else "function" end),
                   uri: $uri, args: []
                 }
               )}
@@ -731,7 +731,7 @@ def handle($state):
         | def_from_env(
             .str == $q.term.func.name.str and
             (.args | length) == (($q.term.func.args // []) | length) and
-            .type != "var"
+            .type != "binding"
           )
         | docs[env_func_name] as $doc
         | result({

@@ -10,9 +10,9 @@ You probably don't want to use this directly but instead use it thru an IDE exte
 
 It can currently do:
 - Syntax checking
-- Error on missing function and variable
-- Goto definition of functions and variables
-- Auto complete functions and variables
+- Error on missing function and binding
+- Goto definition of function and binding
+- Auto complete functions and binding
 - Include/Import support
 - Hover definitions of functions
 - Hover documentation for builtins
@@ -23,7 +23,7 @@ It can currently do:
 
 ```sh
 # build from cloned repo
-go build -o jq-lsp main.go
+go build -o jq-lsp .
 
 # install directly
 go install github.com/wader/jq-lsp@master
@@ -51,7 +51,7 @@ URI="$PWD" tests/test.jq | go run main.go
 - Shutdown correctly?
 - Own parser or modified gojq parser to be able to recover and give more useful errors
 - Server loop and https://github.com/itchyny/gojq/issues/86
-- Warn about unused function and variable
+- Warn about unused function and binding
 - Better at handling broken syntax while typing
    - `$<cursor>` auto complete, add temp name?
    - `a | n<cursor> f`, add temp name?
