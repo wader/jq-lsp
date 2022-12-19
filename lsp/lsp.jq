@@ -307,7 +307,12 @@ def query_walk($uri; $start_env; f):
           )
         elif .object then
           ( .object.key_vals[]?
-          | ( (.key // empty)
+          | ( if .key | . != null and (.str | startswith("$")) then
+                # rewrite {$name} shorthand to {name: $name}
+                # note key is {"key":{"start":1209,"stop":1210,"str":"$name"}
+                {term: {func: {name: .key}, type: "TermTypeFunc"}}
+              else .key // empty
+              end
             , (.key_query // empty)
             , .val.queries[]?
             )
