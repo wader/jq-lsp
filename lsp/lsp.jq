@@ -678,10 +678,8 @@ def handle($state):
                 { label: "\(.str)/\(.args | length)",
                   insertText: "\(.str)($1)",
                   insertTextFormat: TextFormatSnippet,
-                  kind: CompletionItemKindFunction,
                   documentation: {
-                  value :(docs[env_func_name] as $doc |[ "
-                  ```jq"
+                  value :(docs[env_func_name] as $doc |[ "```jq"
                   , "def \(env_func_signature):"
                   , "```"
                   , if $doc then $doc else empty end
