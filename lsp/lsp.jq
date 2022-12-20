@@ -679,14 +679,18 @@ def handle($state):
                   insertText: "\(.str)($1)",
                   insertTextFormat: TextFormatSnippet,
                   kind: CompletionItemKindFunction,
-                  documentation: (docs[env_func_name] as $doc |[ "
+                  documentation: {
+                  value :(docs[env_func_name] as $doc |[ "
                   ```jq"
                   , "def \(env_func_signature):"
                   , "```"
                   , if $doc then $doc else empty end
                     ]
                   | join("\n")
-                )}
+                  ),
+                  kind:"markdown",
+                  },
+                }
               else
                 {label: .str}
               end
