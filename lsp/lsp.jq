@@ -93,6 +93,8 @@ def in_range($start; $stop): . >= $start and . <= $stop;
 
 def TextFormatSnippet: 2;
 
+def CompletionItemKindFunction: 3;
+
 def TextDocumentSyncFull: 1;
 
 def SymbolKindFile: 1;
@@ -675,7 +677,8 @@ def handle($state):
             | if .args and (.args | length) > 0 then
                 { label: "\(.str)/\(.args | length)",
                   insertText: "\(.str)($1)",
-                  insertTextFormat: TextFormatSnippet
+                  insertTextFormat: TextFormatSnippet,
+                  kind: CompletionItemKindFunction,
                 }
               else
                 {label: .str}
