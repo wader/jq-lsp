@@ -94,8 +94,10 @@ def in_range($start; $stop): . >= $start and . <= $stop;
 def TextFormatSnippet: 2;
 
 def CompletionItemKindFunction: 3;
+def CompletionItemKindVariable: 6;
 
 def TextDocumentSyncFull: 1;
+def MarkupKindsMarkdown: "markdown";
 
 def SymbolKindFile: 1;
 def SymbolKindModule: 2;
@@ -198,6 +200,17 @@ def env_func_signature:
     ]
   | join("")
   );
+
+def env_func_markdown:
+  ( docs[env_func_name] as $doc
+  | [ "```jq"
+    , "def \(env_func_signature):"
+    , "```"
+    , if $doc then $doc else empty end
+    ]
+  | join("\n")
+  );
+
 
 def query_walk($uri; $start_env; f):
   def _t($start_env):
@@ -674,23 +687,24 @@ def handle($state):
             | env_iter_entries
             | .value
             | select(.str | startswith($prefix))
+            | . as $func
             | if .args and (.args | length) > 0 then
                 { label: "\(.str)/\(.args | length)",
                   insertText: "\(.str)($1)",
                   insertTextFormat: TextFormatSnippet,
-                  documentation: {
-                  value :(docs[env_func_name] as $doc |[ "```jq"
-                  , "def \(env_func_signature):"
-                  , "```"
-                  , if $doc then $doc else empty end
-                    ]
-                  | join("\n")
-                  ),
-                  kind:"markdown",
-                  },
                 }
               else
                 {label: .str}
+              end
+            | if $func.str | startswith("$") then
+                .kind = CompletionItemKindVariable
+              else
+                ( .kind = CompletionItemKindFunction
+                | .documentation =
+                    { value: ($func | env_func_markdown),
+                      kind: MarkupKindsMarkdown
+                    }
+                )
               end
             ]
           )
@@ -752,14 +766,7 @@ def handle($state):
           )
         | docs[env_func_name] as $doc
         | result({
-            contents:
-              ( [ "```jq"
-                , "def \(env_func_signature):"
-                , "```"
-                , if $doc then $doc else empty end
-                ]
-              | join("\n")
-              )
+          contents: env_func_markdown
           })
         )
       else
