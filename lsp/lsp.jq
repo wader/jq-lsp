@@ -679,6 +679,7 @@ def handle($state):
                   insertText: "\(.str)($1)",
                   insertTextFormat: TextFormatSnippet,
                   kind: CompletionItemKindFunction,
+                  documentation: docs[env_func_name],
                 }
               else
                 {label: .str}
