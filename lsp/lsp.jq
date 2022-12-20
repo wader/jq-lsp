@@ -679,8 +679,14 @@ def handle($state):
                   insertText: "\(.str)($1)",
                   insertTextFormat: TextFormatSnippet,
                   kind: CompletionItemKindFunction,
-                  documentation: docs[env_func_name],
-                }
+                  documentation: (docs[env_func_name] as $doc |[ "
+                  ```jq"
+                  , "def \(env_func_signature):"
+                  , "```"
+                  , if $doc then $doc else empty end
+                    ]
+                  | join("\n")
+                )}
               else
                 {label: .str}
               end
