@@ -2,11 +2,10 @@
 
 jq language server.
 
-**NOTICE** This project is currently an experiment so beware of rough edges.
-
-You probably don't want to use this directly but instead use it thru an IDE extension:
+You probably don't want to use this directly. Instead use it via:
 
 - [vscode-jq](https://github.com/wader/vscode-jq)
+- neovim using [nvim-lspconfig](https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md#jqls) and [mason.nvim](https://github.com/williamboman/mason.nvim)
 
 It can currently do:
 - Syntax checking
