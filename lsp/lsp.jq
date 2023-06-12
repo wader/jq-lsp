@@ -256,21 +256,39 @@ def query_walk($uri; $start_env; f):
 
     def _func_args: map(.str);
 
-    def _func_def_env($uri):
+    def _func_def_env($uri; $import_alias):
       ( (.args // []) as $args
-      # {"func/2":  name token (has .str etc) + {args: #}
-      | { ("\(.name.str)/\($args | length)"):
-          ( .name
-          + {type: "function", uri: $uri, args: ($args | _func_args)}
-          )
+      | ( if $import_alias then
+            { name: "\($import_alias.str)::\(.name.str)"
+            , start: .name.start
+            , stop: .name.stop
+            }
+          else
+            { name: .name.str
+            , start: .name.start
+            , stop: .name.stop
+            }
+          end
+        ) as $f
+      # {"(prefix::)?func/2":  name token (has .str etc) + {args: #}
+      | { "\($f.name)/\($args | length)":
+            { str: $f.name
+            , start: $f.start
+            , stop: $f.stop
+            , type: "function"
+            , uri: $uri
+            , args: ($args | _func_args)
+            }
         }
       );
+    def _func_def_env($uri): _func_def_env($uri; null);
 
     def _import_env:
-      # TODO: import module name from
+      # TODO: import failure
       # TODO: transitive include, max depth
       ( . #debug({import: .})
       | (.include_path.str // .import_path.str) as $path
+      | .import_alias as $import_alias
       | ($uri | uri_resolve($path)) + ".jq"
       | . as $include_uri
       | file_uri_to_local
@@ -278,7 +296,7 @@ def query_walk($uri; $start_env; f):
           ( readfile
           | query_fromstring
           | .func_defs[]?
-          | _func_def_env($include_uri)
+          | _func_def_env($include_uri; $import_alias)
           )
         catch empty
       );
@@ -774,7 +792,6 @@ def handle($state):
       end
     )
   );
-
 
 # def serve: "../jqjq/jqjq.jq" | readfile | query_fromstring | query_walk(""; []; .);
 
