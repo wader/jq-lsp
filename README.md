@@ -41,7 +41,7 @@ and is licensed under https://github.com/stedolan/jq/blob/master/COPYING
 ### Development
 
 ```sh
-URI="$PWD" tests/test.jq | go run main.go
+URI="$PWD" tests/test.jq | DEBUG=1 go run main.go
 ```
 
 ### TODO
