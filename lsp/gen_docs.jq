@@ -31,6 +31,7 @@ def map_titles:
     | if map_titles[.] then map_titles[.] else . end
     | select(test("^`\\w.*`$"))?
     | split(", ")[] | .[1:-1] | "\(.)"
+    | select(. != "and" and . != "or" and . != "not")
     | {(split("(") | [.[0], "/", (.[1] | if . then split(";") | length else 0 end)] | join("")):
         ($doc | ltrimstr("\n") | rtrimstr("\n"))
       }

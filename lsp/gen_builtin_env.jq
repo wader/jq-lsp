@@ -1,4 +1,4 @@
-#!/usr/bin/env fq -d raw -nf
+#!/usr/bin/env fq -d bytes -nf
 # ./lsp/gen_builtin_env.jq ../gojq/builtin.jq <(jq -rn 'builtins | tojson') <(gojq --yaml-input . ../jq/docs/content/manual/manual.yml)
 
 def gen_args:
