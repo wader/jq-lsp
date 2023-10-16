@@ -6,6 +6,7 @@ You probably don't want to use this directly. Instead use it via:
 
 - [vscode-jq](https://github.com/wader/vscode-jq)
 - neovim using [nvim-lspconfig](https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md#jqls) and [mason.nvim](https://github.com/williamboman/mason.nvim)
+- Emacs using [lsp-mode](https://github.com/emacs-lsp/lsp-mode)
 
 It can currently do:
 - Syntax checking
