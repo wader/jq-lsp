@@ -40,7 +40,7 @@ type encoder struct {
 	buf [64]byte
 }
 
-func (e *encoder) encode(v interface{}) {
+func (e *encoder) encode(v any) {
 	switch v := v.(type) {
 	case nil:
 		e.w.WriteString("null")
@@ -58,10 +58,10 @@ func (e *encoder) encode(v interface{}) {
 		e.w.Write(v.Append(e.buf[:0], 10))
 	case string:
 		e.encodeString(v)
-	case []interface{}:
+	case []any:
 		e.encodeArray(v)
-	case map[string]interface{}:
-		e.encodeMap(v)
+	case map[string]any:
+		e.encodeObject(v)
 	default:
 		panic(fmt.Sprintf("invalid type: %[1]T (%[1]v)", v))
 	}
@@ -78,12 +78,12 @@ func (e *encoder) encodeFloat64(f float64) {
 	} else if f <= -math.MaxFloat64 {
 		f = -math.MaxFloat64
 	}
-	fmt := byte('f')
+	format := byte('f')
 	if x := math.Abs(f); x != 0 && x < 1e-6 || x >= 1e21 {
-		fmt = 'e'
+		format = 'e'
 	}
-	buf := strconv.AppendFloat(e.buf[:0], f, fmt, -1, 64)
-	if fmt == 'e' {
+	buf := strconv.AppendFloat(e.buf[:0], f, format, -1, 64)
+	if format == 'e' {
 		// clean up e-09 to e-9
 		if n := len(buf); n >= 4 && buf[n-4] == 'e' && buf[n-3] == '-' && buf[n-2] == '0' {
 			buf[n-2] = buf[n-1]
@@ -149,7 +149,7 @@ func (e *encoder) encodeString(s string) {
 	e.w.WriteByte('"')
 }
 
-func (e *encoder) encodeArray(vs []interface{}) {
+func (e *encoder) encodeArray(vs []any) {
 	e.w.WriteByte('[')
 	for i, v := range vs {
 		if i > 0 {
@@ -160,11 +160,11 @@ func (e *encoder) encodeArray(vs []interface{}) {
 	e.w.WriteByte(']')
 }
 
-func (e *encoder) encodeMap(vs map[string]interface{}) {
+func (e *encoder) encodeObject(vs map[string]any) {
 	e.w.WriteByte('{')
 	type keyVal struct {
 		key string
-		val interface{}
+		val any
 	}
 	kvs := make([]keyVal, len(vs))
 	var i int

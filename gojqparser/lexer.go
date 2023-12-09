@@ -277,19 +277,35 @@ func (l *lexer) next() (byte, bool) {
 		ch := l.source[l.offset]
 		l.offset++
 		if ch == '#' {
-			if len(l.source) == l.offset {
+			if l.skipComment() {
 				return 0, true
-			}
-			for !isNewLine(l.source[l.offset]) {
-				l.offset++
-				if len(l.source) == l.offset {
-					return 0, true
-				}
 			}
 		} else if !isWhite(ch) {
 			return ch, false
 		} else if len(l.source) == l.offset {
 			return 0, true
+		}
+	}
+}
+
+func (l *lexer) skipComment() bool {
+	for {
+		switch l.peek() {
+		case 0:
+			return true
+		case '\\':
+			switch l.offset++; l.peek() {
+			case '\\', '\n':
+				l.offset++
+			case '\r':
+				if l.offset++; l.peek() == '\n' {
+					l.offset++
+				}
+			}
+		case '\n', '\r':
+			return false
+		default:
+			l.offset++
 		}
 	}
 }
@@ -605,14 +621,5 @@ func isInteger(base byte, ch byte) bool {
 		return isHex(ch)
 	default:
 		panic("unreachable")
-	}
-}
-
-func isNewLine(ch byte) bool {
-	switch ch {
-	case '\n', '\r':
-		return true
-	default:
-		return false
 	}
 }
