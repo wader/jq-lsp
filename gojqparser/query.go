@@ -999,7 +999,7 @@ func (e *ConstObjectKeyVal) writeTo(s *strings.Builder) {
 	if e.Key != nil {
 		s.WriteString(e.Key.Str)
 	} else {
-		s.WriteString(e.KeyString.Str)
+		jsonEncodeString(s, e.KeyString.Str)
 	}
 	s.WriteString(": ")
 	e.Val.writeTo(s)

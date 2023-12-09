@@ -7,7 +7,7 @@ import (
 	"strings"
 )
 
-func normalizeNumber(v json.Number) interface{} {
+func normalizeNumber(v json.Number) any {
 	if i, err := v.Int64(); err == nil && math.MinInt <= i && i <= math.MaxInt {
 		return int(i)
 	}

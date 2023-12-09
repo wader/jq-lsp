@@ -1,6 +1,6 @@
 module github.com/wader/jq-lsp
 
-go 1.17
+go 1.18
 
 // GOPROXY=direct go get -d github.com/itchyny/gojq@main && go mod tidy
 
