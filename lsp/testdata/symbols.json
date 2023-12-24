@@ -1,0 +1,96 @@
+[
+    {
+        "request": {
+            "id": 0,
+            "jsonrpc": "2.0",
+            "method": "initialize"
+        },
+        "response": {
+            "id": 0,
+            "result": {
+                "capabilities": {
+                    "completionProvider": {},
+                    "definitionProvider": true,
+                    "documentSymbolProvider": true,
+                    "hoverProvider": true,
+                    "publishDiagnostics": {},
+                    "textDocumentSync": 1,
+                    "workspace": {
+                        "workspaceFolders": {
+                            "supported": true
+                        }
+                    }
+                }
+            }
+        }
+    },
+    {
+        "request": {
+            "id": 1,
+            "jsonrpc": "2.0",
+            "method": "textDocument/documentSymbol",
+            "params": {
+                "textDocument": {
+                    "uri": "file:///valid.jq",
+                    "version": 2
+                }
+            }
+        },
+        "response": {
+            "id": 1,
+            "result": [
+                {
+                    "kind": 12,
+                    "location": {
+                        "range": {
+                            "end": {
+                                "character": 12,
+                                "line": 2
+                            },
+                            "start": {
+                                "character": 8,
+                                "line": 2
+                            }
+                        },
+                        "uri": "file:///valid.jq"
+                    },
+                    "name": "_fn2"
+                },
+                {
+                    "kind": 12,
+                    "location": {
+                        "range": {
+                            "end": {
+                                "character": 6,
+                                "line": 0
+                            },
+                            "start": {
+                                "character": 4,
+                                "line": 0
+                            }
+                        },
+                        "uri": "file:///valid.jq"
+                    },
+                    "name": "fn"
+                },
+                {
+                    "kind": 12,
+                    "location": {
+                        "range": {
+                            "end": {
+                                "character": 7,
+                                "line": 1
+                            },
+                            "start": {
+                                "character": 4,
+                                "line": 1
+                            }
+                        },
+                        "uri": "file:///valid.jq"
+                    },
+                    "name": "fn2"
+                }
+            ]
+        }
+    }
+]

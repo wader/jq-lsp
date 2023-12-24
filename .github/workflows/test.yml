@@ -1,0 +1,21 @@
+name: Test
+
+on:
+  push:
+    branches:
+    - master
+  pull_request:
+  # enable manual trigger
+  workflow_dispatch:
+
+jobs:
+  test:
+    name: go test
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - uses: actions/setup-go@v4
+      with:
+        go-version: stable
+    - name:
+      run: go test ./...

@@ -1,0 +1,66 @@
+[
+    {
+        "request": {
+            "id": 0,
+            "jsonrpc": "2.0",
+            "method": "initialize"
+        },
+        "response": {
+            "id": 0,
+            "result": {
+                "capabilities": {
+                    "completionProvider": {},
+                    "definitionProvider": true,
+                    "documentSymbolProvider": true,
+                    "hoverProvider": true,
+                    "publishDiagnostics": {},
+                    "textDocumentSync": 1,
+                    "workspace": {
+                        "workspaceFolders": {
+                            "supported": true
+                        }
+                    }
+                }
+            }
+        }
+    },
+    {
+        "request": {
+            "id": 1,
+            "jsonrpc": "2.0",
+            "method": "textDocument/didChange",
+            "params": {
+                "contentChanges": [
+                    {
+                        "text": "def fn: abc;"
+                    }
+                ],
+                "textDocument": {
+                    "uri": "file:///not_found.jq",
+                    "version": 2
+                }
+            }
+        },
+        "response": {
+            "method": "textDocument/publishDiagnostics",
+            "params": {
+                "diagnostics": [
+                    {
+                        "message": "abc not found",
+                        "range": {
+                            "end": {
+                                "character": 11,
+                                "line": 0
+                            },
+                            "start": {
+                                "character": 8,
+                                "line": 0
+                            }
+                        }
+                    }
+                ],
+                "uri": "file:///not_found.jq"
+            }
+        }
+    }
+]

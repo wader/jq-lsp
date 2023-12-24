@@ -691,7 +691,7 @@ def handle($state):
         # }
         {state: ($state | del($state.files[$params.textDocument.uri]))}
       elif $method == "textDocument/completion" then
-        # "method": "textDocument/definition",
+        # "method": "textDocument/completion",
         # "params": {
         #   "position": {"character": 4, "line": 7},
         #   "textDocument": {
