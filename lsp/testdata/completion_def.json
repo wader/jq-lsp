@@ -1,0 +1,106 @@
+[
+    {
+        "request": {
+            "id": 0,
+            "jsonrpc": "2.0",
+            "method": "initialize"
+        },
+        "response": {
+            "id": 0,
+            "result": {
+                "capabilities": {
+                    "completionProvider": {},
+                    "definitionProvider": true,
+                    "documentSymbolProvider": true,
+                    "hoverProvider": true,
+                    "publishDiagnostics": {},
+                    "textDocumentSync": 1,
+                    "workspace": {
+                        "workspaceFolders": {
+                            "supported": true
+                        }
+                    }
+                }
+            }
+        }
+    },
+    {
+        "request": {
+            "id": 1,
+            "jsonrpc": "2.0",
+            "method": "textDocument/completion",
+            "params": {
+                "position": {
+                    "character": 15,
+                    "line": 1
+                },
+                "textDocument": {
+                    "uri": "file:///completion.jq"
+                }
+            }
+        },
+        "response": {
+            "id": 1,
+            "result": [
+                {
+                    "documentation": {
+                        "kind": "markdown",
+                        "value": "```jq\ndef from2:\n```"
+                    },
+                    "kind": 3,
+                    "label": "from2"
+                },
+                {
+                    "documentation": {
+                        "kind": "markdown",
+                        "value": "```jq\ndef from:\n```"
+                    },
+                    "kind": 3,
+                    "label": "from"
+                },
+                {
+                    "documentation": {
+                        "kind": "markdown",
+                        "value": "```jq\ndef from_entries:\n```\nThese functions convert between an object and an array of\nkey-value pairs. If `to_entries` is passed an object, then\nfor each `k: v` entry in the input, the output array\nincludes `{\"key\": k, \"value\": v}`.\n\n`from_entries` does the opposite conversion, and `with_entries(f)`\nis a shorthand for `to_entries | map(f) | from_entries`, useful for\ndoing some operation to all keys and values of an object.\n`from_entries` accepts `\"key\"`, `\"Key\"`, `\"name\"`, `\"Name\"`,\n`\"value\"`, and `\"Value\"` as keys."
+                    },
+                    "kind": 3,
+                    "label": "from_entries"
+                },
+                {
+                    "documentation": {
+                        "kind": "markdown",
+                        "value": "```jq\ndef fromdate:\n```\njq provides some basic date handling functionality, with some\nhigh-level and low-level builtins.  In all cases these\nbuiltins deal exclusively with time in UTC.\n\nThe `fromdateiso8601` builtin parses datetimes in the ISO 8601\nformat to a number of seconds since the Unix epoch\n(1970-01-01T00:00:00Z).  The `todateiso8601` builtin does the\ninverse.\n\nThe `fromdate` builtin parses datetime strings.  Currently\n`fromdate` only supports ISO 8601 datetime strings, but in the\nfuture it will attempt to parse datetime strings in more\nformats.\n\nThe `todate` builtin is an alias for `todateiso8601`.\n\nThe `now` builtin outputs the current time, in seconds since\nthe Unix epoch.\n\nLow-level jq interfaces to the C-library time functions are\nalso provided: `strptime`, `strftime`, `strflocaltime`,\n`mktime`, `gmtime`, and `localtime`.  Refer to your host\noperating system's documentation for the format strings used\nby `strptime` and `strftime`.  Note: these are not necessarily\nstable interfaces in jq, particularly as to their localization\nfunctionality.\n\nThe `gmtime` builtin consumes a number of seconds since the\nUnix epoch and outputs a \"broken down time\" representation of\nGreenwich Mean Time as an array of numbers representing\n(in this order): the year, the month (zero-based), the day of\nthe month (one-based), the hour of the day, the minute of the\nhour, the second of the minute, the day of the week, and the\nday of the year -- all one-based unless otherwise stated.  The\nday of the week number may be wrong on some systems for dates\nbefore March 1st 1900, or after December 31 2099.\n\nThe `localtime` builtin works like the `gmtime` builtin, but\nusing the local timezone setting.\n\nThe `mktime` builtin consumes \"broken down time\"\nrepresentations of time output by `gmtime` and `strptime`.\n\nThe `strptime(fmt)` builtin parses input strings matching the\n`fmt` argument.  The output is in the \"broken down time\"\nrepresentation consumed by `gmtime` and output by `mktime`.\n\nThe `strftime(fmt)` builtin formats a time (GMT) with the\ngiven format.  The `strflocaltime` does the same, but using\nthe local timezone setting.\n\nThe format strings for `strptime` and `strftime` are described\nin typical C library documentation.  The format string for ISO\n8601 datetime is `\"%Y-%m-%dT%H:%M:%SZ\"`.\n\njq may not support some or all of this date functionality on\nsome systems. In particular, the `%u` and `%j` specifiers for\n`strptime(fmt)` are not supported on macOS."
+                    },
+                    "kind": 3,
+                    "label": "fromdate"
+                },
+                {
+                    "documentation": {
+                        "kind": "markdown",
+                        "value": "```jq\ndef fromdateiso8601:\n```\njq provides some basic date handling functionality, with some\nhigh-level and low-level builtins.  In all cases these\nbuiltins deal exclusively with time in UTC.\n\nThe `fromdateiso8601` builtin parses datetimes in the ISO 8601\nformat to a number of seconds since the Unix epoch\n(1970-01-01T00:00:00Z).  The `todateiso8601` builtin does the\ninverse.\n\nThe `fromdate` builtin parses datetime strings.  Currently\n`fromdate` only supports ISO 8601 datetime strings, but in the\nfuture it will attempt to parse datetime strings in more\nformats.\n\nThe `todate` builtin is an alias for `todateiso8601`.\n\nThe `now` builtin outputs the current time, in seconds since\nthe Unix epoch.\n\nLow-level jq interfaces to the C-library time functions are\nalso provided: `strptime`, `strftime`, `strflocaltime`,\n`mktime`, `gmtime`, and `localtime`.  Refer to your host\noperating system's documentation for the format strings used\nby `strptime` and `strftime`.  Note: these are not necessarily\nstable interfaces in jq, particularly as to their localization\nfunctionality.\n\nThe `gmtime` builtin consumes a number of seconds since the\nUnix epoch and outputs a \"broken down time\" representation of\nGreenwich Mean Time as an array of numbers representing\n(in this order): the year, the month (zero-based), the day of\nthe month (one-based), the hour of the day, the minute of the\nhour, the second of the minute, the day of the week, and the\nday of the year -- all one-based unless otherwise stated.  The\nday of the week number may be wrong on some systems for dates\nbefore March 1st 1900, or after December 31 2099.\n\nThe `localtime` builtin works like the `gmtime` builtin, but\nusing the local timezone setting.\n\nThe `mktime` builtin consumes \"broken down time\"\nrepresentations of time output by `gmtime` and `strptime`.\n\nThe `strptime(fmt)` builtin parses input strings matching the\n`fmt` argument.  The output is in the \"broken down time\"\nrepresentation consumed by `gmtime` and output by `mktime`.\n\nThe `strftime(fmt)` builtin formats a time (GMT) with the\ngiven format.  The `strflocaltime` does the same, but using\nthe local timezone setting.\n\nThe format strings for `strptime` and `strftime` are described\nin typical C library documentation.  The format string for ISO\n8601 datetime is `\"%Y-%m-%dT%H:%M:%SZ\"`.\n\njq may not support some or all of this date functionality on\nsome systems. In particular, the `%u` and `%j` specifiers for\n`strptime(fmt)` are not supported on macOS."
+                    },
+                    "kind": 3,
+                    "label": "fromdateiso8601"
+                },
+                {
+                    "documentation": {
+                        "kind": "markdown",
+                        "value": "```jq\ndef fromjson:\n```\nThe `tojson` and `fromjson` builtins dump values as JSON texts\nor parse JSON texts into values, respectively.  The `tojson`\nbuiltin differs from `tostring` in that `tostring` returns strings\nunmodified, while `tojson` encodes strings as JSON strings."
+                    },
+                    "kind": 3,
+                    "label": "fromjson"
+                },
+                {
+                    "documentation": {
+                        "kind": "markdown",
+                        "value": "```jq\ndef fromstream(f):\n```\nOutputs values corresponding to the stream expression's\noutputs."
+                    },
+                    "insertText": "fromstream($1)",
+                    "insertTextFormat": 2,
+                    "kind": 3,
+                    "label": "fromstream/1"
+                }
+            ]
+        }
+    }
+]

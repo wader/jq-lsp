@@ -1,0 +1,52 @@
+[
+    {
+        "request": {
+            "id": 0,
+            "jsonrpc": "2.0",
+            "method": "initialize"
+        },
+        "response": {
+            "id": 0,
+            "result": {
+                "capabilities": {
+                    "completionProvider": {},
+                    "definitionProvider": true,
+                    "documentSymbolProvider": true,
+                    "hoverProvider": true,
+                    "publishDiagnostics": {},
+                    "textDocumentSync": 1,
+                    "workspace": {
+                        "workspaceFolders": {
+                            "supported": true
+                        }
+                    }
+                }
+            }
+        }
+    },
+    {
+        "request": {
+            "id": 1,
+            "jsonrpc": "2.0",
+            "method": "textDocument/hover",
+            "params": {
+                "context": {
+                    "triggerKind": 1
+                },
+                "position": {
+                    "character": 5,
+                    "line": 4
+                },
+                "textDocument": {
+                    "uri": "file:///hover.jq"
+                }
+            }
+        },
+        "response": {
+            "id": 1,
+            "result": {
+                "contents": "```jq\ndef fromjson:\n```\nThe `tojson` and `fromjson` builtins dump values as JSON texts\nor parse JSON texts into values, respectively.  The `tojson`\nbuiltin differs from `tostring` in that `tostring` returns strings\nunmodified, while `tojson` encodes strings as JSON strings."
+            }
+        }
+    }
+]

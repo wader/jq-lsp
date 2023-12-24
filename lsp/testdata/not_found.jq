@@ -1,0 +1,1 @@
+def fn: abc;

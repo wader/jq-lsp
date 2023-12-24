@@ -1,0 +1,62 @@
+[
+    {
+        "request": {
+            "id": 0,
+            "jsonrpc": "2.0",
+            "method": "initialize"
+        },
+        "response": {
+            "id": 0,
+            "result": {
+                "capabilities": {
+                    "completionProvider": {},
+                    "definitionProvider": true,
+                    "documentSymbolProvider": true,
+                    "hoverProvider": true,
+                    "publishDiagnostics": {},
+                    "textDocumentSync": 1,
+                    "workspace": {
+                        "workspaceFolders": {
+                            "supported": true
+                        }
+                    }
+                }
+            }
+        }
+    },
+    {
+        "request": {
+            "id": 1,
+            "jsonrpc": "2.0",
+            "method": "textDocument/definition",
+            "params": {
+                "context": {
+                    "triggerKind": 1
+                },
+                "position": {
+                    "character": 7,
+                    "line": 5
+                },
+                "textDocument": {
+                    "uri": "file:///definition.jq"
+                }
+            }
+        },
+        "response": {
+            "id": 1,
+            "result": {
+                "range": {
+                    "end": {
+                        "character": 15,
+                        "line": 4
+                    },
+                    "start": {
+                        "character": 11,
+                        "line": 4
+                    }
+                },
+                "uri": "file:///definition.jq"
+            }
+        }
+    }
+]

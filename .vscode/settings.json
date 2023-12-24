@@ -17,5 +17,6 @@
         "tonumber"
     ],
     "go.lintTool": "golangci-lint",
-    "files.trimTrailingWhitespace": true
+    "files.trimTrailingWhitespace": true,
+    "editor.formatOnSave": true
 }

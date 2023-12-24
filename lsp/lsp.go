@@ -25,12 +25,18 @@ type loadModule struct {
 func (l loadModule) LoadInitModules() ([]*gojq.Query, error)     { return l.init() }
 func (l loadModule) LoadModule(name string) (*gojq.Query, error) { return l.load(name) }
 
+type Env struct {
+	Version  string
+	ReadFile func(string) ([]byte, error)
+	Stdin    io.Reader
+	Stdout   io.Writer
+	Stderr   io.Writer
+	Args     []string
+	Environ  []string
+}
+
 type interp struct {
-	readFileFn func(string) ([]byte, error)
-	stdinR     io.Reader
-	stdoutW    io.Writer
-	stderrW    io.Writer
-	environ    []string
+	env Env
 }
 
 type parseError struct {
@@ -57,13 +63,14 @@ func queryErrorPosition(v error) int {
 	return offset
 }
 
-func Run(readFileFn func(string) ([]byte, error), stdin io.Reader, stdout io.Writer, stderr io.Writer, environ []string) error {
+func Run(env Env) error {
+	if len(env.Args) >= 2 && env.Args[1] == "--version" {
+		fmt.Fprintf(env.Stdout, "%s\n", env.Version)
+		return nil
+	}
+
 	i := &interp{
-		readFileFn: readFileFn,
-		stdinR:     stdin,
-		stdoutW:    stdout,
-		stderrW:    stderr,
-		environ:    environ,
+		env: env,
 	}
 
 	var state interface{}
@@ -84,10 +91,17 @@ func Run(readFileFn func(string) ([]byte, error), stdin io.Reader, stdout io.Wri
 
 			switch v := v.(type) {
 			case error:
-				fmt.Fprintln(stderr, v)
+				if ve, ok := v.(gojq.ValueError); ok {
+					if vev, ok := ve.Value().(string); ok && vev == "EOF" {
+						// TODO: currently assume any EOF error means normal exit
+						return nil
+					}
+				}
+
+				fmt.Fprintln(env.Stderr, v)
 				return v
 			case [2]interface{}:
-				fmt.Fprintln(stderr, v[:]...)
+				fmt.Fprintln(env.Stderr, v[:]...)
 			default:
 				state = v
 			}
@@ -102,7 +116,7 @@ func (i *interp) Eval(src string, c interface{}) (gojq.Iter, error) {
 	}
 
 	var compilerOpts []gojq.CompilerOption
-	compilerOpts = append(compilerOpts, gojq.WithEnvironLoader(func() []string { return i.environ }))
+	compilerOpts = append(compilerOpts, gojq.WithEnvironLoader(func() []string { return i.env.Environ }))
 	compilerOpts = append(compilerOpts, gojq.WithModuleLoader(loadModule{
 		init: func() ([]*gojq.Query, error) {
 			gq, err := gojq.Parse(`include "lsp";`)
@@ -149,7 +163,7 @@ func (i *interp) readFile(c interface{}, a []interface{}) interface{} {
 	if err != nil {
 		return err
 	}
-	b, err := i.readFileFn(path)
+	b, err := i.env.ReadFile(path)
 	if err != nil {
 		return err
 	}
@@ -168,14 +182,14 @@ func (i *interp) stdin(_ interface{}, a []interface{}) interface{} {
 
 	if n == 0 {
 		b := &bytes.Buffer{}
-		if _, err := io.Copy(b, i.stdinR); err != nil {
+		if _, err := io.Copy(b, i.env.Stdin); err != nil {
 			return err
 		}
 		return b.String()
 	}
 	b := make([]byte, n)
 
-	_, err := io.ReadFull(i.stdinR, b)
+	_, err := io.ReadFull(i.env.Stdin, b)
 	if err != nil {
 		return err
 	}
@@ -184,14 +198,14 @@ func (i *interp) stdin(_ interface{}, a []interface{}) interface{} {
 }
 
 func (i *interp) stdout(c interface{}, a []interface{}) gojq.Iter {
-	if _, err := fmt.Fprint(i.stdoutW, c); err != nil {
+	if _, err := fmt.Fprint(i.env.Stdout, c); err != nil {
 		return gojq.NewIter(err)
 	}
 	return gojq.NewIter()
 }
 
 func (i *interp) stderr(c interface{}, a []interface{}) gojq.Iter {
-	if _, err := fmt.Fprint(i.stderrW, c); err != nil {
+	if _, err := fmt.Fprint(i.env.Stderr, c); err != nil {
 		return gojq.NewIter(err)
 	}
 	return gojq.NewIter()
