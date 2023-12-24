@@ -2,8 +2,7 @@
 
 jq language server.
 
-You probably don't want to use this directly. Instead use it via:
-
+You probably want to use this via one of these:
 - [vscode-jq](https://github.com/wader/vscode-jq)
 - neovim using [nvim-lspconfig](https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md#jqls) and [mason.nvim](https://github.com/williamboman/mason.nvim)
 - Emacs using [lsp-mode](https://github.com/emacs-lsp/lsp-mode)
@@ -28,7 +27,16 @@ go build -o jq-lsp .
 # install directly
 go install github.com/wader/jq-lsp@master
 # copy binary to $PATH
-cp $(go env GOPATH)/bin/jq-lsp /usr/local/bin
+cp "$(go env GOPATH)/bin/jq-lsp" /usr/local/bin
+```
+
+### Development
+
+```sh
+# run all tests
+$ go test -v ./...
+# run with debug output
+DEBUG=1 go run main.go
 ```
 
 ### Thanks
@@ -39,19 +47,12 @@ jq-lsp uses a [fork](https://github.com/wader/gojq/tree/jq-lsp) of
 jq documentation is based on https://github.com/stedolan/jq/blob/master/docs/content/manual/manual.yml
 and is licensed under https://github.com/stedolan/jq/blob/master/COPYING
 
-### Development
-
-```sh
-URI="$PWD" tests/test.jq | DEBUG=1 go run main.go
-```
-
 ### TODO
 
 - Semantic tokens
-- Shutdown correctly?
 - Own parser or modified gojq parser to be able to recover and give more useful errors
 - Server loop and https://github.com/itchyny/gojq/issues/86
-- Warn about unused function and binding
+- Warn about unused functions and bindings
 - Better at handling broken syntax while typing
    - `$<cursor>` auto complete, add temp name?
    - `a | n<cursor> f`, add temp name?
