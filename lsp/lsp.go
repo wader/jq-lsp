@@ -67,6 +67,15 @@ func Run(env Env) error {
 	if len(env.Args) >= 2 && env.Args[1] == "--version" {
 		fmt.Fprintf(env.Stdout, "%s\n", env.Version)
 		return nil
+	} else if len(env.Args) >= 2 && env.Args[1] == "--help" {
+		fmt.Fprintf(env.Stdout, `
+jq-lsp - jq language server
+For details see https://github.com/wader/jq-lsp
+Usage: %s [OPTIONS]
+--help     Show help
+--version  Show version
+`[1:], env.Args[0])
+		return nil
 	}
 
 	i := &interp{
