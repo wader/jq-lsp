@@ -1,0 +1,68 @@
+# to test
+# docker run -ti -v "$PWD:$PWD" -w "$PWD" goreleaser/goreleaser:latest release --snapshot --rm-dist
+project_name: jq-lsp
+
+before:
+  hooks:
+    - go mod download
+
+release:
+  draft: true
+
+builds:
+  - env:
+      - CGO_ENABLED=0
+    goarch:
+      - amd64
+      - arm64
+    goos:
+      - linux
+      - windows
+      - darwin
+    flags:
+      - -trimpath
+    ldflags:
+      # omit symbol table and debug information
+      - -s -w
+      - -X main.version={{.Version}}
+      - -X main.commit={{.Commit}}
+      - -X main.date={{.CommitDate}}
+      - -X main.builtBy=goreleaser
+checksum:
+  name_template: "checksums.txt"
+
+archives:
+  - files:
+      # skip all other files
+      - none*
+    format_overrides:
+      - goos: windows
+        format: zip
+      - goos: darwin
+        format: zip
+    # name_1.2.3_linux_amd64.tar.gz
+    # name_1.2.3_macos_arm64.zip
+    name_template: >-
+      {{ .ProjectName }}_
+      {{- .Version }}_
+      {{- if eq .Os "darwin" }}macos_
+      {{- else }}{{ .Os }}_{{ end }}
+      {{- .Arch }}
+
+changelog:
+  sort: asc
+  filters:
+    exclude:
+      - "^Merge"
+
+brews:
+  - skip_upload: auto
+    repository:
+      owner: wader
+      name: homebrew-tap
+    folder: Formula
+    homepage: https://github.com/wader/jq-lsp
+    description: jq language server
+    license: MIT
+    test: |
+      system "#{bin}/jq-lsp --version"
