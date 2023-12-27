@@ -9,12 +9,11 @@ def _cond(cond; f):
   end;
 
 def debug(f):
-  _cond(
-    env.DEBUG != null;
-    ( (["DEBUG", (. | f)] | tojson)
+  ( ( (["DEBUG", (. | f)] | tojson)
     , "\n"
     | stderr
     )
+  , .
   );
 def debug: debug(.);
 
@@ -76,7 +75,7 @@ def byte_pos_to_lc($pos):
   | . as $lens
   | [ {i: 0, p: $pos}
     | while(
-        .p > 0;
+        .p >= 0;
         ( .p -= $lens[.i]
         | .i += 1
         )
@@ -798,13 +797,13 @@ def handle($state):
 def serve:
   ( . as $state
   | jsonrpc_read as $request
-  | debug({$request})
+  #| debug({$request})
   | $request
   | try handle($state)
     catch
       if (type != "object" or .response or .state | not) then error end
   | ( .response[]?
-    | debug({response: .})
+    #| debug({response: .})
     | jsonrpc_write
     )
   , .state // $state

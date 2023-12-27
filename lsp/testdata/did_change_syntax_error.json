@@ -32,7 +32,7 @@
             "params": {
                 "contentChanges": [
                     {
-                        "text": "def fn 123;"
+                        "text": "@syntax_error.jq"
                     }
                 ],
                 "textDocument": {

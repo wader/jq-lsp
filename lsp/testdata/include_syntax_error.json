@@ -32,7 +32,7 @@
             "params": {
                 "textDocument": {
                     "languageId": "plaintext",
-                    "text": "include \"valid\";",
+                    "text": "@include_syntax_error.jq",
                     "uri": "file:///include_syntax_error.jq",
                     "version": 1
                 }

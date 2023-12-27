@@ -17,6 +17,35 @@ import (
 
 var update = flag.Bool("update", false, "Update tests")
 
+// replace "@path" with content of file
+func replaceTextFile(t *testing.T, v any, readFile func(s string) ([]byte, error)) any {
+	switch v := v.(type) {
+	case []any:
+		a := make([]any, len(v))
+		for i, ve := range v {
+			a[i] = replaceTextFile(t, ve, readFile)
+		}
+		return a
+	case map[string]any:
+		a := make(map[string]any, len(v))
+		for k, ve := range v {
+			a[k] = replaceTextFile(t, ve, readFile)
+		}
+		return a
+	case string:
+		if _, path, found := strings.Cut(v, "@"); found {
+			if b, err := readFile(path); err == nil {
+				return string(b)
+			} else {
+				t.Fatal(err)
+			}
+		}
+		return v
+	default:
+		return v
+	}
+}
+
 func TestLSP(t *testing.T) {
 	difftest.TestWithOptions(t, difftest.Options{
 		Path:        "testdata",
@@ -53,7 +82,8 @@ func TestLSP(t *testing.T) {
 
 			stdinBuf := &bytes.Buffer{}
 			for _, r := range requests {
-				reqB, err := json.Marshal(&r.Request)
+				rr := replaceTextFile(t, r.Request, readFile)
+				reqB, err := json.Marshal(&rr)
 				if err != nil {
 					t.Fatal(err)
 				}

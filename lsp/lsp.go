@@ -64,6 +64,8 @@ func queryErrorPosition(v error) int {
 }
 
 func Run(env Env) error {
+	query := ""
+
 	if len(env.Args) >= 2 && env.Args[1] == "--version" {
 		fmt.Fprintf(env.Stdout, "%s\n", env.Version)
 		return nil
@@ -72,10 +74,13 @@ func Run(env Env) error {
 jq-lsp - jq language server
 For details see https://github.com/wader/jq-lsp
 Usage: %s [OPTIONS]
---help     Show help
---version  Show version
+--help         Show help
+--version      Show version
+--query QUERY  Eval query
 `[1:], env.Args[0])
 		return nil
+	} else if len(env.Args) >= 3 && env.Args[1] == "--query" {
+		query = env.Args[2]
 	}
 
 	i := &interp{
@@ -88,7 +93,12 @@ Usage: %s [OPTIONS]
 	// https://github.com/itchyny/gojq/issues/86 has been resolved
 	// TODO: could probably reuse *gojq.Code instance
 	for {
-		iter, err := i.Eval("serve", state)
+		s := "serve"
+		if query != "" {
+			s = query
+		}
+
+		iter, err := i.Eval(s, state)
 		if err != nil {
 			return err
 		}
@@ -112,8 +122,18 @@ Usage: %s [OPTIONS]
 			case [2]interface{}:
 				fmt.Fprintln(env.Stderr, v[:]...)
 			default:
-				state = v
+				if query != "" {
+					jd := json.NewEncoder(env.Stdout)
+					jd.SetIndent("", "  ")
+					jd.Encode(v)
+				} else {
+					state = v
+				}
 			}
+		}
+
+		if query != "" {
+			return nil
 		}
 	}
 }
