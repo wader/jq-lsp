@@ -32,7 +32,7 @@
             "params": {
                 "textDocument": {
                     "languageId": "plaintext",
-                    "text": "def fn: 123;",
+                    "text": "@valid.jq",
                     "uri": "file:///valid.jq",
                     "version": 1
                 }

@@ -32,8 +32,8 @@
             "params": {
                 "textDocument": {
                     "languageId": "plaintext",
-                    "text": "@syntax_error.jq",
-                    "uri": "file:///syntax_error.jq",
+                    "text": "@first_column_error_lc.jq",
+                    "uri": "file:///first_column_error_lc.jq",
                     "version": 1
                 }
             }
@@ -43,20 +43,20 @@
             "params": {
                 "diagnostics": [
                     {
-                        "message": "unexpected token 123",
+                        "message": "aaa not found",
                         "range": {
                             "end": {
-                                "character": 10,
-                                "line": 0
+                                "character": 3,
+                                "line": 1
                             },
                             "start": {
-                                "character": 10,
-                                "line": 0
+                                "character": 0,
+                                "line": 1
                             }
                         }
                     }
                 ],
-                "uri": "file:///syntax_error.jq"
+                "uri": "file:///first_column_error_lc.jq"
             }
         }
     }

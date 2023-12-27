@@ -32,7 +32,7 @@
             "params": {
                 "textDocument": {
                     "languageId": "plaintext",
-                    "text": "def fn: abc;",
+                    "text": "@not_found.jq",
                     "uri": "file:///not_found.jq",
                     "version": 1
                 }
