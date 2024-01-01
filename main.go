@@ -14,8 +14,7 @@ var version string = "dev"
 func main() {
 	defer profile.MaybeProfile()()
 
-	err := lsp.Run(lsp.Env{
-		// remove "v" in "v1.2.3"
+	if err := lsp.Run(lsp.Env{
 		Version:  version,
 		ReadFile: os.ReadFile,
 		Stdin:    os.Stdin,
@@ -23,8 +22,7 @@ func main() {
 		Stderr:   os.Stderr,
 		Args:     os.Args,
 		Environ:  os.Environ(),
-	})
-	if err != nil {
+	}); err != nil {
 		fmt.Fprintf(os.Stderr, "%s\n", err)
 		os.Exit(1)
 	}

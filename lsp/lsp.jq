@@ -210,7 +210,6 @@ def env_func_markdown:
   | join("\n")
   );
 
-
 def query_walk($uri; $start_env; f):
   def _t($start_env):
     def _pattern_env:
@@ -518,7 +517,6 @@ def handle($state):
         );
 
       if $method == "initialize" then
-
         { response: [{
             id: $id,
             result: {
@@ -562,8 +560,7 @@ def handle($state):
                 ]
             }
           },
-          {
-            method: "workspace/configuration",
+          { method: "workspace/configuration",
             params: {
                 items: [
                   {scopeURI: "resource", section: "jqlsp"}
@@ -653,7 +650,8 @@ def handle($state):
                               end: ($text | byte_pos_to_lc($err.offset))
                             },
                             message: $err.error
-                        } ]
+                          }
+                        ]
                     }
                 }]
               }
@@ -670,13 +668,13 @@ def handle($state):
             | .q.func_defs[] as $f
             | { name : ($f | func_def_signature),
                 kind: SymbolKindFunction,
-                location: {
-                  uri: $uri,
-                  range: {
-                    start: ($file.text | byte_pos_to_lc($f.name.start)),
-                    end: ($file.text | byte_pos_to_lc($f.name.stop))
-                  }
-                },
+                location:
+                  { uri: $uri,
+                    range:
+                      { start: ($file.text | byte_pos_to_lc($f.name.start)),
+                        end: ($file.text | byte_pos_to_lc($f.name.stop))
+                      }
+                  },
               }
             ]
           )
@@ -791,8 +789,6 @@ def handle($state):
       end
     )
   );
-
-# def serve: "../jqjq/jqjq.jq" | readfile | query_fromstring | query_walk(""; []; .);
 
 def serve:
   ( . as $state

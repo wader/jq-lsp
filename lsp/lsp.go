@@ -116,8 +116,6 @@ Usage: %s [OPTIONS]
 						return nil
 					}
 				}
-
-				fmt.Fprintln(env.Stderr, v)
 				return v
 			case [2]interface{}:
 				fmt.Fprintln(env.Stderr, v[:]...)
