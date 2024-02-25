@@ -41,8 +41,8 @@ go test -v ./... -update
 
 ## Thanks
 
-jq-lsp parser is a [fork](https://github.com/wader/gojq/tree/jq-lsp) of
-[itchyny](https://github.com/itchyny)'s [gojq](https://github.com/itchyny/gojq).
+jq-lsp uses a modified version of
+[itchyny](https://github.com/itchyny)'s [gojq](https://github.com/itchyny/gojq) parser.
 
 builtins documentation is based on https://github.com/stedolan/jq/blob/master/docs/content/manual/manual.yml
 and is licensed under https://github.com/stedolan/jq/blob/master/COPYING
