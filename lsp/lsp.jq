@@ -73,9 +73,10 @@ def byte_pos_to_lc($pos):
   ( split("\n")
   | map(utf8bytelength+1)
   | . as $lens
+  | length as $nr_lines
   | [ {i: 0, p: $pos}
     | while(
-        .p >= 0;
+        .p >= 0 and .i < $nr_lines;
         ( .p -= $lens[.i]
         | .i += 1
         )
