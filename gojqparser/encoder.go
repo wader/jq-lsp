@@ -15,16 +15,22 @@ import (
 // Marshal returns the jq-flavored JSON encoding of v.
 //
 // This method accepts only limited types (nil, bool, int, float64, *big.Int,
-// string, []interface{}, and map[string]interface{}) because these are the
-// possible types a gojq iterator can emit. This method marshals NaN to null,
-// truncates infinities to (+|-) math.MaxFloat64, uses \b and \f in strings,
-// and does not escape '<', '>', '&', '\u2028', and '\u2029'. These behaviors
-// are based on the marshaler of jq command, and different from json.Marshal in
-// the Go standard library. Note that the result is not safe to embed in HTML.
-func Marshal(v interface{}) ([]byte, error) {
+// string, []any, and map[string]any) because these are the possible types a
+// gojq iterator can emit. This method marshals NaN to null, truncates
+// infinities to (+|-) math.MaxFloat64, uses \b and \f in strings, and does not
+// escape '<', '>', '&', '\u2028', and '\u2029'. These behaviors are based on
+// the marshaler of jq command, and different from json.Marshal in the Go
+// standard library. Note that the result is not safe to embed in HTML.
+func Marshal(v any) ([]byte, error) {
 	var b bytes.Buffer
 	(&encoder{w: &b}).encode(v)
 	return b.Bytes(), nil
+}
+
+func jsonMarshal(v any) string {
+	var sb strings.Builder
+	(&encoder{w: &sb}).encode(v)
+	return sb.String()
 }
 
 func jsonEncodeString(sb *strings.Builder, v string) {
@@ -73,11 +79,7 @@ func (e *encoder) encodeFloat64(f float64) {
 		e.w.WriteString("null")
 		return
 	}
-	if f >= math.MaxFloat64 {
-		f = math.MaxFloat64
-	} else if f <= -math.MaxFloat64 {
-		f = -math.MaxFloat64
-	}
+	f = min(max(f, -math.MaxFloat64), math.MaxFloat64)
 	format := byte('f')
 	if x := math.Abs(f); x != 0 && x < 1e-6 || x >= 1e21 {
 		format = 'e'

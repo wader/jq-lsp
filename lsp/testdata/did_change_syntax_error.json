@@ -46,7 +46,7 @@
             "params": {
                 "diagnostics": [
                     {
-                        "message": "unexpected token 123",
+                        "message": "unexpected token \"123\"",
                         "range": {
                             "end": {
                                 "character": 10,

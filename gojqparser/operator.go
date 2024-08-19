@@ -36,7 +36,7 @@ const (
 	OpUpdateAlt
 )
 
-// OperatorFromString convert string to Operator or zero if not possible
+// String implements [fmt.Stringer].
 func OperatorFromString(s string) Operator {
 	switch s {
 	case "|":
@@ -92,7 +92,7 @@ func OperatorFromString(s string) Operator {
 	}
 }
 
-// String implements Stringer.
+// String implements [fmt.Stringer].
 func (op Operator) String() string {
 	switch op {
 	case OpPipe:
@@ -158,9 +158,8 @@ func (op Operator) MarshalJSON() ([]byte, error) {
 func (op *Operator) UnmarshalJSON(text []byte) error {
 	var s string
 	err := json.Unmarshal(text, &s)
-	if s == "" || err != nil {
-		*op = 0
-		return nil
+	if err != nil {
+		return err
 	}
 	*op = OperatorFromString(s)
 	if *op == 0 {

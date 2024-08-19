@@ -1,6 +1,6 @@
 module github.com/wader/jq-lsp
 
-go 1.18
+go 1.21
 
 require (
 	github.com/itchyny/gojq v0.12.14

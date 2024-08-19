@@ -5,7 +5,7 @@ import (
 	"fmt"
 )
 
-// TermType represents the type of Term.
+// TermType represents the type of [Term].
 type TermType int
 
 // TermType list.
@@ -32,7 +32,7 @@ const (
 	TermTypeQuery
 )
 
-// TermTypeFromString convert string to TermType or zero if not possible
+// GoString implements [fmt.GoStringer].
 func TermTypeFromString(s string) TermType {
 	switch s {
 	case "TermTypeIdentity":
@@ -80,8 +80,9 @@ func TermTypeFromString(s string) TermType {
 	}
 }
 
-// String implements Stringer.
-func (termType TermType) String() string {
+// GoString implements [fmt.GoStringer].
+func (termType TermType) GoString() (str string) {
+	defer func() { str = "gojq." + str }()
 	switch termType {
 	case TermTypeIdentity:
 		return "TermTypeIdentity"
@@ -124,7 +125,7 @@ func (termType TermType) String() string {
 	case TermTypeQuery:
 		return "TermTypeQuery"
 	default:
-		return ""
+		panic(termType)
 	}
 }
 
@@ -132,10 +133,8 @@ func (termType TermType) MarshalJSON() ([]byte, error) {
 	if termType == 0 {
 		return json.Marshal(nil)
 	}
-	if s := termType.String(); s != "" {
-		return json.Marshal(s)
-	}
-	return nil, fmt.Errorf("unknown term %v", termType)
+	// TODO: gojq. skips prefix
+	return json.Marshal(termType.GoString()[5:])
 }
 
 func (termType *TermType) UnmarshalJSON(text []byte) error {
