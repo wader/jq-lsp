@@ -7,6 +7,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"log"
 
 	"github.com/itchyny/gojq"
 	"github.com/wader/jq-lsp/gojqparser"
@@ -56,11 +57,11 @@ func (ee parseError) Error() string {
 }
 
 func queryErrorPosition(v error) int {
-	var offset int
-	if tokIf, ok := v.(interface{ Token() (string, int) }); ok { //nolint:errorlint
-		_, offset = tokIf.Token()
+	log.Printf("v: %#+v\n", v)
+	if pe, ok := v.(*gojqparser.ParseError); ok { //nolint:errorlint
+		return pe.Offset
 	}
-	return offset
+	return 0
 }
 
 func Run(env Env) error {

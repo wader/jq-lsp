@@ -346,7 +346,7 @@ def query_walk($uri; $start_env; f):
               else .key // empty
               end
             , (.key_query // empty)
-            , .val.queries[]?
+            , (.val // empty)
             )
           | _t($env)
           )

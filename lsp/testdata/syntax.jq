@@ -45,3 +45,5 @@ def reduce1: reduce 1 as $var ($var;$var);
 def reduce2($var): foreach 1 as {$var: $var2} ($var2;$var);
 
 def label1: label $out | break $out | 1;
+
+def object_val_query: {a: 1+2+3};

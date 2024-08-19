@@ -26,17 +26,15 @@
     },
     {
         "request": {
+            "id": 1,
             "jsonrpc": "2.0",
-            "method": "textDocument/didChange",
+            "method": "textDocument/didOpen",
             "params": {
-                "contentChanges": [
-                    {
-                        "text": "§"
-                    }
-                ],
                 "textDocument": {
-                    "uri": "file:///did_change_regression1.jq",
-                    "version": 2
+                    "languageId": "plaintext",
+                    "text": "@object_val_query.jq",
+                    "uri": "file:///object_val_query.jq",
+                    "version": 1
                 }
             }
         },
@@ -45,20 +43,20 @@
             "params": {
                 "diagnostics": [
                     {
-                        "message": "unexpected token \"§\"",
+                        "message": "abc not found",
                         "range": {
                             "end": {
-                                "character": 2,
+                                "character": 18,
                                 "line": 0
                             },
                             "start": {
-                                "character": 2,
+                                "character": 15,
                                 "line": 0
                             }
                         }
                     }
                 ],
-                "uri": "file:///did_change_regression1.jq"
+                "uri": "file:///object_val_query.jq"
             }
         }
     }
