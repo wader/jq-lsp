@@ -1,6 +1,8 @@
 def builtin_env:
 [{
 "$ENV/0": {"args":[],"str":"$ENV"},
+"$ARGS/0": {"args":[],"str":"$ARGS"},
+"$JQ_BUILD_CONFIGURATION/0": {"args":[],"str":"$JQ_BUILD_CONFIGURATION"},
 "$__loc__/0": {"args":[],"str":"$__loc__"},
 "IN/1": {"args":["s"],"str":"IN"},
 "IN/2": {"args":["src","s"],"str":"IN"},
