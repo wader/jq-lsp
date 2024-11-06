@@ -288,16 +288,33 @@ def query_walk($uri; $start_env; f):
       ( . #debug({import: .})
       | (.include_path.str // .import_path.str) as $path
       | .import_alias as $import_alias
-      | ($uri | uri_resolve($path)) + ".jq"
-      | . as $include_uri
-      | file_uri_to_local
-      | try
-          ( readfile
-          | query_fromstring
-          | .func_defs[]?
-          | _func_def_env($include_uri; $import_alias)
+      | (($uri | uri_resolve($path)) + ".jq") as $include_uri
+      | if $import_alias | (. == null | not) and (.str | startswith("$")) then
+          # import "f" as $name
+          ( $import_alias
+          | { (.str):
+                { str: .str
+                , start: .start
+                , stop: .stop
+                , type: "binding"
+                , uri: $uri
+                , args: []
+                }
+            }
           )
-        catch empty
+        else
+          # include "f"
+          # import "f" as name
+          try
+            ( $include_uri
+            | file_uri_to_local
+            | readfile
+            | query_fromstring
+            | .func_defs[]?
+            | _func_def_env($include_uri; $import_alias)
+            )
+          catch empty
+        end
       );
 
     def _term_traverse($env):
@@ -413,7 +430,7 @@ def query_walk($uri; $start_env; f):
         end
       );
 
-    ( # inject #include ".jq.lsp" to allow adding additional builtins
+    ( # inject #include ".jq-lsp" to allow adding additional builtins
       ( [{include_path: {str: ".jq-lsp"}}]
       | map(_import_env)
       ) as $dotjqlsp_envs
