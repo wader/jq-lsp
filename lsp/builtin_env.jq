@@ -1,9 +1,21 @@
 def builtin_env:
 [{
+
+"@text": {"args": [], "str": "@text"},
+"@json": {"args": [], "str": "@json"},
+"@html": {"args": [], "str": "@html"},
+"@uri": {"args": [], "str": "@uri"},
+"@csv": {"args": [], "str": "@csv"},
+"@tsv": {"args": [], "str": "@tsv"},
+"@sh": {"args": [], "str": "@sh"},
+"@base64": {"args": [], "str": "@base64"},
+"@base64d": {"args": [], "str": "@base64d"},
+
 "$ENV/0": {"args":[],"str":"$ENV"},
 "$ARGS/0": {"args":[],"str":"$ARGS"},
 "$JQ_BUILD_CONFIGURATION/0": {"args":[],"str":"$JQ_BUILD_CONFIGURATION"},
 "$__loc__/0": {"args":[],"str":"$__loc__"},
+
 "IN/1": {"args":["s"],"str":"IN"},
 "IN/2": {"args":["src","s"],"str":"IN"},
 "INDEX/1": {"args":["idx_expr"],"str":"INDEX"},

@@ -8,8 +8,13 @@ def _cond(cond; f):
     )
   end;
 
+def stdlog(f):
+  ( (f | stdlog)
+  , .
+  );
+
 def debug(f):
-  ( ( (["DEBUG", (. | f)] | tojson)
+  ( ( (["DEBUG", f] | tojson)
     , "\n"
     | stderr
     )
@@ -135,6 +140,7 @@ def env_iter_entries:
 
 def query_token:
   ( .term.func.name
+  // .term.format
   // .term.break
   // .name
   // if .str then . else null end
@@ -143,6 +149,7 @@ def query_token:
 def query_args:
   if .str then [] # TODO: should assume var?
   elif .term.func then (.term.func.args // [])
+  elif .term.format then []
   else null
   end;
 
@@ -168,17 +175,21 @@ def func_def_signature:
   );
 
 def func_term_name:
-  ( .term.func
-  | [ .name.str
-    , if .args and (.args | length) > 0 then
-        ( "/"
-        , (.args | length)
-        )
-      else empty
-      end
-    ]
-  | join("")
-  );
+  if .term.func then
+    ( .term.func
+    | [ .name.str
+      , if .args and (.args | length) > 0 then
+          ( "/"
+          , (.args | length)
+          )
+        else empty
+        end
+      ]
+    | join("")
+    )
+  elif .term.format then
+    .term.format.str
+  end;
 
 def env_func_name:
   ( [ .str
@@ -624,8 +635,8 @@ def handle($state):
                         uri: $doc.uri,
                         diagnostics:
                           [ $text_query
-                          | query_walk($doc.uri; builtin_env; .term.func) as {$env, $q}
-                          | ($q | query_token.str) as $name
+                          | query_walk($doc.uri; builtin_env; .term.func or .term.format) as {$env, $q}
+                          | ($q | query_token) as $token
                           | ($q | query_args) as $args
                           | if isempty(
                                 ( $env
@@ -633,7 +644,7 @@ def handle($state):
                                 | .value
                                 | select(
                                     # TODO refactor share with definition
-                                    .str == $name and
+                                    .str == $token.str and
                                     ( ( .args == null and $args == null) or
                                       ( .args != null and $args != null and
                                         (.args | length) == ($args | length)
@@ -644,8 +655,8 @@ def handle($state):
                               )
                             then
                               { range: {
-                                  start: ($text | byte_pos_to_lc($q.term.func.name.start)),
-                                  end: ($text | byte_pos_to_lc($q.term.func.name.stop))
+                                  start: ($text | byte_pos_to_lc($token.start)),
+                                  end: ($text | byte_pos_to_lc($token.stop))
                                 },
                                 message: "\($q | func_term_name) not found"
                               }
@@ -790,12 +801,18 @@ def handle($state):
         #     "uri": "file:///a"
         #   }
         # }
-        ( qe_from_params(.term.func) as {$env, $q}
+        ( qe_from_params(.term.func or .term.format) as {$env, $q}
         | $env
         | def_from_env(
-            .str == $q.term.func.name.str and
-            (.args | length) == (($q.term.func.args // []) | length) and
-            .type != "binding"
+            .type != "binding" and
+            ( ( $q.term.func and
+                .str == $q.term.func.name.str and
+                (.args | length) == (($q.term.func.args // []) | length)
+              ) or
+              ( $q.term.format and
+                .str == $q.term.format.str
+              )
+            )
           )
         | docs[env_func_name] as $doc
         | result({

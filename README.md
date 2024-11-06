@@ -18,6 +18,17 @@ It can currently do:
 - Function symbols per document.
 - Read additional builtins from  `.jq-lsp.jq`.
 
+## Own builtins and global variables using `.jq-lsp.jq`
+
+jq-lsp will automcatically include `.jq-lsp.jq` in the smae directory as the file being edited.
+
+Example `.jq-lsp.jq` file adding builtin `new_builtin` and global variable `$new_variable`:
+```jq
+# body will be ignored
+def new_builtin: empty;
+def $new_variable: empty;
+```
+
 ## Install
 
 ```sh
@@ -54,8 +65,8 @@ and is licensed under https://github.com/stedolan/jq/blob/master/COPYING
 - Server loop and https://github.com/itchyny/gojq/issues/86
 - Warn about unused functions and bindings
 - Better at handling broken syntax while typing
-   - `$<cursor>` auto complete, add temp name?
-   - `a | n<cursor> f`, add temp name?
+   - `$<cursor>`/`@<cursor>` auto complete, add temp name?
+   - `a | n<cursor> f`, add temp name/try fix syntax?
 - Transitive include behavior (jq/gojq behaves differently?)
 - Source formatting
     - Requires whitespace/comment support in lexer/parser
