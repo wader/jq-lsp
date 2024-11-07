@@ -37,9 +37,10 @@ var keywords = map[string]int{
 	"as":      tokAs,
 	"label":   tokLabel,
 	"break":   tokBreak,
-	"null":    tokNull,
-	"true":    tokTrue,
-	"false":   tokFalse,
+	// jq-lsp: don't treat as keyword, jq, jaq etc treat as idents
+	// "null":    tokNull,
+	// "true":    tokTrue,
+	// "false":   tokFalse,
 	"if":      tokIf,
 	"then":    tokThen,
 	"elif":    tokElif,

@@ -16,6 +16,10 @@ def builtin_env:
 "$JQ_BUILD_CONFIGURATION/0": {"args":[],"str":"$JQ_BUILD_CONFIGURATION"},
 "$__loc__/0": {"args":[],"str":"$__loc__"},
 
+"null/0": {"args":[],"str":"null"},
+"true/0": {"args":[],"str":"true"},
+"false/0": {"args":[],"str":"false"},
+
 "IN/1": {"args":["s"],"str":"IN"},
 "IN/2": {"args":["src","s"],"str":"IN"},
 "INDEX/1": {"args":["idx_expr"],"str":"INDEX"},

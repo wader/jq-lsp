@@ -2,7 +2,6 @@
 # partically generated using get_docs.jq
 def docs:
 {
-
   "@text/0": "Calls tostring, see that function for details.",
   "@json/0": "Serializes the input as JSON.",
   "@html/0": "Applies HTML/XML escaping, by mapping the characters <>&'\" to their entity equivalents &lt;, &gt;, &amp;, &apos;, &quot;.",
@@ -13,6 +12,10 @@ def docs:
   "@sh/0": "The input is escaped suitable for use in a command-line for a POSIX shell. If the input is an array, the output will be a series of space-separated strings.",
   "@base64/0": "The input is converted to base64 as specified by RFC 4648.",
   "@base64d/0": "The inverse of @base64, input is decoded as specified by RFC 4648. Note: If the decoded string is not UTF-8, the results are undefined.",
+
+  "null/0": "return `null` value",
+  "true/0": "return `true` value",
+  "false/0": "retrun `false` value",
 
   "IN/1": "jq provides a few SQL-style operators.\n\n* INDEX(stream; index_expression):\n\n  This builtin produces an object whose keys are computed by\n  the given index expression applied to each value from the\n  given stream.\n\n* JOIN($idx; stream; idx_expr; join_expr):\n\n  This builtin joins the values from the given stream to the\n  given index.  The index's keys are computed by applying the\n  given index expression to each value from the given stream.\n  An array of the value in the stream and the corresponding\n  value from the index is fed to the given join expression to\n  produce each result.\n\n* JOIN($idx; stream; idx_expr):\n\n  Same as `JOIN($idx; stream; idx_expr; .)`.\n\n* JOIN($idx; idx_expr):\n\n  This builtin joins the input `.` to the given index, applying\n  the given index expression to `.` to compute the index key.\n  The join operation is as described above.\n\n* IN(s):\n\n  This builtin outputs `true` if `.` appears in the given\n  stream, otherwise it outputs `false`.\n\n* IN(source; s):\n\n  This builtin outputs `true` if any value in the source stream\n  appears in the second stream, otherwise it outputs `false`.",
   "IN/2": "jq provides a few SQL-style operators.\n\n* INDEX(stream; index_expression):\n\n  This builtin produces an object whose keys are computed by\n  the given index expression applied to each value from the\n  given stream.\n\n* JOIN($idx; stream; idx_expr; join_expr):\n\n  This builtin joins the values from the given stream to the\n  given index.  The index's keys are computed by applying the\n  given index expression to each value from the given stream.\n  An array of the value in the stream and the corresponding\n  value from the index is fed to the given join expression to\n  produce each result.\n\n* JOIN($idx; stream; idx_expr):\n\n  Same as `JOIN($idx; stream; idx_expr; .)`.\n\n* JOIN($idx; idx_expr):\n\n  This builtin joins the input `.` to the given index, applying\n  the given index expression to `.` to compute the index key.\n  The join operation is as described above.\n\n* IN(s):\n\n  This builtin outputs `true` if `.` appears in the given\n  stream, otherwise it outputs `false`.\n\n* IN(source; s):\n\n  This builtin outputs `true` if any value in the source stream\n  appears in the second stream, otherwise it outputs `false`.",
