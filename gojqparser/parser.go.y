@@ -28,6 +28,7 @@ func prependFuncDef(xs []*FuncDef, x *FuncDef) []*FuncDef {
 %type<value> objectkeyvals objectkeyval objectval
 %type<value> constterm constobject constobjectkeyvals constobjectkeyval constarray constarrayelems
 %type<token> tokIdentVariable tokIdentModuleIdent tokVariableModuleVariable tokKeyword objectkey
+%type<token> tokIdentVariableFormat
 %token<operator> tokAltOp tokUpdateOp tokDestAltOp tokCompareOp
 %token<token> tokOrOp tokAndOp tokModule tokImport tokInclude tokDef tokAs tokLabel tokBreak
 %token<token> tokNull tokTrue tokFalse
@@ -117,11 +118,11 @@ funcdefs
     }
 
 funcdef
-    : tokDef tokIdent ':' query ';'
+    : tokDef tokIdentVariableFormat ':' query ';'
     {
         $$ = &FuncDef{Name: $2, Body: $4.(*Query)}
     }
-    | tokDef tokIdent '(' funcargs ')' ':' query ';'
+    | tokDef tokIdentVariableFormat '(' funcargs ')' ':' query ';'
     {
         $$ = &FuncDef{$2, $4.([]*Token), $7.(*Query)}
     }
@@ -139,6 +140,11 @@ funcargs
 tokIdentVariable
     : tokIdent
     | tokVariable
+
+tokIdentVariableFormat
+    : tokIdent
+    | tokVariable
+    | tokFormat
 
 query
     : funcdef query %prec tokFuncDefQuery

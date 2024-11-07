@@ -7,6 +7,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"log"
 
 	"github.com/itchyny/gojq"
 	"github.com/wader/jq-lsp/gojqparser"
@@ -173,6 +174,7 @@ func (i *interp) Eval(src string, c interface{}) (gojq.Iter, error) {
 	compilerOpts = append(compilerOpts, gojq.WithFunction("stdin", 0, 1, i.stdin))
 	compilerOpts = append(compilerOpts, gojq.WithIterFunction("stdout", 0, 0, i.stdout))
 	compilerOpts = append(compilerOpts, gojq.WithIterFunction("stderr", 0, 0, i.stderr))
+	compilerOpts = append(compilerOpts, gojq.WithIterFunction("stdlog", 0, 0, i.stdlog))
 	compilerOpts = append(compilerOpts, gojq.WithFunction("query_fromstring", 0, 0, i.queryFromString))
 	compilerOpts = append(compilerOpts, gojq.WithFunction("query_tostring", 0, 0, i.queryToString))
 
@@ -234,6 +236,11 @@ func (i *interp) stderr(c interface{}, a []interface{}) gojq.Iter {
 	if _, err := fmt.Fprint(i.env.Stderr, c); err != nil {
 		return gojq.NewIter(err)
 	}
+	return gojq.NewIter()
+}
+
+func (i *interp) stdlog(c interface{}, a []interface{}) gojq.Iter {
+	log.Println(c)
 	return gojq.NewIter()
 }
 

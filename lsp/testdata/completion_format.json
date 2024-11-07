@@ -28,50 +28,29 @@
         "request": {
             "id": 1,
             "jsonrpc": "2.0",
-            "method": "textDocument/hover",
+            "method": "textDocument/completion",
             "params": {
-                "context": {
-                    "triggerKind": 1
-                },
                 "position": {
-                    "character": 5,
-                    "line": 6
-                },
-                "textDocument": {
-                    "uri": "file:///hover.jq"
-                }
-            }
-        },
-        "response": {
-            "id": 1,
-            "result": {
-                "contents": "```jq\ndef fn:\n```"
-            }
-        }
-    },
-    {
-        "request": {
-            "id": 1,
-            "jsonrpc": "2.0",
-            "method": "textDocument/hover",
-            "params": {
-                "context": {
-                    "triggerKind": 1
-                },
-                "position": {
-                    "character": 5,
+                    "character": 6,
                     "line": 7
                 },
                 "textDocument": {
-                    "uri": "file:///hover.jq"
+                    "uri": "file:///completion.jq"
                 }
             }
         },
         "response": {
             "id": 1,
-            "result": {
-                "contents": "```jq\ndef fn2(a):\n```"
-            }
+            "result": [
+                {
+                    "documentation": {
+                        "kind": "markdown",
+                        "value": "```jq\ndef @html:\n```\nApplies HTML/XML escaping, by mapping the characters \u003c\u003e\u0026'\" to their entity equivalents \u0026lt;, \u0026gt;, \u0026amp;, \u0026apos;, \u0026quot;."
+                    },
+                    "kind": 3,
+                    "label": "@html"
+                }
+            ]
         }
     }
 ]

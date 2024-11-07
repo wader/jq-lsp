@@ -28,49 +28,35 @@
         "request": {
             "id": 1,
             "jsonrpc": "2.0",
-            "method": "textDocument/hover",
+            "method": "textDocument/didOpen",
             "params": {
-                "context": {
-                    "triggerKind": 1
-                },
-                "position": {
-                    "character": 5,
-                    "line": 6
-                },
                 "textDocument": {
-                    "uri": "file:///hover.jq"
+                    "languageId": "plaintext",
+                    "text": "@at_func.jq",
+                    "uri": "file:///at_func.jq",
+                    "version": 1
                 }
             }
         },
         "response": {
-            "id": 1,
-            "result": {
-                "contents": "```jq\ndef fn:\n```"
-            }
-        }
-    },
-    {
-        "request": {
-            "id": 1,
-            "jsonrpc": "2.0",
-            "method": "textDocument/hover",
+            "method": "textDocument/publishDiagnostics",
             "params": {
-                "context": {
-                    "triggerKind": 1
-                },
-                "position": {
-                    "character": 5,
-                    "line": 7
-                },
-                "textDocument": {
-                    "uri": "file:///hover.jq"
-                }
-            }
-        },
-        "response": {
-            "id": 1,
-            "result": {
-                "contents": "```jq\ndef fn2(a):\n```"
+                "diagnostics": [
+                    {
+                        "message": "@missing_format not found",
+                        "range": {
+                            "end": {
+                                "character": 17,
+                                "line": 14
+                            },
+                            "start": {
+                                "character": 2,
+                                "line": 14
+                            }
+                        }
+                    }
+                ],
+                "uri": "file:///at_func.jq"
             }
         }
     }

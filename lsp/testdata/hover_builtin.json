@@ -35,7 +35,7 @@
                 },
                 "position": {
                     "character": 5,
-                    "line": 5
+                    "line": 4
                 },
                 "textDocument": {
                     "uri": "file:///hover.jq"
@@ -45,7 +45,7 @@
         "response": {
             "id": 1,
             "result": {
-                "contents": "```jq\ndef fn:\n```"
+                "contents": "```jq\ndef fromjson:\n```\nThe `tojson` and `fromjson` builtins dump values as JSON texts\nor parse JSON texts into values, respectively.  The `tojson`\nbuiltin differs from `tostring` in that `tostring` returns strings\nunmodified, while `tojson` encodes strings as JSON strings."
             }
         }
     },
@@ -60,7 +60,7 @@
                 },
                 "position": {
                     "character": 5,
-                    "line": 6
+                    "line": 5
                 },
                 "textDocument": {
                     "uri": "file:///hover.jq"
@@ -70,7 +70,7 @@
         "response": {
             "id": 1,
             "result": {
-                "contents": "```jq\ndef fn2(a):\n```"
+                "contents": "```jq\ndef @sh:\n```\nThe input is escaped suitable for use in a command-line for a POSIX shell. If the input is an array, the output will be a series of space-separated strings."
             }
         }
     }
