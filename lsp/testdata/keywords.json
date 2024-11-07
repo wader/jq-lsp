@@ -1,0 +1,49 @@
+[
+    {
+        "request": {
+            "id": 0,
+            "jsonrpc": "2.0",
+            "method": "initialize"
+        },
+        "response": {
+            "id": 0,
+            "result": {
+                "capabilities": {
+                    "completionProvider": {},
+                    "definitionProvider": true,
+                    "documentSymbolProvider": true,
+                    "hoverProvider": true,
+                    "publishDiagnostics": {},
+                    "textDocumentSync": 1,
+                    "workspace": {
+                        "workspaceFolders": {
+                            "supported": true
+                        }
+                    }
+                }
+            }
+        }
+    },
+    {
+        "request": {
+            "id": 1,
+            "jsonrpc": "2.0",
+            "method": "textDocument/didOpen",
+            "params": {
+                "textDocument": {
+                    "languageId": "plaintext",
+                    "text": "@keywords.jq",
+                    "uri": "file:///keywords.jq",
+                    "version": 1
+                }
+            }
+        },
+        "response": {
+            "method": "textDocument/publishDiagnostics",
+            "params": {
+                "diagnostics": [],
+                "uri": "file:///keywords.jq"
+            }
+        }
+    }
+]
