@@ -297,9 +297,36 @@ def query_walk($uri; $start_env; f):
       # TODO: import failure
       # TODO: transitive include, max depth
       ( . #debug({import: .})
-      | (.include_path.str // .import_path.str) as $path
+      | [ (.include_path.str // .import_path.str) as $path
+        | if .meta.keyvals then
+            # [key: {str: "a"}, val: {str: "b"}] => {a: [b]}
+            # [key: {str: "a"}, val: [{array: {elems: [{str: "b"}]}}] => {a: [b]}
+            ( .meta.keyvals
+            | map(
+                ( .key = .key.str
+                | .value =
+                    ( .val
+                    | if .str then [.str.str]
+                      else
+                        ( .array.elems
+                        | map(.str.str)
+                        )
+                      end
+                    )
+                )
+              )
+            # {search: ["a","b"]} => "a/path", "b/path
+            | from_entries
+            | .search[]?
+            | "\(.)/\($path)"
+            )
+          else $path
+          end
+        ] as $paths
       | .import_alias as $import_alias
-      | (($uri | uri_resolve($path)) + ".jq") as $include_uri
+      | [ $paths[] as $path
+        | ($uri | uri_resolve($path)) + ".jq"
+        ] as $include_uris
       | if $import_alias | (. == null | not) and (.str | startswith("$")) then
           # import "f" as $name
           ( $import_alias
@@ -314,17 +341,24 @@ def query_walk($uri; $start_env; f):
             }
           )
         else
-          # include "f"
-          # import "f" as name
-          try
-            ( $include_uri
-            | file_uri_to_local
-            | readfile
-            | query_fromstring
-            | .func_defs[]?
-            | _func_def_env($include_uri; $import_alias)
-            )
-          catch empty
+          ( first(
+              # include "f"
+              # include "f" {search: "path"}
+              # import "f" as name
+              # import "f" as name {search: "path"}
+              ( $include_uris[]
+              | try
+                  ( . as $include_uri
+                  | file_uri_to_local
+                  | readfile
+                  | [query_fromstring, $include_uri]
+                  )
+                catch empty
+              )
+            ) as [$query, $uri]
+          | $query.func_defs[]?
+          | _func_def_env($uri; $import_alias)
+          )
         end
       );
 
