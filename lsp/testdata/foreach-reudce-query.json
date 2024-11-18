@@ -1,0 +1,170 @@
+[
+    {
+        "request": {
+            "id": 0,
+            "jsonrpc": "2.0",
+            "method": "initialize"
+        },
+        "response": {
+            "id": 0,
+            "result": {
+                "capabilities": {
+                    "completionProvider": {},
+                    "definitionProvider": true,
+                    "documentSymbolProvider": true,
+                    "hoverProvider": true,
+                    "publishDiagnostics": {},
+                    "textDocumentSync": 1,
+                    "workspace": {
+                        "workspaceFolders": {
+                            "supported": true
+                        }
+                    }
+                }
+            }
+        }
+    },
+    {
+        "request": {
+            "id": 1,
+            "jsonrpc": "2.0",
+            "method": "textDocument/didChange",
+            "params": {
+                "contentChanges": [
+                    {
+                        "text": "@foreach-reduce-query.jq"
+                    }
+                ],
+                "textDocument": {
+                    "uri": "file:///foreach-reduce-query.jq",
+                    "version": 2
+                }
+            }
+        },
+        "response": {
+            "method": "textDocument/publishDiagnostics",
+            "params": {
+                "diagnostics": [
+                    {
+                        "message": "$missins not found",
+                        "range": {
+                            "end": {
+                                "character": 12,
+                                "line": 1
+                            },
+                            "start": {
+                                "character": 4,
+                                "line": 1
+                            }
+                        }
+                    },
+                    {
+                        "message": "$var not found",
+                        "range": {
+                            "end": {
+                                "character": 8,
+                                "line": 2
+                            },
+                            "start": {
+                                "character": 4,
+                                "line": 2
+                            }
+                        }
+                    },
+                    {
+                        "message": "$also not found",
+                        "range": {
+                            "end": {
+                                "character": 9,
+                                "line": 5
+                            },
+                            "start": {
+                                "character": 4,
+                                "line": 5
+                            }
+                        }
+                    },
+                    {
+                        "message": "$not not found",
+                        "range": {
+                            "end": {
+                                "character": 8,
+                                "line": 6
+                            },
+                            "start": {
+                                "character": 4,
+                                "line": 6
+                            }
+                        }
+                    },
+                    {
+                        "message": "$defined not found",
+                        "range": {
+                            "end": {
+                                "character": 12,
+                                "line": 7
+                            },
+                            "start": {
+                                "character": 4,
+                                "line": 7
+                            }
+                        }
+                    },
+                    {
+                        "message": "$missins not found",
+                        "range": {
+                            "end": {
+                                "character": 12,
+                                "line": 10
+                            },
+                            "start": {
+                                "character": 4,
+                                "line": 10
+                            }
+                        }
+                    },
+                    {
+                        "message": "$var not found",
+                        "range": {
+                            "end": {
+                                "character": 8,
+                                "line": 11
+                            },
+                            "start": {
+                                "character": 4,
+                                "line": 11
+                            }
+                        }
+                    },
+                    {
+                        "message": "$also not found",
+                        "range": {
+                            "end": {
+                                "character": 9,
+                                "line": 13
+                            },
+                            "start": {
+                                "character": 4,
+                                "line": 13
+                            }
+                        }
+                    },
+                    {
+                        "message": "$not not found",
+                        "range": {
+                            "end": {
+                                "character": 8,
+                                "line": 14
+                            },
+                            "start": {
+                                "character": 4,
+                                "line": 14
+                            }
+                        }
+                    }
+                ],
+                "uri": "file:///foreach-reduce-query.jq"
+            }
+        }
+    }
+]

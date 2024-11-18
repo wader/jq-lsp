@@ -432,7 +432,7 @@ def query_walk($uri; $start_env; f):
           | ( .reduce.pattern
             | _pattern_traverse($env)
             )
-          , ( .reduce # TODO: correct?
+          , ( .reduce.query
             , .reduce.start
             , .reduce.update
             | _t($env + $penv)
@@ -445,7 +445,7 @@ def query_walk($uri; $start_env; f):
           | ( .foreach.pattern
             | _pattern_traverse($env)
             )
-          , ( .foreach # TODO: correct?
+          , ( .foreach.query
             , .foreach.start
             , .foreach.update
             , .foreach.extract
