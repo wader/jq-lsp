@@ -16,18 +16,7 @@ It can currently do:
 - Hover definition of function.
 - Hover documentation for builtin.
 - Function symbols per document.
-- Read additional builtins from  `.jq-lsp.jq`.
-
-## Own builtins and global variables using `.jq-lsp.jq`
-
-jq-lsp will automcatically include `.jq-lsp.jq` in the smae directory as the file being edited.
-
-Example `.jq-lsp.jq` file adding builtin `new_builtin` and global variable `$new_variable`:
-```jq
-# body will be ignored
-def new_builtin: empty;
-def $new_variable: empty;
-```
+- Additional builtins using  `.jq-lsp.jq`.
 
 ## Install
 
@@ -39,6 +28,17 @@ cp "$(go env GOPATH)/bin/jq-lsp" /usr/local/bin
 
 # build binary from cloned repo
 go build -o jq-lsp .
+```
+
+## Additional builtins using `.jq-lsp.jq`
+
+You can make jq-lsp aware of additional builtin function and variables by using a `.jq-lsp.jq` file. The file is normal jq file and will be included automatically in each file.
+
+For example this `.jq-lsp.jq` file adds function `fetch` and the variable `$OPTIONS`:
+```jq
+# body will be ignored so can be any valid jq
+def fetch: empty;
+def $OPTIONS: empty;
 ```
 
 ## Development
@@ -60,6 +60,7 @@ and is licensed under https://github.com/stedolan/jq/blob/master/COPYING
 
 ## TODO and ideas
 
+- Signature help
 - Semantic tokens
 - Own parser or modified gojq parser to be able to recover and give more useful errors
 - Server loop and https://github.com/itchyny/gojq/issues/86
