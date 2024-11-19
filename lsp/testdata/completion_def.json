@@ -95,10 +95,10 @@
                         "kind": "markdown",
                         "value": "```jq\ndef fromstream(f):\n```\nOutputs values corresponding to the stream expression's\noutputs."
                     },
-                    "insertText": "fromstream($1)",
+                    "insertText": "fromstream($0)",
                     "insertTextFormat": 2,
                     "kind": 3,
-                    "label": "fromstream/1"
+                    "label": "fromstream(f)"
                 }
             ]
         }
