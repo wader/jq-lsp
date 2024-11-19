@@ -767,8 +767,8 @@ def handle($state):
             | select(.str | startswith($prefix))
             | . as $func
             | if .args and (.args | length) > 0 then
-                { label: "\(.str)/\(.args | length)",
-                  insertText: "\(.str)($1)",
+                { label: env_func_signature,
+                  insertText: "\(.str)($0)",
                   insertTextFormat: TextFormatSnippet,
                 }
               else
