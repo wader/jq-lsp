@@ -43,15 +43,600 @@
             "params": {
                 "diagnostics": [
                     {
-                        "message": "abc not found",
+                        "message": "a not found",
                         "range": {
                             "end": {
-                                "character": 11,
+                                "character": 9,
                                 "line": 0
                             },
                             "start": {
                                 "character": 8,
                                 "line": 0
+                            }
+                        }
+                    },
+                    {
+                        "message": "a not found",
+                        "range": {
+                            "end": {
+                                "character": 12,
+                                "line": 1
+                            },
+                            "start": {
+                                "character": 11,
+                                "line": 1
+                            }
+                        }
+                    },
+                    {
+                        "message": "a not found",
+                        "range": {
+                            "end": {
+                                "character": 15,
+                                "line": 1
+                            },
+                            "start": {
+                                "character": 14,
+                                "line": 1
+                            }
+                        }
+                    },
+                    {
+                        "message": "a/2 not found",
+                        "range": {
+                            "end": {
+                                "character": 10,
+                                "line": 1
+                            },
+                            "start": {
+                                "character": 9,
+                                "line": 1
+                            }
+                        }
+                    },
+                    {
+                        "message": "a not found",
+                        "range": {
+                            "end": {
+                                "character": 12,
+                                "line": 2
+                            },
+                            "start": {
+                                "character": 11,
+                                "line": 2
+                            }
+                        }
+                    },
+                    {
+                        "message": "a not found",
+                        "range": {
+                            "end": {
+                                "character": 16,
+                                "line": 2
+                            },
+                            "start": {
+                                "character": 15,
+                                "line": 2
+                            }
+                        }
+                    },
+                    {
+                        "message": "a not found",
+                        "range": {
+                            "end": {
+                                "character": 15,
+                                "line": 3
+                            },
+                            "start": {
+                                "character": 14,
+                                "line": 3
+                            }
+                        }
+                    },
+                    {
+                        "message": "a not found",
+                        "range": {
+                            "end": {
+                                "character": 11,
+                                "line": 4
+                            },
+                            "start": {
+                                "character": 10,
+                                "line": 4
+                            }
+                        }
+                    },
+                    {
+                        "message": "a not found",
+                        "range": {
+                            "end": {
+                                "character": 15,
+                                "line": 4
+                            },
+                            "start": {
+                                "character": 14,
+                                "line": 4
+                            }
+                        }
+                    },
+                    {
+                        "message": "a not found",
+                        "range": {
+                            "end": {
+                                "character": 12,
+                                "line": 5
+                            },
+                            "start": {
+                                "character": 11,
+                                "line": 5
+                            }
+                        }
+                    },
+                    {
+                        "message": "a not found",
+                        "range": {
+                            "end": {
+                                "character": 15,
+                                "line": 5
+                            },
+                            "start": {
+                                "character": 14,
+                                "line": 5
+                            }
+                        }
+                    },
+                    {
+                        "message": "a not found",
+                        "range": {
+                            "end": {
+                                "character": 20,
+                                "line": 6
+                            },
+                            "start": {
+                                "character": 19,
+                                "line": 6
+                            }
+                        }
+                    },
+                    {
+                        "message": "a not found",
+                        "range": {
+                            "end": {
+                                "character": 10,
+                                "line": 6
+                            },
+                            "start": {
+                                "character": 9,
+                                "line": 6
+                            }
+                        }
+                    },
+                    {
+                        "message": "a not found",
+                        "range": {
+                            "end": {
+                                "character": 13,
+                                "line": 7
+                            },
+                            "start": {
+                                "character": 12,
+                                "line": 7
+                            }
+                        }
+                    },
+                    {
+                        "message": "a not found",
+                        "range": {
+                            "end": {
+                                "character": 13,
+                                "line": 8
+                            },
+                            "start": {
+                                "character": 12,
+                                "line": 8
+                            }
+                        }
+                    },
+                    {
+                        "message": "a not found",
+                        "range": {
+                            "end": {
+                                "character": 16,
+                                "line": 8
+                            },
+                            "start": {
+                                "character": 15,
+                                "line": 8
+                            }
+                        }
+                    },
+                    {
+                        "message": "a not found",
+                        "range": {
+                            "end": {
+                                "character": 17,
+                                "line": 9
+                            },
+                            "start": {
+                                "character": 16,
+                                "line": 9
+                            }
+                        }
+                    },
+                    {
+                        "message": "a not found",
+                        "range": {
+                            "end": {
+                                "character": 23,
+                                "line": 9
+                            },
+                            "start": {
+                                "character": 22,
+                                "line": 9
+                            }
+                        }
+                    },
+                    {
+                        "message": "a not found",
+                        "range": {
+                            "end": {
+                                "character": 27,
+                                "line": 9
+                            },
+                            "start": {
+                                "character": 26,
+                                "line": 9
+                            }
+                        }
+                    },
+                    {
+                        "message": "$a not found",
+                        "range": {
+                            "end": {
+                                "character": 33,
+                                "line": 9
+                            },
+                            "start": {
+                                "character": 31,
+                                "line": 9
+                            }
+                        }
+                    },
+                    {
+                        "message": "a not found",
+                        "range": {
+                            "end": {
+                                "character": 13,
+                                "line": 10
+                            },
+                            "start": {
+                                "character": 12,
+                                "line": 10
+                            }
+                        }
+                    },
+                    {
+                        "message": "a not found",
+                        "range": {
+                            "end": {
+                                "character": 20,
+                                "line": 10
+                            },
+                            "start": {
+                                "character": 19,
+                                "line": 10
+                            }
+                        }
+                    },
+                    {
+                        "message": "a not found",
+                        "range": {
+                            "end": {
+                                "character": 14,
+                                "line": 11
+                            },
+                            "start": {
+                                "character": 13,
+                                "line": 11
+                            }
+                        }
+                    },
+                    {
+                        "message": "a not found",
+                        "range": {
+                            "end": {
+                                "character": 21,
+                                "line": 11
+                            },
+                            "start": {
+                                "character": 20,
+                                "line": 11
+                            }
+                        }
+                    },
+                    {
+                        "message": "a not found",
+                        "range": {
+                            "end": {
+                                "character": 28,
+                                "line": 11
+                            },
+                            "start": {
+                                "character": 27,
+                                "line": 11
+                            }
+                        }
+                    },
+                    {
+                        "message": "a not found",
+                        "range": {
+                            "end": {
+                                "character": 14,
+                                "line": 12
+                            },
+                            "start": {
+                                "character": 13,
+                                "line": 12
+                            }
+                        }
+                    },
+                    {
+                        "message": "a not found",
+                        "range": {
+                            "end": {
+                                "character": 21,
+                                "line": 12
+                            },
+                            "start": {
+                                "character": 20,
+                                "line": 12
+                            }
+                        }
+                    },
+                    {
+                        "message": "a not found",
+                        "range": {
+                            "end": {
+                                "character": 28,
+                                "line": 12
+                            },
+                            "start": {
+                                "character": 27,
+                                "line": 12
+                            }
+                        }
+                    },
+                    {
+                        "message": "a not found",
+                        "range": {
+                            "end": {
+                                "character": 35,
+                                "line": 12
+                            },
+                            "start": {
+                                "character": 34,
+                                "line": 12
+                            }
+                        }
+                    },
+                    {
+                        "message": "a not found",
+                        "range": {
+                            "end": {
+                                "character": 42,
+                                "line": 12
+                            },
+                            "start": {
+                                "character": 41,
+                                "line": 12
+                            }
+                        }
+                    },
+                    {
+                        "message": "a not found",
+                        "range": {
+                            "end": {
+                                "character": 15,
+                                "line": 13
+                            },
+                            "start": {
+                                "character": 14,
+                                "line": 13
+                            }
+                        }
+                    },
+                    {
+                        "message": "a not found",
+                        "range": {
+                            "end": {
+                                "character": 22,
+                                "line": 13
+                            },
+                            "start": {
+                                "character": 21,
+                                "line": 13
+                            }
+                        }
+                    },
+                    {
+                        "message": "a not found",
+                        "range": {
+                            "end": {
+                                "character": 30,
+                                "line": 13
+                            },
+                            "start": {
+                                "character": 29,
+                                "line": 13
+                            }
+                        }
+                    },
+                    {
+                        "message": "a not found",
+                        "range": {
+                            "end": {
+                                "character": 33,
+                                "line": 13
+                            },
+                            "start": {
+                                "character": 32,
+                                "line": 13
+                            }
+                        }
+                    },
+                    {
+                        "message": "a not found",
+                        "range": {
+                            "end": {
+                                "character": 21,
+                                "line": 14
+                            },
+                            "start": {
+                                "character": 20,
+                                "line": 14
+                            }
+                        }
+                    },
+                    {
+                        "message": "a not found",
+                        "range": {
+                            "end": {
+                                "character": 30,
+                                "line": 14
+                            },
+                            "start": {
+                                "character": 29,
+                                "line": 14
+                            }
+                        }
+                    },
+                    {
+                        "message": "a not found",
+                        "range": {
+                            "end": {
+                                "character": 33,
+                                "line": 14
+                            },
+                            "start": {
+                                "character": 32,
+                                "line": 14
+                            }
+                        }
+                    },
+                    {
+                        "message": "a not found",
+                        "range": {
+                            "end": {
+                                "character": 23,
+                                "line": 15
+                            },
+                            "start": {
+                                "character": 22,
+                                "line": 15
+                            }
+                        }
+                    },
+                    {
+                        "message": "a not found",
+                        "range": {
+                            "end": {
+                                "character": 32,
+                                "line": 15
+                            },
+                            "start": {
+                                "character": 31,
+                                "line": 15
+                            }
+                        }
+                    },
+                    {
+                        "message": "a not found",
+                        "range": {
+                            "end": {
+                                "character": 35,
+                                "line": 15
+                            },
+                            "start": {
+                                "character": 34,
+                                "line": 15
+                            }
+                        }
+                    },
+                    {
+                        "message": "a not found",
+                        "range": {
+                            "end": {
+                                "character": 24,
+                                "line": 16
+                            },
+                            "start": {
+                                "character": 23,
+                                "line": 16
+                            }
+                        }
+                    },
+                    {
+                        "message": "a not found",
+                        "range": {
+                            "end": {
+                                "character": 33,
+                                "line": 16
+                            },
+                            "start": {
+                                "character": 32,
+                                "line": 16
+                            }
+                        }
+                    },
+                    {
+                        "message": "a not found",
+                        "range": {
+                            "end": {
+                                "character": 36,
+                                "line": 16
+                            },
+                            "start": {
+                                "character": 35,
+                                "line": 16
+                            }
+                        }
+                    },
+                    {
+                        "message": "a not found",
+                        "range": {
+                            "end": {
+                                "character": 39,
+                                "line": 16
+                            },
+                            "start": {
+                                "character": 38,
+                                "line": 16
+                            }
+                        }
+                    },
+                    {
+                        "message": "a not found",
+                        "range": {
+                            "end": {
+                                "character": 16,
+                                "line": 17
+                            },
+                            "start": {
+                                "character": 15,
+                                "line": 17
+                            }
+                        }
+                    },
+                    {
+                        "message": "a not found",
+                        "range": {
+                            "end": {
+                                "character": 24,
+                                "line": 18
+                            },
+                            "start": {
+                                "character": 23,
+                                "line": 18
                             }
                         }
                     }
