@@ -5,12 +5,12 @@ jq language server.
 You probably want to use this via one of these:
 - [vscode-jq](https://github.com/wader/vscode-jq)
 - neovim using [nvim-lspconfig](https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md#jqls) and [mason.nvim](https://github.com/williamboman/mason.nvim)
-- Emacs using [lsp-mode](https://github.com/emacs-lsp/lsp-mode)
+- [Emacs lsp-mode](https://github.com/emacs-lsp/lsp-mode)
 
 It can currently do:
 - Syntax checking.
-- Error on missing function or binding.
-- Goto definition of function or binding.
+- Error on missing function and binding.
+- Goto definition of function and binding.
 - Auto complete function and binding.
 - Include/Import support.
 - Hover definition of function.
@@ -21,8 +21,11 @@ It can currently do:
 ## Install
 
 ```sh
-# install directly
+# install latest release
+go install github.com/wader/jq-lsp@lateast
+# install master
 go install github.com/wader/jq-lsp@master
+
 # copy binary to $PATH
 cp "$(go env GOPATH)/bin/jq-lsp" /usr/local/bin
 
