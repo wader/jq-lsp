@@ -22,7 +22,7 @@ It can currently do:
 
 ```sh
 # install latest release
-go install github.com/wader/jq-lsp@lateast
+go install github.com/wader/jq-lsp@latest
 # install master
 go install github.com/wader/jq-lsp@master
 
@@ -35,13 +35,13 @@ go build -o jq-lsp .
 
 ## Additional builtins using `.jq-lsp.jq`
 
-You can make jq-lsp aware of additional builtin function and variables by using a `.jq-lsp.jq` file. The file is normal jq file and will be included automatically in each file.
+To make jq-lsp aware of additional builtin function and variables you can use a `.jq-lsp.jq` file. The file is a normal jq file that is included automatically in each file.
 
-For example this `.jq-lsp.jq` file adds function `fetch` and the variable `$OPTIONS`:
+This `.jq-lsp.jq` file add a function `fetch` and the variable `$OPTIONS`:
 ```jq
-# body will be ignored so can be any valid jq
-def fetch: empty;
-def $OPTIONS: empty;
+# function body is ignored but has to be valid jq
+def fetch: empty;    # adds function fetch/0
+def $OPTIONS: empty; # adds variable $OPTIONS
 ```
 
 ## Development
