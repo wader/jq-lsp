@@ -170,6 +170,7 @@ func (i *interp) Compile(src string) (*gojq.Code, error) {
 	compilerOpts = append(compilerOpts, gojq.WithIterFunction("stderr", 0, 0, i.stderr))
 	compilerOpts = append(compilerOpts, gojq.WithIterFunction("stdlog", 0, 0, i.stdlog))
 	compilerOpts = append(compilerOpts, gojq.WithFunction("query_fromstring", 0, 0, i.queryFromString))
+	compilerOpts = append(compilerOpts, gojq.WithFunction("tokens_fromstring", 0, 0, i.tokensFromString))
 	compilerOpts = append(compilerOpts, gojq.WithFunction("query_tostring", 0, 0, i.queryToString))
 	compilerOpts = append(compilerOpts, gojq.WithIterFunction("eval", 1, 1, i.eval))
 
@@ -244,7 +245,7 @@ func (i *interp) queryFromString(c any, a []any) any {
 	if err != nil {
 		return err
 	}
-	q, err := gojqparser.Parse(s)
+	q, _, err := gojqparser.Parse(s)
 	if err != nil {
 		offset := queryErrorPosition(err)
 		return parseError{
@@ -264,6 +265,30 @@ func (i *interp) queryFromString(c any, a []any) any {
 	}
 
 	return v
+}
+
+func (i *interp) tokensFromString(c any, a []any) any {
+	s, err := toString(c)
+	if err != nil {
+		return err
+	}
+
+	_, l, err := gojqparser.Parse(s)
+	if err != nil {
+		return err
+	}
+
+	var ss []any
+	for _, st := range l.Symbols() {
+		ss = append(ss, map[string]any{
+			"str":   st.Str,
+			"token": st.Name,
+			"start": st.Start,
+			"stop":  st.Stop,
+		})
+	}
+
+	return ss
 }
 
 func (i *interp) queryToString(c any, a []any) any {
