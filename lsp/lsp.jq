@@ -131,6 +131,76 @@ def SymbolKindEvent: 24;
 def SymbolKindOperator: 25;
 def SymbolKindTypeParameter: 26;
 
+def SemanticTokenTypeNamespace: "namespace";
+def SemanticTokenTypeType: "type";
+def SemanticTokenTypeClass: "class";
+def SemanticTokenTypeEnum: "enum";
+def SemanticTokenTypeInterface: "interface";
+def SemanticTokenTypeStruct: "struct";
+def SemanticTokenTypeTypeParameter: "typeParameter";
+def SemanticTokenTypeParameter: "parameter";
+def SemanticTokenTypeVariable: "variable";
+def SemanticTokenTypeProperty: "property";
+def SemanticTokenTypeEnumMember: "enumMember";
+def SemanticTokenTypeEvent: "event";
+def SemanticTokenTypeFunction: "function";
+def SemanticTokenTypeMethod: "method";
+def SemanticTokenTypeMacro: "macro";
+def SemanticTokenTypeKeyword: "keyword";
+def SemanticTokenTypeModifier: "modifier";
+def SemanticTokenTypeComment: "comment";
+def SemanticTokenTypeString: "string";
+def SemanticTokenTypeNumber: "number";
+def SemanticTokenTypeRegexp: "regexp";
+def SemanticTokenTypeOperator: "operator";
+def SemanticTokenTypeDecorator: "decorator";
+
+def SemanticTokenTypeNamespaceNr: 0;
+def SemanticTokenTypeTypeNr: 1;
+def SemanticTokenTypeClassNr: 2;
+def SemanticTokenTypeEnumNr: 3;
+def SemanticTokenTypeInterfaceNr: 4;
+def SemanticTokenTypeStructNr: 5;
+def SemanticTokenTypeTypeParameterNr: 6;
+def SemanticTokenTypeParameterNr: 7;
+def SemanticTokenTypeVariableNr: 8;
+def SemanticTokenTypePropertyNr: 9;
+def SemanticTokenTypeEnumMemberNr: 10;
+def SemanticTokenTypeEventNr: 11;
+def SemanticTokenTypeFunctionNr: 12;
+def SemanticTokenTypeMethodNr: 13;
+def SemanticTokenTypeMacroNr: 14;
+def SemanticTokenTypeKeywordNr: 15;
+def SemanticTokenTypeModifierNr: 16;
+def SemanticTokenTypeCommentNr: 17;
+def SemanticTokenTypeStringNr: 18;
+def SemanticTokenTypeNumberNr: 19;
+def SemanticTokenTypeRegexpNr: 20;
+def SemanticTokenTypeOperatorNr: 21;
+def SemanticTokenTypeDecoratorNr: 22;
+
+def SemanticTokenModifierDeclaration: "declaration";
+def SemanticTokenModifierDefinition: "definition";
+def SemanticTokenModifierReadonly: "readonly";
+def SemanticTokenModifierStatic: "static";
+def SemanticTokenModifierDeprecated: "deprecated";
+def SemanticTokenModifierAbstract: "abstract";
+def SemanticTokenModifierAsync: "async";
+def SemanticTokenModifierModification: "modification";
+def SemanticTokenModifierDocumentation: "documentation";
+def SemanticTokenModifierDefaultLibrary: "defaultLibrary";
+
+def SemanticTokenModifierDeclarationBit: 1;
+def SemanticTokenModifierDefinitionBit: 2;
+def SemanticTokenModifierReadonlyBit: 4;
+def SemanticTokenModifierStaticBit: 8;
+def SemanticTokenModifierDeprecatedBit: 16;
+def SemanticTokenModifierAbstractBit: 32;
+def SemanticTokenModifierAsyncBit: 64;
+def SemanticTokenModifierModificationBit: 128;
+def SemanticTokenModifierDocumentationBit: 256;
+def SemanticTokenModifierDefaultLibraryBit: 512;
+
 def env_iter_entries:
   ( reverse
   | .[]
@@ -600,6 +670,48 @@ def handle($state):
                     supported: true,
                     # changeNotifications: true
                   }
+                },
+                semanticTokensProvider: {
+                  legend: {
+                    tokenTypes: [
+                      SemanticTokenTypeNamespace,
+                      SemanticTokenTypeType,
+                      SemanticTokenTypeClass,
+                      SemanticTokenTypeEnum,
+                      SemanticTokenTypeInterface,
+                      SemanticTokenTypeStruct,
+                      SemanticTokenTypeTypeParameter,
+                      SemanticTokenTypeParameter,
+                      SemanticTokenTypeVariable,
+                      SemanticTokenTypeProperty,
+                      SemanticTokenTypeEnumMember,
+                      SemanticTokenTypeEvent,
+                      SemanticTokenTypeFunction,
+                      SemanticTokenTypeMethod,
+                      SemanticTokenTypeMacro,
+                      SemanticTokenTypeKeyword,
+                      SemanticTokenTypeModifier,
+                      SemanticTokenTypeComment,
+                      SemanticTokenTypeString,
+                      SemanticTokenTypeNumber,
+                      SemanticTokenTypeRegexp,
+                      SemanticTokenTypeOperator,
+                      SemanticTokenTypeDecorator
+                    ],
+                    tokenModifiers: [
+                      SemanticTokenModifierDeclaration,
+                      SemanticTokenModifierDefinition,
+                      SemanticTokenModifierReadonly,
+                      SemanticTokenModifierStatic,
+                      SemanticTokenModifierDeprecated,
+                      SemanticTokenModifierAbstract,
+                      SemanticTokenModifierAsync,
+                      SemanticTokenModifierModification,
+                      SemanticTokenModifierDocumentation,
+                      SemanticTokenModifierDefaultLibrary
+                    ]
+                  },
+                  full: true
                 }
               }
             }
