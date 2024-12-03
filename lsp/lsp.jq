@@ -965,6 +965,41 @@ def handle($state):
           contents: env_func_markdown
           })
         )
+      elif $method == "textDocument/semanticTokens/full" then
+         # "params": {"textDocument":{"uri":"file:///a"}}
+        ( $params.textDocument.uri as $uri
+        | _readfile_uri($state; $uri) as $file
+        | if $file == null then null_result end
+        | result(
+            { data:
+                [ $file.query
+                | query_walk($uri; []; true)
+                | .q
+                | select(.term.func)
+                | debug
+                | .term.func as $t
+                # line, startChar, length, tokenType, tokenModifiers
+                | (( $file.text | byte_pos_to_lc($t.name.start)) | .line, .character)
+                  , ($t.name.stop - $t.name.start)
+                  , SemanticTokenTypeFunctionNr
+                  , 0
+                # | .q.func_defs[] as $f
+                # | { name : ($f | func_def_signature),
+                #     kind: SymbolKindFunction,
+                #     location:
+                #       { uri: $uri,
+                #         range:
+                #           { start: ($file.text | byte_pos_to_lc($f.name.start)),
+                #             end: ($file.text | byte_pos_to_lc($f.name.stop))
+                #           }
+                #       },
+                #   }
+                ]
+            }
+            | debug
+            # TODO: just traverse, no env
+          )
+        )
       else
         null
       end
@@ -974,7 +1009,7 @@ def handle($state):
 def serve:
   ( . as $state
   | jsonrpc_read as $request
-  #| debug({$request})
+  | debug({$request})
   | $request
   | try handle($state)
     catch
