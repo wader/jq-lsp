@@ -3,16 +3,20 @@ package main
 import (
 	"fmt"
 	"os"
+	"runtime/debug"
 
 	"github.com/wader/jq-lsp/lsp"
 	"github.com/wader/jq-lsp/profile"
 )
 
-// set by release build
-var version string = "dev"
+var version string = "unknown"
 
 func main() {
 	defer profile.MaybeProfile()()
+
+	if bi, ok := debug.ReadBuildInfo(); ok {
+		version = bi.Main.Version
+	}
 
 	if err := lsp.Run(lsp.Env{
 		Version:  version,
