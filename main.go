@@ -9,13 +9,15 @@ import (
 	"github.com/wader/jq-lsp/profile"
 )
 
-var version string = "unknown"
+var version string
 
 func main() {
 	defer profile.MaybeProfile()()
 
-	if bi, ok := debug.ReadBuildInfo(); ok {
-		version = bi.Main.Version
+	if version == "" {
+		if bi, ok := debug.ReadBuildInfo(); ok {
+			version = bi.Main.Version
+		}
 	}
 
 	if err := lsp.Run(lsp.Env{
