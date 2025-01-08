@@ -4,7 +4,7 @@ jq language server.
 
 You probably want to use this via one of these:
 - [vscode-jq](https://github.com/wader/vscode-jq)
-- neovim using [nvim-lspconfig](https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md#jqls) and [mason.nvim](https://github.com/williamboman/mason.nvim)
+- neovim using [nvim-lspconfig](https://github.com/neovim/nvim-lspconfig/blob/master/doc/configs.md#jqls) and [mason.nvim](https://github.com/williamboman/mason.nvim)
 - [Emacs lsp-mode](https://github.com/emacs-lsp/lsp-mode)
 - [helix](https://github.com/helix-editor/helix) (only in master)
 
