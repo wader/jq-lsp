@@ -619,7 +619,7 @@ def handle($state):
                         { "language": "jq" }
                       ]
                     }
-			            }
+                  }
                 ]
             }
           },
