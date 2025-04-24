@@ -64,7 +64,8 @@ func queryErrorPosition(v error) int {
 }
 
 func Run(env Env) error {
-	query := ""
+	query := "serve"
+	hasQueryArg := false
 
 	if len(env.Args) >= 2 && env.Args[1] == "--version" {
 		fmt.Fprintf(env.Stdout, "%s\n", env.Version)
@@ -81,6 +82,7 @@ Usage: %s [OPTIONS]
 		return nil
 	} else if len(env.Args) >= 3 && env.Args[1] == "--query" {
 		query = env.Args[2]
+		hasQueryArg = true
 	}
 
 	i := &interp{
@@ -89,19 +91,16 @@ Usage: %s [OPTIONS]
 
 	var state interface{}
 
-	// TODO: currently the main serve loop is done in go until
-	// https://github.com/itchyny/gojq/issues/86 has been resolved
-	// TODO: could probably reuse *gojq.Code instance
-	for {
-		s := "serve"
-		if query != "" {
-			s = query
-		}
+	gc, err := i.Compile(query)
+	if err != nil {
+		return err
+	}
 
-		iter, err := i.Eval(s, state)
-		if err != nil {
-			return err
-		}
+	for {
+		// TODO: currently the main serve loop is done in go until
+		// https://github.com/itchyny/gojq/issues/86 has been resolved
+		iter := gc.RunWithContext(context.Background(), state)
+
 		for {
 			v, ok := iter.Next()
 			if !ok {
@@ -120,7 +119,7 @@ Usage: %s [OPTIONS]
 			case [2]interface{}:
 				fmt.Fprintln(env.Stderr, v[:]...)
 			default:
-				if query != "" {
+				if hasQueryArg {
 					jd := json.NewEncoder(env.Stdout)
 					jd.SetIndent("", "  ")
 					jd.Encode(v)
@@ -130,13 +129,13 @@ Usage: %s [OPTIONS]
 			}
 		}
 
-		if query != "" {
+		if hasQueryArg {
 			return nil
 		}
 	}
 }
 
-func (i *interp) Eval(src string, c interface{}) (gojq.Iter, error) {
+func (i *interp) Compile(src string) (*gojq.Code, error) {
 	gq, err := gojq.Parse(src)
 	if err != nil {
 		return nil, err
@@ -183,7 +182,7 @@ func (i *interp) Eval(src string, c interface{}) (gojq.Iter, error) {
 		return nil, err
 	}
 
-	return gc.RunWithContext(context.Background(), c), nil
+	return gc, nil
 }
 
 func (i *interp) readFile(c interface{}, a []interface{}) interface{} {
