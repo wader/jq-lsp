@@ -5,6 +5,7 @@ def builtin_env:
 "@json": {"args": [], "str": "@json"},
 "@html": {"args": [], "str": "@html"},
 "@uri": {"args": [], "str": "@uri"},
+"@urid": {"args": [], "str": "@urid"},
 "@csv": {"args": [], "str": "@csv"},
 "@tsv": {"args": [], "str": "@tsv"},
 "@sh": {"args": [], "str": "@sh"},

@@ -7,6 +7,7 @@ def @own_format: 123;
 , @json
 , @html
 , @uri
+, @urid
 , @csv
 , @tsv
 , @sh
