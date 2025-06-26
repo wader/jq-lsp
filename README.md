@@ -6,18 +6,18 @@ You probably want to use this via one of these:
 - [vscode-jq](https://github.com/wader/vscode-jq)
 - neovim using [nvim-lspconfig](https://github.com/neovim/nvim-lspconfig/blob/master/doc/configs.md#jqls) and [mason.nvim](https://github.com/williamboman/mason.nvim)
 - [Emacs lsp-mode](https://github.com/emacs-lsp/lsp-mode)
-- [helix](https://github.com/helix-editor/helix) (only in master)
+- [helix](https://github.com/helix-editor/helix) (since 25.01)
 
 It can currently do:
-- Syntax checking.
-- Error on missing function and binding.
-- Goto definition of function and binding.
-- Auto complete function and binding.
-- Include/Import support.
-- Hover definition of function.
-- Hover documentation for builtin.
-- Function symbols per document.
-- Additional builtins using  `.jq-lsp.jq`.
+- Syntax checking
+- Error on missing function and binding
+- Goto definition of function and binding
+- Auto complete function and binding
+- Include/Import support
+- Hover definition of function
+- Hover documentation for builtin
+- Function symbols per document
+- Additional builtins using  `.jq-lsp.jq`
 
 ## Install
 
