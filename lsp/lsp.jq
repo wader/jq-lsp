@@ -551,12 +551,13 @@ def handle($state):
             result: f
           }]
         };
-      def qe_from_params(f):
+      def qe_from_params(f; $pos_delta):
         ( $params.textDocument.uri as $uri
         | $params.position as $pos
         | _readfile_uri($state; $uri) as $def_file
         | if ($def_file | not) then null_result end
-        | ($def_file.text | lc_to_byte_pos($pos.line; $pos.character)) as $file_pos
+        | ($def_file.text | lc_to_byte_pos($pos.line; $pos.character) + $pos_delta) as $file_pos
+        | debug({$file_pos})
         | ( $def_file.query
           | first(query_walk(
               $uri;
@@ -570,14 +571,10 @@ def handle($state):
           )
         );
       def def_from_env(f):
-        ( ( first(
-              ( env_iter_entries
-              | select(.value | f)
-              )
-            ) // null_result
-          )
+        ( env_iter_entries
+        | select(.value | f)
         | .value
-        );
+        ) // null_result;
 
       if $method == "initialize" then
         { response: [{
@@ -595,6 +592,9 @@ def handle($state):
                 hoverProvider: true,
                 publishDiagnostics: {},
                 documentSymbolProvider: true,
+                signatureHelpProvider: {
+                  triggerCharacters: ["("]
+                },
                 workspace: {
                   workspaceFolders: {
                     supported: true,
@@ -758,8 +758,9 @@ def handle($state):
         #     "uri": "file:///a/b/c.jq",
         #   }
         # }
-        ( qe_from_params(true) as {$env, $q}
+        ( qe_from_params(true; 0) as {$env, $q}
         | ($q | query_token.str) as $prefix
+        | debug({$q})
         | result(
             [ $env
             | env_iter_entries
@@ -770,6 +771,10 @@ def handle($state):
                 { label: env_func_signature,
                   insertText: "\(.str)($0)",
                   insertTextFormat: TextFormatSnippet,
+                  # command:
+                  #   { title: "signature"
+                  #   , command: "editor.action.triggerParameterHints",
+                  #   }
                 }
               else
                 {label: .str}
@@ -800,20 +805,22 @@ def handle($state):
         #     "uri": "file:///Users/wader/src/test/lsp-test/test.jq"
         #   }
         # }
-        ( qe_from_params(true) as {$env, $q}
+        ( qe_from_params(true; 0) as {$env, $q}
         | ($q | query_token.str) as $name
         | ($q | query_args) as $args
         | $env
-        | def_from_env(
-            .str == $name and
-            ( ( .args == null and $args == null) or
-              ( .args != null and $args != null and
-                (.args | length) == ($args | length)
-              )
-            ) and
-            .start and
-            .stop and
-            .uri
+        | first(
+            def_from_env(
+              .str == $name and
+              ( ( .args == null and $args == null) or
+                ( .args != null and $args != null and
+                  (.args | length) == ($args | length)
+                )
+              ) and
+              .start and
+              .stop and
+              .uri
+            )
           ) as $def
         | _readfile_uri($state; $def.uri) as $def_file
         | if ($def_file | not) then null_result end
@@ -835,23 +842,59 @@ def handle($state):
         #     "uri": "file:///a"
         #   }
         # }
-        ( qe_from_params(.term.func or .term.format) as {$env, $q}
+        ( qe_from_params(.term.func or .term.format; 0) as {$env, $q}
         | $env
-        | def_from_env(
-            .type != "binding" and
-            ( ( $q.term.func and
-                .str == $q.term.func.name.str and
-                (.args | length) == (($q.term.func.args // []) | length)
-              ) or
-              ( $q.term.format and
-                .str == $q.term.format.str
+        | first(
+            def_from_env(
+              .type != "binding" and
+              ( ( $q.term.func and
+                  .str == $q.term.func.name.str and
+                  (.args | length) == (($q.term.func.args // []) | length)
+                ) or
+                ( $q.term.format and
+                  .str == $q.term.format.str
+                )
               )
             )
           )
-        | docs[env_func_name] as $doc
         | result({
-          contents: env_func_markdown
+            contents: env_func_markdown
           })
+        )
+      elif $method == "textDocument/signatureHelp" then
+        # "params": {
+        #   "context": {
+        #     "isRetrigger": false,
+        #     "triggerCharacter": "(",
+        #     "triggerKind": 2
+        #   },
+        #   "position": {
+        #     "character": 7,
+        #     "line": 1
+        #   },
+        #   "textDocument": {
+        #     "uri": "file:///a"
+        #   }
+        # }
+        ( debug({signatureHelp:.})
+        | qe_from_params(.term.func; -1) as {$env, $q}
+        | debug({$q})
+        | result({
+            signatures:
+              [ $env
+              | def_from_env(
+                  .str == $q.term.func.name.str and
+                  .type != "binding"
+                )
+              | { label: env_func_signature,
+                  documentation: {
+                    value: env_func_markdown,
+                    kind: MarkupKindsMarkdown
+                  }
+                }
+              ]
+          })
+        | debug({res: .})
         )
       else
         null
