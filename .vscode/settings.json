@@ -9,12 +9,17 @@
         "fdenvs",
         "fromjson",
         "fromstring",
+        "gojq",
+        "gojqparser",
         "gsub",
+        "interp",
         "labelenv",
         "println",
         "readline",
         "rtrimstr",
-        "tonumber"
+        "stdlog",
+        "tonumber",
+        "tostring"
     ],
     "go.lintTool": "golangci-lint",
     "files.trimTrailingWhitespace": true,

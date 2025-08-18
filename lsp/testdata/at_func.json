@@ -20,6 +20,10 @@
                             "supported": true
                         }
                     }
+                },
+                "serverInfo": {
+                    "name": "jq-lsp",
+                    "version": "test-version"
                 }
             }
         }

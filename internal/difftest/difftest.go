@@ -22,8 +22,8 @@ import (
 
 type tf interface {
 	Helper()
-	Errorf(format string, args ...interface{})
-	Fatalf(format string, args ...interface{})
+	Errorf(format string, args ...any)
+	Fatalf(format string, args ...any)
 }
 
 const green = "\x1b[32m"
@@ -40,7 +40,7 @@ type Options struct {
 	Fn          Fn
 }
 
-func testDeepEqual(t tf, color bool, printfFn func(format string, args ...interface{}), expected string, actual string) {
+func testDeepEqual(t tf, color bool, printfFn func(format string, args ...any), expected string, actual string) {
 	t.Helper()
 
 	diff := difflib.UnifiedDiff{

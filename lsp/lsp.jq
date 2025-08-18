@@ -527,7 +527,7 @@ def query_walk($uri; $start_env; f):
   _t($start_env);
 
 
-def handle($state):
+def handle($state; $config):
   def _readfile_uri($state; $uri):
     ( $state.files[$uri]
     | if (. | not) then
@@ -583,6 +583,10 @@ def handle($state):
         { response: [{
             id: $id,
             result: {
+              serverInfo: {
+                name: $config.name,
+                version: $config.version,
+              },
               capabilities: {
                 textDocumentSync: TextDocumentSyncFull,
                 definitionProvider: true,
@@ -860,18 +864,18 @@ def handle($state):
   );
 
 def serve:
-  ( . as $state
+  ( . as {$state, $config}
   | jsonrpc_read as $request
   #| debug({$request})
   | $request
-  | try handle($state)
+  | try handle($state; $config)
     catch
       if (type != "object" or .response or .state | not) then error end
   | ( .response[]?
     #| debug({response: .})
     | jsonrpc_write
     )
-  , .state // $state
+  , .state //= $state
   #| debug({state: .})
   );
 
