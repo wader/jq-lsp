@@ -89,7 +89,12 @@ Usage: %s [OPTIONS]
 		env: env,
 	}
 
-	var state interface{}
+	var state any = map[string]any{
+		"config": map[string]any{
+			"name":    "jq-lsp",
+			"version": env.Version,
+		},
+	}
 
 	gc, err := i.Compile(query)
 	if err != nil {
