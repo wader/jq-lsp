@@ -121,13 +121,13 @@ Usage: %s [OPTIONS]
 					}
 				}
 				return v
-			case [2]interface{}:
+			case [2]any:
 				fmt.Fprintln(env.Stderr, v[:]...)
 			default:
 				if hasQueryArg {
 					jd := json.NewEncoder(env.Stdout)
 					jd.SetIndent("", "  ")
-					jd.Encode(v)
+					_ = jd.Encode(v)
 				} else {
 					state = v
 				}
