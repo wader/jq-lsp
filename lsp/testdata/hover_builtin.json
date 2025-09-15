@@ -7,6 +7,7 @@
         },
         "response": {
             "id": 0,
+            "jsonrpc": "2.0",
             "result": {
                 "capabilities": {
                     "completionProvider": {},
@@ -48,6 +49,7 @@
         },
         "response": {
             "id": 1,
+            "jsonrpc": "2.0",
             "result": {
                 "contents": "```jq\ndef fromjson:\n```\nThe `tojson` and `fromjson` builtins dump values as JSON texts\nor parse JSON texts into values, respectively.  The `tojson`\nbuiltin differs from `tostring` in that `tostring` returns strings\nunmodified, while `tojson` encodes strings as JSON strings."
             }
@@ -73,6 +75,7 @@
         },
         "response": {
             "id": 1,
+            "jsonrpc": "2.0",
             "result": {
                 "contents": "```jq\ndef @sh:\n```\nThe input is escaped suitable for use in a command-line for a POSIX shell. If the input is an array, the output will be a series of space-separated strings."
             }

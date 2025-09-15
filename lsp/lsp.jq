@@ -58,7 +58,9 @@ def jsonrpc_read:
   );
 
 def jsonrpc_write:
-  ( tojson
+  ( ( .jsonrpc = "2.0"
+    | tojson
+    )
   | ["Content-Length: \(utf8bytelength)\r\n\r\n", .]
   | join("")
   | stdout
@@ -854,7 +856,7 @@ def handle($state; $config):
           )
         | docs[env_func_name] as $doc
         | result({
-          contents: env_func_markdown
+            contents: env_func_markdown
           })
         )
       else
@@ -872,7 +874,6 @@ def serve:
     catch
       if (type != "object" or .response or .state | not) then error end
   | ( .response[]?
-    #| debug({response: .})
     | jsonrpc_write
     )
   , .state //= $state
