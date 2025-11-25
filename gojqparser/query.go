@@ -25,9 +25,9 @@ type Query struct {
 	FuncDefs []*FuncDef   `json:"func_defs,omitempty"`
 	Term     *Term        `json:"term,omitempty"`
 	Left     *Query       `json:"left,omitempty"`
-	Op       Operator     `json:"op,omitempty"`
 	Right    *Query       `json:"right,omitempty"`
-	Func     *Token       `json:"func,omitempty"`
+	Patterns []*Pattern   `json:"patterns,omitempty"`
+	Op       Operator     `json:"op,omitempty"`
 }
 
 func (e *Query) String() string {
@@ -49,19 +49,24 @@ func (e *Query) writeTo(s *strings.Builder) {
 		fd.writeTo(s)
 		s.WriteByte(' ')
 	}
-	if e.Func.Str != "" {
-		s.WriteString(e.Func.Str)
-	} else if e.Term != nil {
+	if e.Term != nil {
 		e.Term.writeTo(s)
 	} else if e.Right != nil {
 		e.Left.writeTo(s)
-		if e.Op == OpComma {
-			s.WriteString(", ")
-		} else {
-			s.WriteByte(' ')
-			s.WriteString(e.Op.String())
+		if e.Op != OpComma {
 			s.WriteByte(' ')
 		}
+		for i, p := range e.Patterns {
+			if i == 0 {
+				s.WriteString("as ")
+			} else {
+				s.WriteString("?// ")
+			}
+			p.writeTo(s)
+			s.WriteByte(' ')
+		}
+		s.WriteString(e.Op.String())
+		s.WriteByte(' ')
 		e.Right.writeTo(s)
 	}
 }
@@ -478,7 +483,6 @@ type Suffix struct {
 	Index    *Index `json:"index,omitempty"`
 	Iter     bool   `json:"iter,omitempty"`
 	Optional bool   `json:"optional,omitempty"`
-	Bind     *Bind  `json:"bind,omitempty"`
 }
 
 func (e *Suffix) String() string {
@@ -498,37 +502,7 @@ func (e *Suffix) writeTo(s *strings.Builder) {
 		s.WriteString("[]")
 	} else if e.Optional {
 		s.WriteByte('?')
-	} else if e.Bind != nil {
-		e.Bind.writeTo(s)
 	}
-}
-
-// Bind ...
-type Bind struct {
-	Patterns []*Pattern `json:"patterns,omitempty"`
-	Body     *Query     `json:"body,omitempty"`
-}
-
-func (e *Bind) String() string {
-	var s strings.Builder
-	e.writeTo(&s)
-	return s.String()
-}
-
-func (e *Bind) writeTo(s *strings.Builder) {
-	for i, p := range e.Patterns {
-		if i == 0 {
-			s.WriteString(" as ")
-			p.writeTo(s)
-			s.WriteByte(' ')
-		} else {
-			s.WriteString("?// ")
-			p.writeTo(s)
-			s.WriteByte(' ')
-		}
-	}
-	s.WriteString("| ")
-	e.Body.writeTo(s)
 }
 
 // If ...

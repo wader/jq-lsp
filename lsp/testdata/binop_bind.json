@@ -1,0 +1,108 @@
+[
+    {
+        "request": {
+            "id": 0,
+            "jsonrpc": "2.0",
+            "method": "initialize"
+        },
+        "response": {
+            "id": 0,
+            "jsonrpc": "2.0",
+            "result": {
+                "capabilities": {
+                    "completionProvider": {},
+                    "definitionProvider": true,
+                    "documentSymbolProvider": true,
+                    "hoverProvider": true,
+                    "publishDiagnostics": {},
+                    "textDocumentSync": 1,
+                    "workspace": {
+                        "workspaceFolders": {
+                            "supported": true
+                        }
+                    }
+                },
+                "serverInfo": {
+                    "name": "jq-lsp",
+                    "version": "test-version"
+                }
+            }
+        }
+    },
+    {
+        "request": {
+            "id": 1,
+            "jsonrpc": "2.0",
+            "method": "textDocument/didOpen",
+            "params": {
+                "textDocument": {
+                    "languageId": "plaintext",
+                    "text": "@binop_bind.jq",
+                    "uri": "file:///binop_bind.jq",
+                    "version": 1
+                }
+            }
+        },
+        "response": {
+            "jsonrpc": "2.0",
+            "method": "textDocument/publishDiagnostics",
+            "params": {
+                "diagnostics": [
+                    {
+                        "message": "$x1 not found",
+                        "range": {
+                            "end": {
+                                "character": 15,
+                                "line": 1
+                            },
+                            "start": {
+                                "character": 12,
+                                "line": 1
+                            }
+                        }
+                    },
+                    {
+                        "message": "$x2 not found",
+                        "range": {
+                            "end": {
+                                "character": 28,
+                                "line": 1
+                            },
+                            "start": {
+                                "character": 25,
+                                "line": 1
+                            }
+                        }
+                    },
+                    {
+                        "message": "$x1 not found",
+                        "range": {
+                            "end": {
+                                "character": 19,
+                                "line": 3
+                            },
+                            "start": {
+                                "character": 16,
+                                "line": 3
+                            }
+                        }
+                    },
+                    {
+                        "message": "$x2 not found",
+                        "range": {
+                            "end": {
+                                "character": 32,
+                                "line": 3
+                            },
+                            "start": {
+                                "character": 29,
+                                "line": 3
+                            }
+                        }
+                    }
+                ],
+                "uri": "file:///binop_bind.jq"
+            }
+        }
+    }
+]
