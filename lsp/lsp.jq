@@ -366,21 +366,7 @@ def query_walk($uri; $start_env; f):
 
     def _term_traverse($env):
       ( if .suffix_list then
-          ( .suffix_list[]
-          | if .bind then
-              ( ( (.bind.patterns // [])
-                | map(_pattern_env)
-                ) as $bindenvs
-              | ( .bind.patterns[]?
-                | _pattern_traverse($env + $bindenvs)
-                )
-              , ( .bind.body
-                | _t($env + $bindenvs)
-                )
-              )
-            else empty
-            end
-          , if .index then
+          ( if .index then
               ( .index.str.queries[]?
               , (.index.start // empty)
               , (.index.end // empty)
@@ -512,9 +498,11 @@ def query_walk($uri; $start_env; f):
       else empty
       end
     , if .op then
-        ( .left
-        , .right
-        | _t($env)
+        ( (.left | _t($env))
+        , ( ((.patterns // []) | map(_pattern_env)) as $bindenvs
+          | (.patterns[]? | _pattern_traverse($env))
+          , (.right |_t($env + $bindenvs))
+          )
         )
       elif .term then
         ( .term
