@@ -847,6 +847,8 @@ def handle($state; $config):
             contents: env_func_markdown
           })
         )
+      elif $method == "_internal/dump" then
+        result({$state, $config})
       else
         null
       end
@@ -864,7 +866,9 @@ def serve:
   | ( .response[]?
     | jsonrpc_write
     )
-  , .state //= $state
+  , ( .config = $config
+    | .state //= $state
+    )
   );
 
 def main: loop(serve);

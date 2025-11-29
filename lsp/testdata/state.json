@@ -1,0 +1,432 @@
+[
+    {
+        "request": {
+            "id": 0,
+            "jsonrpc": "2.0",
+            "method": "initialize"
+        },
+        "response": {
+            "id": 0,
+            "jsonrpc": "2.0",
+            "result": {
+                "capabilities": {
+                    "completionProvider": {},
+                    "definitionProvider": true,
+                    "documentSymbolProvider": true,
+                    "hoverProvider": true,
+                    "publishDiagnostics": {},
+                    "textDocumentSync": 1,
+                    "workspace": {
+                        "workspaceFolders": {
+                            "supported": true
+                        }
+                    }
+                },
+                "serverInfo": {
+                    "name": "jq-lsp",
+                    "version": "test-version"
+                }
+            }
+        }
+    },
+    {
+        "request": {
+            "id": 1,
+            "jsonrpc": "2.0",
+            "method": "textDocument/didOpen",
+            "params": {
+                "textDocument": {
+                    "languageId": "plaintext",
+                    "text": "@valid.jq",
+                    "uri": "file:///valid.jq",
+                    "version": 1
+                }
+            }
+        },
+        "response": {
+            "jsonrpc": "2.0",
+            "method": "textDocument/publishDiagnostics",
+            "params": {
+                "diagnostics": [],
+                "uri": "file:///valid.jq"
+            }
+        }
+    },
+    {
+        "request": {
+            "id": 1,
+            "jsonrpc": "2.0",
+            "method": "_internal/dump",
+            "params": {
+                "textDocument": {
+                    "languageId": "plaintext",
+                    "text": "@valid.jq",
+                    "uri": "file:///valid.jq",
+                    "version": 1
+                }
+            }
+        },
+        "response": {
+            "id": 1,
+            "jsonrpc": "2.0",
+            "result": {
+                "config": {
+                    "name": "jq-lsp",
+                    "version": "test-version"
+                },
+                "state": {
+                    "files": {
+                        "file:///valid.jq": {
+                            "query": {
+                                "func_defs": [
+                                    {
+                                        "body": {
+                                            "term": {
+                                                "number": {
+                                                    "start": 8,
+                                                    "stop": 11,
+                                                    "str": "123"
+                                                },
+                                                "type": "TermTypeNumber"
+                                            }
+                                        },
+                                        "name": {
+                                            "start": 4,
+                                            "stop": 6,
+                                            "str": "fn"
+                                        }
+                                    },
+                                    {
+                                        "body": {
+                                            "func_defs": [
+                                                {
+                                                    "body": {
+                                                        "term": {
+                                                            "func": {
+                                                                "name": {
+                                                                    "start": 36,
+                                                                    "stop": 40,
+                                                                    "str": "null"
+                                                                }
+                                                            },
+                                                            "type": "TermTypeFunc"
+                                                        }
+                                                    },
+                                                    "name": {
+                                                        "start": 30,
+                                                        "stop": 34,
+                                                        "str": "_fn2"
+                                                    }
+                                                }
+                                            ],
+                                            "term": {
+                                                "number": {
+                                                    "start": 46,
+                                                    "stop": 49,
+                                                    "str": "123"
+                                                },
+                                                "type": "TermTypeNumber"
+                                            }
+                                        },
+                                        "name": {
+                                            "start": 17,
+                                            "stop": 20,
+                                            "str": "fn2"
+                                        }
+                                    }
+                                ]
+                            },
+                            "text": "def fn: 123;\ndef fn2:\n    def _fn2: null;\n    123;\n"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    {
+        "request": {
+            "id": 1,
+            "jsonrpc": "2.0",
+            "method": "textDocument/didOpen",
+            "params": {
+                "textDocument": {
+                    "languageId": "plaintext",
+                    "text": "@valid.jq",
+                    "uri": "file:///valid.jq",
+                    "version": 1
+                }
+            }
+        },
+        "response": {
+            "jsonrpc": "2.0",
+            "method": "textDocument/publishDiagnostics",
+            "params": {
+                "diagnostics": [],
+                "uri": "file:///valid.jq"
+            }
+        }
+    },
+    {
+        "request": {
+            "id": 1,
+            "jsonrpc": "2.0",
+            "method": "_internal/dump",
+            "params": {
+                "textDocument": {
+                    "languageId": "plaintext",
+                    "text": "@valid.jq",
+                    "uri": "file:///valid.jq",
+                    "version": 1
+                }
+            }
+        },
+        "response": {
+            "id": 1,
+            "jsonrpc": "2.0",
+            "result": {
+                "config": {
+                    "name": "jq-lsp",
+                    "version": "test-version"
+                },
+                "state": {
+                    "files": {
+                        "file:///valid.jq": {
+                            "query": {
+                                "func_defs": [
+                                    {
+                                        "body": {
+                                            "term": {
+                                                "number": {
+                                                    "start": 8,
+                                                    "stop": 11,
+                                                    "str": "123"
+                                                },
+                                                "type": "TermTypeNumber"
+                                            }
+                                        },
+                                        "name": {
+                                            "start": 4,
+                                            "stop": 6,
+                                            "str": "fn"
+                                        }
+                                    },
+                                    {
+                                        "body": {
+                                            "func_defs": [
+                                                {
+                                                    "body": {
+                                                        "term": {
+                                                            "func": {
+                                                                "name": {
+                                                                    "start": 36,
+                                                                    "stop": 40,
+                                                                    "str": "null"
+                                                                }
+                                                            },
+                                                            "type": "TermTypeFunc"
+                                                        }
+                                                    },
+                                                    "name": {
+                                                        "start": 30,
+                                                        "stop": 34,
+                                                        "str": "_fn2"
+                                                    }
+                                                }
+                                            ],
+                                            "term": {
+                                                "number": {
+                                                    "start": 46,
+                                                    "stop": 49,
+                                                    "str": "123"
+                                                },
+                                                "type": "TermTypeNumber"
+                                            }
+                                        },
+                                        "name": {
+                                            "start": 17,
+                                            "stop": 20,
+                                            "str": "fn2"
+                                        }
+                                    }
+                                ]
+                            },
+                            "text": "def fn: 123;\ndef fn2:\n    def _fn2: null;\n    123;\n"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    {
+        "request": {
+            "id": 1,
+            "jsonrpc": "2.0",
+            "method": "textDocument/didOpen",
+            "params": {
+                "textDocument": {
+                    "languageId": "plaintext",
+                    "text": "@keywords.jq",
+                    "uri": "file:///keywords.jq",
+                    "version": 1
+                }
+            }
+        },
+        "response": {
+            "jsonrpc": "2.0",
+            "method": "textDocument/publishDiagnostics",
+            "params": {
+                "diagnostics": [],
+                "uri": "file:///keywords.jq"
+            }
+        }
+    },
+    {
+        "request": {
+            "id": 1,
+            "jsonrpc": "2.0",
+            "method": "_internal/dump",
+            "params": {
+                "textDocument": {
+                    "languageId": "plaintext",
+                    "text": "@valid.jq",
+                    "uri": "file:///valid.jq",
+                    "version": 1
+                }
+            }
+        },
+        "response": {
+            "id": 1,
+            "jsonrpc": "2.0",
+            "result": {
+                "config": {
+                    "name": "jq-lsp",
+                    "version": "test-version"
+                },
+                "state": {
+                    "files": {
+                        "file:///keywords.jq": {
+                            "query": {
+                                "func_defs": [
+                                    {
+                                        "body": {
+                                            "term": {
+                                                "number": {
+                                                    "start": 10,
+                                                    "stop": 13,
+                                                    "str": "123"
+                                                },
+                                                "type": "TermTypeNumber"
+                                            }
+                                        },
+                                        "name": {
+                                            "start": 4,
+                                            "stop": 8,
+                                            "str": "null"
+                                        }
+                                    },
+                                    {
+                                        "body": {
+                                            "term": {
+                                                "number": {
+                                                    "start": 25,
+                                                    "stop": 28,
+                                                    "str": "123"
+                                                },
+                                                "type": "TermTypeNumber"
+                                            }
+                                        },
+                                        "name": {
+                                            "start": 19,
+                                            "stop": 23,
+                                            "str": "true"
+                                        }
+                                    },
+                                    {
+                                        "body": {
+                                            "term": {
+                                                "number": {
+                                                    "start": 41,
+                                                    "stop": 44,
+                                                    "str": "123"
+                                                },
+                                                "type": "TermTypeNumber"
+                                            }
+                                        },
+                                        "name": {
+                                            "start": 34,
+                                            "stop": 39,
+                                            "str": "false"
+                                        }
+                                    }
+                                ]
+                            },
+                            "text": "def null: 123;\ndef true: 123;\ndef false: 123;\n\n"
+                        },
+                        "file:///valid.jq": {
+                            "query": {
+                                "func_defs": [
+                                    {
+                                        "body": {
+                                            "term": {
+                                                "number": {
+                                                    "start": 8,
+                                                    "stop": 11,
+                                                    "str": "123"
+                                                },
+                                                "type": "TermTypeNumber"
+                                            }
+                                        },
+                                        "name": {
+                                            "start": 4,
+                                            "stop": 6,
+                                            "str": "fn"
+                                        }
+                                    },
+                                    {
+                                        "body": {
+                                            "func_defs": [
+                                                {
+                                                    "body": {
+                                                        "term": {
+                                                            "func": {
+                                                                "name": {
+                                                                    "start": 36,
+                                                                    "stop": 40,
+                                                                    "str": "null"
+                                                                }
+                                                            },
+                                                            "type": "TermTypeFunc"
+                                                        }
+                                                    },
+                                                    "name": {
+                                                        "start": 30,
+                                                        "stop": 34,
+                                                        "str": "_fn2"
+                                                    }
+                                                }
+                                            ],
+                                            "term": {
+                                                "number": {
+                                                    "start": 46,
+                                                    "stop": 49,
+                                                    "str": "123"
+                                                },
+                                                "type": "TermTypeNumber"
+                                            }
+                                        },
+                                        "name": {
+                                            "start": 17,
+                                            "stop": 20,
+                                            "str": "fn2"
+                                        }
+                                    }
+                                ]
+                            },
+                            "text": "def fn: 123;\ndef fn2:\n    def _fn2: null;\n    123;\n"
+                        }
+                    }
+                }
+            }
+        }
+    }
+]
