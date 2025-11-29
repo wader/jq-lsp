@@ -106,6 +106,10 @@ func TestLSP(t *testing.T) {
 				return "", "", err
 			}
 
+			if actualStderr.Len() > 0 {
+				t.Logf("stderr:\n%s\n", actualStderr)
+			}
+
 			s := actualStdout.String()
 			i := 0
 			for {
