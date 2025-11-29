@@ -45,8 +45,8 @@ type parseError struct {
 	offset int
 }
 
-func (ce parseError) Value() interface{} {
-	return map[string]interface{}{
+func (ce parseError) Value() any {
+	return map[string]any{
 		"error":  ce.err.Error(),
 		"offset": ce.offset,
 	}
@@ -64,7 +64,7 @@ func queryErrorPosition(v error) int {
 }
 
 func Run(env Env) error {
-	query := "serve"
+	query := "main"
 	hasQueryArg := false
 
 	if len(env.Args) >= 2 && env.Args[1] == "--version" {
@@ -101,43 +101,34 @@ Usage: %s [OPTIONS]
 		return err
 	}
 
+	iter := gc.RunWithContext(context.Background(), state)
 	for {
-		// TODO: currently the main serve loop is done in go until
-		// https://github.com/itchyny/gojq/issues/86 has been resolved
-		iter := gc.RunWithContext(context.Background(), state)
-
-		for {
-			v, ok := iter.Next()
-			if !ok {
-				break
-			}
-
-			switch v := v.(type) {
-			case error:
-				if ve, ok := v.(gojq.ValueError); ok {
-					if vev, ok := ve.Value().(string); ok && vev == "EOF" {
-						// TODO: currently assume any EOF error means normal exit
-						return nil
-					}
-				}
-				return v
-			case [2]any:
-				fmt.Fprintln(env.Stderr, v[:]...)
-			default:
-				if hasQueryArg {
-					jd := json.NewEncoder(env.Stdout)
-					jd.SetIndent("", "  ")
-					_ = jd.Encode(v)
-				} else {
-					state = v
-				}
-			}
+		v, ok := iter.Next()
+		if !ok {
+			break
 		}
 
-		if hasQueryArg {
-			return nil
+		switch v := v.(type) {
+		case error:
+			if ve, ok := v.(gojq.ValueError); ok {
+				if vev, ok := ve.Value().(string); ok && vev == "EOF" {
+					// TODO: currently assume any EOF error means normal exit
+					return nil
+				}
+			}
+			return v
+		case [2]any:
+			fmt.Fprintln(env.Stderr, v[:]...)
+		default:
+			if hasQueryArg {
+				jd := json.NewEncoder(env.Stdout)
+				jd.SetIndent("", "  ")
+				_ = jd.Encode(v)
+			}
 		}
 	}
+
+	return nil
 }
 
 func (i *interp) Compile(src string) (*gojq.Code, error) {
@@ -190,7 +181,7 @@ func (i *interp) Compile(src string) (*gojq.Code, error) {
 	return gc, nil
 }
 
-func (i *interp) readFile(c interface{}, a []interface{}) interface{} {
+func (i *interp) readFile(c any, a []any) any {
 	path, err := toString(c)
 	if err != nil {
 		return err
@@ -202,7 +193,7 @@ func (i *interp) readFile(c interface{}, a []interface{}) interface{} {
 	return string(b)
 }
 
-func (i *interp) stdin(_ interface{}, a []interface{}) interface{} {
+func (i *interp) stdin(_ any, a []any) any {
 	var n int
 	if len(a) >= 1 {
 		var err error
@@ -229,26 +220,26 @@ func (i *interp) stdin(_ interface{}, a []interface{}) interface{} {
 	return string(b)
 }
 
-func (i *interp) stdout(c interface{}, a []interface{}) gojq.Iter {
+func (i *interp) stdout(c any, a []any) gojq.Iter {
 	if _, err := fmt.Fprint(i.env.Stdout, c); err != nil {
 		return gojq.NewIter(err)
 	}
-	return gojq.NewIter()
+	return gojq.NewIter[any]()
 }
 
-func (i *interp) stderr(c interface{}, a []interface{}) gojq.Iter {
+func (i *interp) stderr(c any, a []any) gojq.Iter {
 	if _, err := fmt.Fprint(i.env.Stderr, c); err != nil {
 		return gojq.NewIter(err)
 	}
-	return gojq.NewIter()
+	return gojq.NewIter[any]()
 }
 
-func (i *interp) stdlog(c interface{}, a []interface{}) gojq.Iter {
+func (i *interp) stdlog(c any, a []any) gojq.Iter {
 	log.Println(c)
-	return gojq.NewIter()
+	return gojq.NewIter[any]()
 }
 
-func (i *interp) queryFromString(c interface{}, a []interface{}) interface{} {
+func (i *interp) queryFromString(c any, a []any) any {
 	s, err := toString(c)
 	if err != nil {
 		return err
@@ -267,7 +258,7 @@ func (i *interp) queryFromString(c interface{}, a []interface{}) interface{} {
 		return err
 	}
 
-	var v interface{}
+	var v any
 	if err := json.Unmarshal(b, &v); err != nil {
 		return err
 	}
@@ -275,7 +266,7 @@ func (i *interp) queryFromString(c interface{}, a []interface{}) interface{} {
 	return v
 }
 
-func (i *interp) queryToString(c interface{}, a []interface{}) interface{} {
+func (i *interp) queryToString(c any, a []any) any {
 	b, err := json.Marshal(c)
 	if err != nil {
 		return err
@@ -289,7 +280,7 @@ func (i *interp) queryToString(c interface{}, a []interface{}) interface{} {
 	return q.String()
 }
 
-func toString(v interface{}) (string, error) {
+func toString(v any) (string, error) {
 	switch v := v.(type) {
 	case string:
 		return v, nil
@@ -298,7 +289,7 @@ func toString(v interface{}) (string, error) {
 	}
 }
 
-func toInt(v interface{}) (int, error) {
+func toInt(v any) (int, error) {
 	// TODO: other types
 	switch v := v.(type) {
 	case int:

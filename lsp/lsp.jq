@@ -847,6 +847,8 @@ def handle($state; $config):
             contents: env_func_markdown
           })
         )
+      elif $method == "_internal/dump" then
+        result({$state, $config})
       else
         null
       end
@@ -856,7 +858,7 @@ def handle($state; $config):
 def serve:
   ( . as {$state, $config}
   | jsonrpc_read as $request
-  #| debug({$request})
+  #| debug({$config, $state, $request})
   | $request
   | try handle($state; $config)
     catch
@@ -864,12 +866,9 @@ def serve:
   | ( .response[]?
     | jsonrpc_write
     )
-  , .state //= $state
-  #| debug({state: .})
+  , ( .config = $config
+    | .state //= $state
+    )
   );
 
-# # TODO: not used atm, see comment in lsp.go
-# def main:
-#   ( {}
-#   | loop(serve)
-#   );
+def main: loop(serve);
