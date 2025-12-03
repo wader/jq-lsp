@@ -517,7 +517,7 @@ def query_walk($uri; $start_env; f):
   _t($start_env);
 
 
-def handle($state; $config):
+def handle($state):
   def _readfile_uri($state; $uri):
     ( $state.files[$uri]
     | if (. | not) then
@@ -574,8 +574,8 @@ def handle($state; $config):
             id: $id,
             result: {
               serverInfo: {
-                name: $config.name,
-                version: $config.version,
+                name: $state.config.name,
+                version: $state.config.version,
               },
               capabilities: {
                 textDocumentSync: TextDocumentSyncFull,
@@ -848,7 +848,7 @@ def handle($state; $config):
           })
         )
       elif $method == "_internal/dump" then
-        result({$state, $config})
+        result($state)
       else
         null
       end
@@ -856,19 +856,47 @@ def handle($state; $config):
   );
 
 def serve:
-  ( . as {$state, $config}
-  | jsonrpc_read as $request
-  #| debug({$config, $state, $request})
-  | $request
-  | try handle($state; $config)
-    catch
-      if (type != "object" or .response or .state | not) then error end
-  | ( .response[]?
+  ( . as $state
+  | jsonrpc_read
+  # | debug({$state, request: .})
+  | ( try handle($state)
+      catch
+        if type == "object" and .response then {response, $state}
+        else error
+        end
+    ) as {$response, state: $new_state}
+  | ( $response[]?
     | jsonrpc_write
     )
-  , ( .config = $config
-    | .state //= $state
-    )
+  , $state + $new_state
   );
 
-def main: loop(serve);
+def jsonrpc_call($method; $params):
+  ( ({id: 1, $method, $params} | tojson+"\n")
+  | "Content-Length: \(utf8bytelength)\n\n\(.)"
+  | stdout
+  );
+
+def main:
+  ( . as {$config}
+  | .args as [$arg0,$opt,$arg]
+  | if $opt == "--help" then
+      ( "jq-lsp - jq language server\n"
+      + "For details see https://github.com/wader/jq-lsp\n"
+      + "\n"
+      + "Usage: \($arg0) [OPTIONS]\n"
+      + "  --help       Show help\n"
+      + "  --version    Show version (\($config.version))\n"
+      + "  --eval EXPR  Evaluate expression\n"
+      | stdout
+      )
+    elif $opt == "--version" then
+      "\($config.name) \($config.version)\n" | stdout
+    elif $opt == "--eval" then
+      eval($arg)
+    elif $opt != null then
+      ("Unknown option \($opt)\n") | stderr
+    else
+      loop(serve)
+    end
+  );

@@ -55,6 +55,16 @@ go test -v ./...
 go test -v ./... -update
 ```
 
+`--eval` and `jsonrpc_call/2` can be used to generate test requests:
+```sh
+# call initialize
+go run . --eval 'jsonrpc_call("initialize"; {})' | go run .
+# call textDocument/didOpen with file test.jq
+go run . --eval 'jsonrpc_call("textDocument/didOpen"; {textDocument: {"text": ("test.jq" | readfile), uri: "test.jq"}})' | go run .
+# like above but
+go run . --eval 'jsonrpc_call("textDocument/didOpen"; {textDocument: {"text": ("test.jq" | readfile), uri: "test.jq"}})' | go run . | go run . --eval 'jsonrpc_read.params | . as {$uri} | .diagnostics[] | "\($uri):\(.range.start.line+1): \(.message)\n" | stdout'
+```
+
 ## Thanks
 
 jq-lsp uses a modified version of

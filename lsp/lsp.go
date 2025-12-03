@@ -63,40 +63,29 @@ func queryErrorPosition(v error) int {
 	return 0
 }
 
-func Run(env Env) error {
-	query := "main"
-	hasQueryArg := false
-
-	if len(env.Args) >= 2 && env.Args[1] == "--version" {
-		fmt.Fprintf(env.Stdout, "%s\n", env.Version)
-		return nil
-	} else if len(env.Args) >= 2 && env.Args[1] == "--help" {
-		fmt.Fprintf(env.Stdout, `
-jq-lsp - jq language server
-For details see https://github.com/wader/jq-lsp
-Usage: %s [OPTIONS]
---help         Show help
---version      Show version
---query QUERY  Eval query
-`[1:], env.Args[0])
-		return nil
-	} else if len(env.Args) >= 3 && env.Args[1] == "--query" {
-		query = env.Args[2]
-		hasQueryArg = true
+func mapFn[F any, T any](fs []F, fn func(F) T) []T {
+	ts := make([]T, 0, len(fs))
+	for _, e := range fs {
+		ts = append(ts, fn(e))
 	}
+	return ts
+}
 
+func Run(env Env) error {
 	i := &interp{
 		env: env,
 	}
 
 	var state any = map[string]any{
+		"args": mapFn(env.Args, func(s string) any { return s }),
+		"env":  mapFn(env.Environ, func(s string) any { return s }),
 		"config": map[string]any{
 			"name":    "jq-lsp",
 			"version": env.Version,
 		},
 	}
 
-	gc, err := i.Compile(query)
+	gc, err := i.Compile("main")
 	if err != nil {
 		return err
 	}
@@ -120,11 +109,9 @@ Usage: %s [OPTIONS]
 		case [2]any:
 			fmt.Fprintln(env.Stderr, v[:]...)
 		default:
-			if hasQueryArg {
-				jd := json.NewEncoder(env.Stdout)
-				jd.SetIndent("", "  ")
-				_ = jd.Encode(v)
-			}
+			jd := json.NewEncoder(env.Stdout)
+			jd.SetIndent("", "  ")
+			_ = jd.Encode(v)
 		}
 	}
 
@@ -172,6 +159,7 @@ func (i *interp) Compile(src string) (*gojq.Code, error) {
 	compilerOpts = append(compilerOpts, gojq.WithIterFunction("stdlog", 0, 0, i.stdlog))
 	compilerOpts = append(compilerOpts, gojq.WithFunction("query_fromstring", 0, 0, i.queryFromString))
 	compilerOpts = append(compilerOpts, gojq.WithFunction("query_tostring", 0, 0, i.queryToString))
+	compilerOpts = append(compilerOpts, gojq.WithIterFunction("eval", 1, 1, i.eval))
 
 	gc, err := gojq.Compile(gq, compilerOpts...)
 	if err != nil {
@@ -278,6 +266,20 @@ func (i *interp) queryToString(c any, a []any) any {
 	}
 
 	return q.String()
+}
+
+func (i *interp) eval(c any, a []any) gojq.Iter {
+	expr, ok := a[0].(string)
+	if !ok {
+		return gojq.NewIter(fmt.Errorf("expr can't be a string"))
+	}
+
+	gc, err := i.Compile(expr)
+	if err != nil {
+		return gojq.NewIter(fmt.Errorf("expr: %s", err))
+	}
+
+	return gc.Run(nil)
 }
 
 func toString(v any) (string, error) {

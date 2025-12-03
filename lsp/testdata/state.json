@@ -70,74 +70,78 @@
             "id": 1,
             "jsonrpc": "2.0",
             "result": {
+                "args": [
+                    ""
+                ],
                 "config": {
                     "name": "jq-lsp",
                     "version": "test-version"
                 },
-                "state": {
-                    "files": {
-                        "file:///valid.jq": {
-                            "query": {
-                                "func_defs": [
-                                    {
-                                        "body": {
-                                            "term": {
-                                                "number": {
-                                                    "start": 8,
-                                                    "stop": 11,
-                                                    "str": "123"
-                                                },
-                                                "type": "TermTypeNumber"
-                                            }
-                                        },
-                                        "name": {
-                                            "start": 4,
-                                            "stop": 6,
-                                            "str": "fn"
+                "env": [
+                    ""
+                ],
+                "files": {
+                    "file:///valid.jq": {
+                        "query": {
+                            "func_defs": [
+                                {
+                                    "body": {
+                                        "term": {
+                                            "number": {
+                                                "start": 8,
+                                                "stop": 11,
+                                                "str": "123"
+                                            },
+                                            "type": "TermTypeNumber"
                                         }
                                     },
-                                    {
-                                        "body": {
-                                            "func_defs": [
-                                                {
-                                                    "body": {
-                                                        "term": {
-                                                            "func": {
-                                                                "name": {
-                                                                    "start": 36,
-                                                                    "stop": 40,
-                                                                    "str": "null"
-                                                                }
-                                                            },
-                                                            "type": "TermTypeFunc"
-                                                        }
-                                                    },
-                                                    "name": {
-                                                        "start": 30,
-                                                        "stop": 34,
-                                                        "str": "_fn2"
-                                                    }
-                                                }
-                                            ],
-                                            "term": {
-                                                "number": {
-                                                    "start": 46,
-                                                    "stop": 49,
-                                                    "str": "123"
-                                                },
-                                                "type": "TermTypeNumber"
-                                            }
-                                        },
-                                        "name": {
-                                            "start": 17,
-                                            "stop": 20,
-                                            "str": "fn2"
-                                        }
+                                    "name": {
+                                        "start": 4,
+                                        "stop": 6,
+                                        "str": "fn"
                                     }
-                                ]
-                            },
-                            "text": "def fn: 123;\ndef fn2:\n    def _fn2: null;\n    123;\n"
-                        }
+                                },
+                                {
+                                    "body": {
+                                        "func_defs": [
+                                            {
+                                                "body": {
+                                                    "term": {
+                                                        "func": {
+                                                            "name": {
+                                                                "start": 36,
+                                                                "stop": 40,
+                                                                "str": "null"
+                                                            }
+                                                        },
+                                                        "type": "TermTypeFunc"
+                                                    }
+                                                },
+                                                "name": {
+                                                    "start": 30,
+                                                    "stop": 34,
+                                                    "str": "_fn2"
+                                                }
+                                            }
+                                        ],
+                                        "term": {
+                                            "number": {
+                                                "start": 46,
+                                                "stop": 49,
+                                                "str": "123"
+                                            },
+                                            "type": "TermTypeNumber"
+                                        }
+                                    },
+                                    "name": {
+                                        "start": 17,
+                                        "stop": 20,
+                                        "str": "fn2"
+                                    }
+                                }
+                            ]
+                        },
+                        "text": "def fn: 123;\ndef fn2:\n    def _fn2: null;\n    123;\n"
                     }
                 }
             }
@@ -184,74 +188,78 @@
             "id": 1,
             "jsonrpc": "2.0",
             "result": {
+                "args": [
+                    ""
+                ],
                 "config": {
                     "name": "jq-lsp",
                     "version": "test-version"
                 },
-                "state": {
-                    "files": {
-                        "file:///valid.jq": {
-                            "query": {
-                                "func_defs": [
-                                    {
-                                        "body": {
-                                            "term": {
-                                                "number": {
-                                                    "start": 8,
-                                                    "stop": 11,
-                                                    "str": "123"
-                                                },
-                                                "type": "TermTypeNumber"
-                                            }
-                                        },
-                                        "name": {
-                                            "start": 4,
-                                            "stop": 6,
-                                            "str": "fn"
+                "env": [
+                    ""
+                ],
+                "files": {
+                    "file:///valid.jq": {
+                        "query": {
+                            "func_defs": [
+                                {
+                                    "body": {
+                                        "term": {
+                                            "number": {
+                                                "start": 8,
+                                                "stop": 11,
+                                                "str": "123"
+                                            },
+                                            "type": "TermTypeNumber"
                                         }
                                     },
-                                    {
-                                        "body": {
-                                            "func_defs": [
-                                                {
-                                                    "body": {
-                                                        "term": {
-                                                            "func": {
-                                                                "name": {
-                                                                    "start": 36,
-                                                                    "stop": 40,
-                                                                    "str": "null"
-                                                                }
-                                                            },
-                                                            "type": "TermTypeFunc"
-                                                        }
-                                                    },
-                                                    "name": {
-                                                        "start": 30,
-                                                        "stop": 34,
-                                                        "str": "_fn2"
-                                                    }
-                                                }
-                                            ],
-                                            "term": {
-                                                "number": {
-                                                    "start": 46,
-                                                    "stop": 49,
-                                                    "str": "123"
-                                                },
-                                                "type": "TermTypeNumber"
-                                            }
-                                        },
-                                        "name": {
-                                            "start": 17,
-                                            "stop": 20,
-                                            "str": "fn2"
-                                        }
+                                    "name": {
+                                        "start": 4,
+                                        "stop": 6,
+                                        "str": "fn"
                                     }
-                                ]
-                            },
-                            "text": "def fn: 123;\ndef fn2:\n    def _fn2: null;\n    123;\n"
-                        }
+                                },
+                                {
+                                    "body": {
+                                        "func_defs": [
+                                            {
+                                                "body": {
+                                                    "term": {
+                                                        "func": {
+                                                            "name": {
+                                                                "start": 36,
+                                                                "stop": 40,
+                                                                "str": "null"
+                                                            }
+                                                        },
+                                                        "type": "TermTypeFunc"
+                                                    }
+                                                },
+                                                "name": {
+                                                    "start": 30,
+                                                    "stop": 34,
+                                                    "str": "_fn2"
+                                                }
+                                            }
+                                        ],
+                                        "term": {
+                                            "number": {
+                                                "start": 46,
+                                                "stop": 49,
+                                                "str": "123"
+                                            },
+                                            "type": "TermTypeNumber"
+                                        }
+                                    },
+                                    "name": {
+                                        "start": 17,
+                                        "stop": 20,
+                                        "str": "fn2"
+                                    }
+                                }
+                            ]
+                        },
+                        "text": "def fn: 123;\ndef fn2:\n    def _fn2: null;\n    123;\n"
                     }
                 }
             }
@@ -298,132 +306,136 @@
             "id": 1,
             "jsonrpc": "2.0",
             "result": {
+                "args": [
+                    ""
+                ],
                 "config": {
                     "name": "jq-lsp",
                     "version": "test-version"
                 },
-                "state": {
-                    "files": {
-                        "file:///keywords.jq": {
-                            "query": {
-                                "func_defs": [
-                                    {
-                                        "body": {
-                                            "term": {
-                                                "number": {
-                                                    "start": 10,
-                                                    "stop": 13,
-                                                    "str": "123"
-                                                },
-                                                "type": "TermTypeNumber"
-                                            }
-                                        },
-                                        "name": {
-                                            "start": 4,
-                                            "stop": 8,
-                                            "str": "null"
+                "env": [
+                    ""
+                ],
+                "files": {
+                    "file:///keywords.jq": {
+                        "query": {
+                            "func_defs": [
+                                {
+                                    "body": {
+                                        "term": {
+                                            "number": {
+                                                "start": 10,
+                                                "stop": 13,
+                                                "str": "123"
+                                            },
+                                            "type": "TermTypeNumber"
                                         }
                                     },
-                                    {
-                                        "body": {
-                                            "term": {
-                                                "number": {
-                                                    "start": 25,
-                                                    "stop": 28,
-                                                    "str": "123"
-                                                },
-                                                "type": "TermTypeNumber"
-                                            }
-                                        },
-                                        "name": {
-                                            "start": 19,
-                                            "stop": 23,
-                                            "str": "true"
-                                        }
-                                    },
-                                    {
-                                        "body": {
-                                            "term": {
-                                                "number": {
-                                                    "start": 41,
-                                                    "stop": 44,
-                                                    "str": "123"
-                                                },
-                                                "type": "TermTypeNumber"
-                                            }
-                                        },
-                                        "name": {
-                                            "start": 34,
-                                            "stop": 39,
-                                            "str": "false"
-                                        }
+                                    "name": {
+                                        "start": 4,
+                                        "stop": 8,
+                                        "str": "null"
                                     }
-                                ]
-                            },
-                            "text": "def null: 123;\ndef true: 123;\ndef false: 123;\n\n"
+                                },
+                                {
+                                    "body": {
+                                        "term": {
+                                            "number": {
+                                                "start": 25,
+                                                "stop": 28,
+                                                "str": "123"
+                                            },
+                                            "type": "TermTypeNumber"
+                                        }
+                                    },
+                                    "name": {
+                                        "start": 19,
+                                        "stop": 23,
+                                        "str": "true"
+                                    }
+                                },
+                                {
+                                    "body": {
+                                        "term": {
+                                            "number": {
+                                                "start": 41,
+                                                "stop": 44,
+                                                "str": "123"
+                                            },
+                                            "type": "TermTypeNumber"
+                                        }
+                                    },
+                                    "name": {
+                                        "start": 34,
+                                        "stop": 39,
+                                        "str": "false"
+                                    }
+                                }
+                            ]
                         },
-                        "file:///valid.jq": {
-                            "query": {
-                                "func_defs": [
-                                    {
-                                        "body": {
-                                            "term": {
-                                                "number": {
-                                                    "start": 8,
-                                                    "stop": 11,
-                                                    "str": "123"
-                                                },
-                                                "type": "TermTypeNumber"
-                                            }
-                                        },
-                                        "name": {
-                                            "start": 4,
-                                            "stop": 6,
-                                            "str": "fn"
+                        "text": "def null: 123;\ndef true: 123;\ndef false: 123;\n\n"
+                    },
+                    "file:///valid.jq": {
+                        "query": {
+                            "func_defs": [
+                                {
+                                    "body": {
+                                        "term": {
+                                            "number": {
+                                                "start": 8,
+                                                "stop": 11,
+                                                "str": "123"
+                                            },
+                                            "type": "TermTypeNumber"
                                         }
                                     },
-                                    {
-                                        "body": {
-                                            "func_defs": [
-                                                {
-                                                    "body": {
-                                                        "term": {
-                                                            "func": {
-                                                                "name": {
-                                                                    "start": 36,
-                                                                    "stop": 40,
-                                                                    "str": "null"
-                                                                }
-                                                            },
-                                                            "type": "TermTypeFunc"
-                                                        }
-                                                    },
-                                                    "name": {
-                                                        "start": 30,
-                                                        "stop": 34,
-                                                        "str": "_fn2"
-                                                    }
-                                                }
-                                            ],
-                                            "term": {
-                                                "number": {
-                                                    "start": 46,
-                                                    "stop": 49,
-                                                    "str": "123"
-                                                },
-                                                "type": "TermTypeNumber"
-                                            }
-                                        },
-                                        "name": {
-                                            "start": 17,
-                                            "stop": 20,
-                                            "str": "fn2"
-                                        }
+                                    "name": {
+                                        "start": 4,
+                                        "stop": 6,
+                                        "str": "fn"
                                     }
-                                ]
-                            },
-                            "text": "def fn: 123;\ndef fn2:\n    def _fn2: null;\n    123;\n"
-                        }
+                                },
+                                {
+                                    "body": {
+                                        "func_defs": [
+                                            {
+                                                "body": {
+                                                    "term": {
+                                                        "func": {
+                                                            "name": {
+                                                                "start": 36,
+                                                                "stop": 40,
+                                                                "str": "null"
+                                                            }
+                                                        },
+                                                        "type": "TermTypeFunc"
+                                                    }
+                                                },
+                                                "name": {
+                                                    "start": 30,
+                                                    "stop": 34,
+                                                    "str": "_fn2"
+                                                }
+                                            }
+                                        ],
+                                        "term": {
+                                            "number": {
+                                                "start": 46,
+                                                "stop": 49,
+                                                "str": "123"
+                                            },
+                                            "type": "TermTypeNumber"
+                                        }
+                                    },
+                                    "name": {
+                                        "start": 17,
+                                        "stop": 20,
+                                        "str": "fn2"
+                                    }
+                                }
+                            ]
+                        },
+                        "text": "def fn: 123;\ndef fn2:\n    def _fn2: null;\n    123;\n"
                     }
                 }
             }

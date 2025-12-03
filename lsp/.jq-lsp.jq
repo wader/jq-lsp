@@ -4,3 +4,4 @@ def readfile: empty;
 def stdin($fd): empty;
 def stdout: empty;
 def stdlog: empty;
+def eval($expr): empty;
