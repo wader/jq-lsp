@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"io"
 	"log"
+	"strings"
 
 	"github.com/itchyny/gojq"
 	"github.com/wader/jq-lsp/gojqparser"
@@ -71,6 +72,13 @@ func mapFn[F any, T any](fs []F, fn func(F) T) []T {
 	return ts
 }
 
+func reduceFn[F any, T any](fs []F, v T, fn func(T, F) T) T {
+	for _, e := range fs {
+		v = fn(v, e)
+	}
+	return v
+}
+
 func Run(env Env) error {
 	i := &interp{
 		env: env,
@@ -78,7 +86,11 @@ func Run(env Env) error {
 
 	var state any = map[string]any{
 		"args": mapFn(env.Args, func(s string) any { return s }),
-		"env":  mapFn(env.Environ, func(s string) any { return s }),
+		"env": reduceFn(env.Environ, map[string]any{}, func(m map[string]any, s string) map[string]any {
+			k, v, _ := strings.Cut(s, "=")
+			m[k] = v
+			return m
+		}),
 		"config": map[string]any{
 			"name":    "jq-lsp",
 			"version": env.Version,
