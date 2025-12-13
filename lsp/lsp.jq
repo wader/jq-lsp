@@ -597,8 +597,19 @@ def handle($state):
                 }
               }
             }
-          }
-        ]}
+          }],
+          state:
+            ( $state
+            + { root_path:
+                  ( $params
+                  | debug({$params, $method})
+                  | if .rootUri then .rootUri | file_uri_to_local
+                    else .rootPath
+                    end
+                  )
+              }
+            )
+        }
       elif $method == "initialized" then
         { response: [{
             method: "client/registerCapability",
@@ -857,8 +868,9 @@ def handle($state):
 
 def serve:
   ( . as $state
+  | . as {env: {TRACE: $TRACE}}
   | jsonrpc_read
-  # | debug({$state, request: .})
+  | if $TRACE then debug({IN: {request: ., $state}}) end
   | ( try handle($state)
       catch
         if type == "object" and .response then {response, $state}
@@ -866,9 +878,12 @@ def serve:
         end
     ) as {$response, state: $new_state}
   | ( $response[]?
+    | if $TRACE then debug({RESPONSE: .}) end
     | jsonrpc_write
     )
-  , $state + $new_state
+  , ( $new_state
+    | if $TRACE then debug({OUT: {state: .}}) end
+    )
   );
 
 def jsonrpc_call($method; $params):
