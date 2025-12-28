@@ -10,12 +10,12 @@ import (
 // the byte offset and the invalid token. The byte offset is the scanned bytes
 // when the error occurred. The token is empty if the error occurred after
 // scanning the entire query string.
-func Parse(src string) (*Query, error) {
-	l := newLexer(src)
+func Parse(src string) (*Query, *lexer, error) {
+	l := NewLexer(src)
 	if yyParse(l) > 0 {
-		return nil, l.err
+		return nil, nil, l.err
 	}
-	return l.result, nil
+	return l.result, l, nil
 }
 
 // Query represents the abstract syntax tree of a jq query.

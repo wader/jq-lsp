@@ -2,6 +2,8 @@ package gojqparser
 
 import (
 	"encoding/json"
+	"fmt"
+	"strings"
 	"unicode/utf8"
 )
 
@@ -13,6 +15,8 @@ type lexer struct {
 	tokenType int
 	inString  bool
 	err       error
+
+	symbols []SymToken
 }
 
 type Token struct {
@@ -21,11 +25,11 @@ type Token struct {
 	Stop  int    `json:"stop"`
 }
 
-func newLexer(src string) *lexer {
+func NewLexer(src string) *lexer {
 	return &lexer{source: src}
 }
 
-const eof = -1
+const EOF = -1
 
 var keywords = map[string]int{
 	"or":      tokOrOp,
@@ -52,17 +56,81 @@ var keywords = map[string]int{
 	"foreach": tokForeach,
 }
 
+type SymToken struct {
+	Str   string
+	Name  string
+	Start int
+	Stop  int
+}
+
+func (l *lexer) Symbols() []SymToken {
+	return l.symbols
+}
+
+func (l *lexer) SymToken(tt int, yst *yySymType) SymToken {
+	// var sts []SymToken
+
+	// for {
+	// 	var yst yySymType
+	// 	tt := l.Lex(&yst)
+	// 	// log.Printf("tt: %#+v\n", tt)
+	// 	if tt == EOF {
+	// 		break
+	// 	}
+
+	name := ""
+	if tt < yyPrivate {
+		name = fmt.Sprintf("%c", tt)
+	} else {
+		// TODO: why
+		name = strings.ToLower(yyTokname(tt - yyPrivate + 2)[3:])
+	}
+
+	if yst.operator != 0 {
+		return SymToken{
+			Str:   l.source[yst.token.Stop : yst.token.Stop+1],
+			Name:  yst.operator.String(),
+			Start: yst.token.Stop,
+			Stop:  yst.token.Stop + 1,
+		}
+	} else {
+		return SymToken{
+			Str:   l.source[yst.token.Start:yst.token.Stop],
+			Name:  name,
+			Start: yst.token.Start,
+			Stop:  yst.token.Stop,
+		}
+	}
+
+	// }
+
+	// return sts
+}
+
 func (l *lexer) Lex(lval *yySymType) (tokenType int) {
+
+	tt := l.Lex2(lval)
+
+	if tt != EOF {
+		l.symbols = append(l.symbols, l.SymToken(tt, lval))
+	}
+
+	return tt
+}
+
+func (l *lexer) Lex2(lval *yySymType) (tokenType int) {
 	lval.token = &Token{}
 	defer func() {
 		l.tokenType = tokenType
 		lval.token.Stop = l.offset
+
 	}()
 	if len(l.source) == l.offset {
 		l.token = ""
-		return eof
+		return EOF
 	}
 	if l.inString {
+		lval.token.Start = l.offset
 		tok, str := l.scanString(l.offset)
 		lval.token.Str = str
 		return tok
@@ -71,7 +139,7 @@ func (l *lexer) Lex(lval *yySymType) (tokenType int) {
 	lval.token.Start = l.offset - 1
 	if iseof {
 		l.token = ""
-		return eof
+		return EOF
 	}
 	switch {
 	case isIdent(ch, false):
@@ -553,7 +621,7 @@ type ParseError struct {
 
 func (err *ParseError) Error() string {
 	switch err.tokenType {
-	case eof:
+	case EOF:
 		return "unexpected EOF"
 	case tokInvalid:
 		return "invalid token " + jsonMarshal(err.Token)
@@ -568,7 +636,7 @@ func (err *ParseError) Error() string {
 
 func (l *lexer) Error(string) {
 	offset, token := l.offset, l.token
-	if l.tokenType != eof && l.tokenType < utf8.RuneSelf {
+	if l.tokenType != EOF && l.tokenType < utf8.RuneSelf {
 		token = string(rune(l.tokenType))
 	}
 	l.err = &ParseError{offset, token, l.tokenType}
