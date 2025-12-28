@@ -77,9 +77,10 @@
                     "name": "jq-lsp",
                     "version": "test-version"
                 },
-                "env": [
-                    ""
-                ],
+                "env": {
+                    "AAA": "aaa",
+                    "BBB": "bbb"
+                },
                 "files": {
                     "file:///valid.jq": {
                         "query": {
@@ -195,9 +196,10 @@
                     "name": "jq-lsp",
                     "version": "test-version"
                 },
-                "env": [
-                    ""
-                ],
+                "env": {
+                    "AAA": "aaa",
+                    "BBB": "bbb"
+                },
                 "files": {
                     "file:///valid.jq": {
                         "query": {
@@ -313,9 +315,10 @@
                     "name": "jq-lsp",
                     "version": "test-version"
                 },
-                "env": [
-                    ""
-                ],
+                "env": {
+                    "AAA": "aaa",
+                    "BBB": "bbb"
+                },
                 "files": {
                     "file:///keywords.jq": {
                         "query": {

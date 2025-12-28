@@ -54,6 +54,8 @@ func TestLSP(t *testing.T) {
 		WriteOutput: *update,
 		Fn: func(t *testing.T, path string, input string) (string, string, error) {
 			testBaseDir := filepath.Dir(path)
+			testBase := filepath.Base(path)
+			testName := testBase[0 : len(testBase)-len(filepath.Ext(testBase))]
 
 			readFile := func(s string) ([]byte, error) {
 				return os.ReadFile(filepath.Join(testBaseDir, s))
@@ -99,8 +101,8 @@ func TestLSP(t *testing.T) {
 				Stdin:    stdinBuf,
 				Stdout:   actualStdout,
 				Stderr:   actualStderr,
-				Args:     strings.Split(string(readFileOrEmpty("args")), " "),
-				Environ:  strings.Split(string(readFileOrEmpty("environ")), " "),
+				Args:     strings.Split(string(readFileOrEmpty(testName+".args")), " "),
+				Environ:  strings.Split(string(readFileOrEmpty(testName+".environ")), " "),
 			})
 			if err != nil {
 				return "", "", err

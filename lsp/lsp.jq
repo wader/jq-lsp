@@ -857,8 +857,10 @@ def handle($state):
 
 def serve:
   ( . as $state
-  | jsonrpc_read
-  # | debug({$state, request: .})
+  | . as {env: {TRACE: $TRACE}}
+  | def trace(f): if $TRACE then debug(f) end;
+    jsonrpc_read
+  | trace({IN: {request: ., $state}})
   | ( try handle($state)
       catch
         if type == "object" and .response then {response, $state}
@@ -866,9 +868,12 @@ def serve:
         end
     ) as {$response, state: $new_state}
   | ( $response[]?
+    | trace({RESPONSE: .})
     | jsonrpc_write
     )
-  , $state + $new_state
+  , ( ($new_state // $state)
+    | trace({OUT: {state: .}})
+    )
   );
 
 def jsonrpc_call($method; $params):
