@@ -13,6 +13,7 @@ type lexer struct {
 	tokenType int
 	inString  bool
 	err       error
+	byteToCP  []int
 }
 
 type Token struct {
@@ -21,8 +22,26 @@ type Token struct {
 	Stop  int    `json:"stop"`
 }
 
+func buildByteToCP(s string) []int {
+	byteToCP := make([]int, len(s)+1)
+	bytePos := 0
+	ucPos := 0
+	for _, r := range s {
+		l := utf8.RuneLen(r)
+		for i := 0; i < l; i++ {
+			byteToCP[bytePos] = ucPos
+			bytePos++
+		}
+		ucPos++
+	}
+	byteToCP[bytePos] = ucPos
+
+	return byteToCP
+}
+
 func newLexer(src string) *lexer {
-	return &lexer{source: src}
+	byteToCP := buildByteToCP(src)
+	return &lexer{source: src, byteToCP: byteToCP}
 }
 
 const eof = -1
@@ -56,7 +75,7 @@ func (l *lexer) Lex(lval *yySymType) (tokenType int) {
 	lval.token = &Token{}
 	defer func() {
 		l.tokenType = tokenType
-		lval.token.Stop = l.offset
+		lval.token.Stop = l.byteToCP[l.offset]
 	}()
 	if len(l.source) == l.offset {
 		l.token = ""
@@ -68,7 +87,7 @@ func (l *lexer) Lex(lval *yySymType) (tokenType int) {
 		return tok
 	}
 	ch, iseof := l.next()
-	lval.token.Start = l.offset - 1
+	lval.token.Start = l.byteToCP[l.offset-1]
 	if iseof {
 		l.token = ""
 		return eof
