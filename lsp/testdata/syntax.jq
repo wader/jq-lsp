@@ -1,3 +1,21 @@
+include "file";
+import "file" as mod;
+import "file" as $mod;
+
+# this is a comment
+
+# this is a multiline \
+comment
+
+def ns: mod::not_found;
+
+def binop: $mod + $mod;
+def update1: . |= $mod;
+def update1: . += $mod;
+def alt_op: 123 // $mod;
+def dest_alt_op1: 123 as $v ?// $v | $v;
+def dest_alt_op1: 123 as $v ?// $b | $v;
+def dest_alt_op2: 123 as $v ?// $b | $b;
 
 def func: 123;
 def func($a): $a;
@@ -20,13 +38,15 @@ def object1: 1 as $var | {$var};
 def object1: 1 as $var | {var: $var};
 def object2: 1 as $var | {("\($var)"): $var};
 
-def array1: 1 as $var | [$var];
+def array1: [];
+def array2: [1];
+def array3: 1 as $var | [$var];
 
 def query1: (func);
 
 def comma1: func, func;
 
-def unary1: +func;
+def unary1: +func, -func;
 
 def string1: "test \(func(1)) \(func)";
 
@@ -38,8 +58,10 @@ def if2: if func then func end;
 def if3: if func then func else func end;
 def if3: if func then func elif func then func else func end;
 
-def foreach1: foreach 1 as $var ($var;$var;$var);
-def foreach1($var): foreach 1 as {$var: $var2} ($var2;$var;$var);
+def foreach1: foreach 1 as $var ($var;$var);
+def foreach1($var): foreach 1 as {$var: $var2} ($var2;$var);
+def foreach2: foreach 1 as $var ($var;$var;$var);
+def foreach2($var): foreach 1 as {$var: $var2} ($var2;$var;$var);
 
 def reduce1: reduce 1 as $var ($var;$var);
 def reduce2($var): foreach 1 as {$var: $var2} ($var2;$var);
@@ -47,3 +69,5 @@ def reduce2($var): foreach 1 as {$var: $var2} ($var2;$var);
 def label1: label $out | break $out | 1;
 
 def object_val_query: {a: 1+2+3};
+
+def recurse1: ..;

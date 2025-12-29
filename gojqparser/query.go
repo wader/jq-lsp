@@ -4,18 +4,20 @@ import (
 	"strings"
 )
 
-// Parse a query string, and returns the query struct.
+// Parse parses a query string and returns the query struct along with
+// all lexical tokens that were scanned during parsing. This is useful for
+// syntax highlighting and semantic token generation, as it captures keywords,
+// operators, and punctuation that aren't stored in the AST.
 //
-// If parsing failed, it returns an error of type [*ParseError], which has
-// the byte offset and the invalid token. The byte offset is the scanned bytes
-// when the error occurred. The token is empty if the error occurred after
-// scanning the entire query string.
-func Parse(src string) (*Query, error) {
+// The tokens are collected in the order they were scanned, which correctly
+// handles string interpolation since the lexer and parser cooperate to track
+// the interpolation state.
+func Parse(src string) (*Query, []LexToken, error) {
 	l := newLexer(src)
 	if yyParse(l) > 0 {
-		return nil, l.err
+		return nil, l.collectedTok, l.err
 	}
-	return l.result, nil
+	return l.result, l.collectedTok, nil
 }
 
 // Query represents the abstract syntax tree of a jq query.

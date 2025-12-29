@@ -62,17 +62,15 @@
     },
     {
         "request": {
+            "id": 1,
             "jsonrpc": "2.0",
-            "method": "textDocument/didChange",
+            "method": "textDocument/didOpen",
             "params": {
-                "contentChanges": [
-                    {
-                        "text": "§"
-                    }
-                ],
                 "textDocument": {
-                    "uri": "file:///did_change_regression1.jq",
-                    "version": 2
+                    "languageId": "jq",
+                    "text": "@multi_line_comment.jq",
+                    "uri": "file:///multi_line_comment.jq",
+                    "version": 1
                 }
             }
         },
@@ -80,22 +78,48 @@
             "jsonrpc": "2.0",
             "method": "textDocument/publishDiagnostics",
             "params": {
-                "diagnostics": [
-                    {
-                        "message": "unexpected token §",
-                        "range": {
-                            "end": {
-                                "character": 1,
-                                "line": 0
-                            },
-                            "start": {
-                                "character": 1,
-                                "line": 0
-                            }
-                        }
-                    }
-                ],
-                "uri": "file:///did_change_regression1.jq"
+                "diagnostics": [],
+                "uri": "file:///multi_line_comment.jq"
+            }
+        }
+    },
+    {
+        "request": {
+            "id": 2,
+            "jsonrpc": "2.0",
+            "method": "textDocument/semanticTokens/full",
+            "params": {
+                "textDocument": {
+                    "uri": "file:///multi_line_comment.jq"
+                }
+            }
+        },
+        "response": {
+            "id": 2,
+            "jsonrpc": "2.0",
+            "result": {
+                "data": [
+                    0,
+                    0,
+                    9,
+                    17,
+                    0,
+                    1,
+                    0,
+                    5,
+                    17,
+                    0,
+                    1,
+                    0,
+                    7,
+                    17,
+                    0,
+                    2,
+                    0,
+                    17,
+                    17,
+                    0
+                ]
             }
         }
     }

@@ -13,10 +13,13 @@ type lexer struct {
 	token          string
 	tokenType      int
 	inString       bool
+	inEscComment   bool
 	err            error
 	byteToUTF16Pos []int
+	collectedTok   []LexToken
 }
 
+// Token represents a token with position information used in AST nodes
 type Token struct {
 	Str   string `json:"str"`
 	Start int    `json:"start"`
@@ -40,6 +43,102 @@ func buildByteToUTF16Pos(s string) []int {
 	byteToUTF16Pos[bytePos] = codeUnitPos
 
 	return byteToUTF16Pos
+}
+
+type LexToken struct {
+	Type  string `json:"type"`
+	Start int    `json:"start"`
+	Stop  int    `json:"stop"`
+}
+
+func tokenTypeName(t int) string {
+	if t < 128 {
+		return string(rune(t))
+	}
+	switch t {
+	case tokAltOp:
+		return "alt_op"
+	case tokUpdateOp:
+		return "update_op"
+	case tokDestAltOp:
+		return "dest_alt_op"
+	case tokCompareOp:
+		return "compare_op"
+	case tokOrOp:
+		return "or_op"
+	case tokAndOp:
+		return "and_op"
+	case tokModule:
+		return "module"
+	case tokImport:
+		return "import"
+	case tokInclude:
+		return "include"
+	case tokDef:
+		return "def"
+	case tokAs:
+		return "as"
+	case tokLabel:
+		return "label"
+	case tokBreak:
+		return "break"
+	case tokNull:
+		return "null"
+	case tokTrue:
+		return "true"
+	case tokFalse:
+		return "false"
+	case tokIf:
+		return "if"
+	case tokThen:
+		return "then"
+	case tokElif:
+		return "elif"
+	case tokElse:
+		return "else"
+	case tokEnd:
+		return "end"
+	case tokTry:
+		return "try"
+	case tokCatch:
+		return "catch"
+	case tokReduce:
+		return "reduce"
+	case tokForeach:
+		return "foreach"
+	case tokIdent:
+		return "ident"
+	case tokVariable:
+		return "variable"
+	case tokModuleIdent:
+		return "module_ident"
+	case tokModuleVariable:
+		return "module_variable"
+	case tokRecurse:
+		return "recurse"
+	case tokIndex:
+		return "index"
+	case tokNumber:
+		return "number"
+	case tokFormat:
+		return "format"
+	case tokString:
+		return "string"
+	case tokStringStart:
+		return "string_start"
+	case tokStringQuery:
+		return "string_query"
+	case tokStringEnd:
+		return "string_end"
+	case tokInvalid:
+		return "invalid"
+	case tokInvalidEscapeSequence:
+		return "invalid_escape_sequence"
+	case tokUnterminatedString:
+		return "unterminated_string"
+	default:
+		return "unknown"
+	}
 }
 
 func newLexer(src string) *lexer {
@@ -81,23 +180,31 @@ func (l *lexer) Lex(lval *yySymType) (tokenType int) {
 	lval.token = &Token{}
 	defer func() {
 		l.tokenType = tokenType
-		lval.token.Stop = l.byteToUTF16Pos[l.offset]
+		if tokenType != eof {
+			lval.token.Stop = l.byteToUTF16Pos[l.offset]
+			l.collectedTok = append(l.collectedTok, LexToken{
+				Type:  tokenTypeName(tokenType),
+				Start: lval.token.Start,
+				Stop:  l.offset,
+			})
+		}
 	}()
 	if len(l.source) == l.offset {
 		l.token = ""
 		return eof
 	}
 	if l.inString {
+		lval.token.Start = l.offset
 		tok, str := l.scanString(l.offset)
 		lval.token.Str = str
 		return tok
 	}
 	ch, iseof := l.next()
-	lval.token.Start = l.byteToUTF16Pos[l.offset-1]
 	if iseof {
 		l.token = ""
 		return eof
 	}
+	lval.token.Start = l.byteToUTF16Pos[l.offset-1]
 	switch {
 	case isIdent(ch, false):
 		i := l.offset - 1
@@ -301,10 +408,21 @@ func (l *lexer) Lex(lval *yySymType) (tokenType int) {
 
 func (l *lexer) next() (byte, bool) {
 	for {
+		if l.peek() == 0 {
+			return 0, true
+		}
+
 		ch := l.source[l.offset]
 		l.offset++
-		if ch == '#' {
-			if l.skipComment() {
+		if ch == '#' || l.inEscComment {
+			commentStart := l.offset - 1
+			eof := l.skipComment()
+			l.collectedTok = append(l.collectedTok, LexToken{
+				Type:  "comment",
+				Start: commentStart,
+				Stop:  l.offset - 1,
+			})
+			if eof {
 				return 0, true
 			}
 		} else if !isWhite(ch) {
@@ -321,15 +439,26 @@ func (l *lexer) skipComment() bool {
 		case 0:
 			return true
 		case '\\':
-			switch l.offset++; l.peek() {
-			case '\\', '\n':
+			l.offset++
+			switch l.peek() {
+			case '\\':
 				l.offset++
+			case '\n':
+				l.offset++
+				l.inEscComment = true
+				return false
 			case '\r':
-				if l.offset++; l.peek() == '\n' {
+				if l.peek() == '\n' {
 					l.offset++
+					l.inEscComment = true
+					return false
 				}
+			case 0:
+				return true
 			}
 		case '\n', '\r':
+			l.offset++
+			l.inEscComment = false
 			return false
 		default:
 			l.offset++

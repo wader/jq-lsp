@@ -15,6 +15,37 @@
                     "documentSymbolProvider": true,
                     "hoverProvider": true,
                     "publishDiagnostics": {},
+                    "semanticTokensProvider": {
+                        "full": true,
+                        "legend": {
+                            "tokenModifiers": [],
+                            "tokenTypes": [
+                                "namespace",
+                                "type",
+                                "class",
+                                "enum",
+                                "interface",
+                                "struct",
+                                "typeParameter",
+                                "parameter",
+                                "variable",
+                                "property",
+                                "enumMember",
+                                "event",
+                                "function",
+                                "method",
+                                "macro",
+                                "keyword",
+                                "modifier",
+                                "comment",
+                                "string",
+                                "number",
+                                "regexp",
+                                "operator",
+                                "decorator"
+                            ]
+                        }
+                    },
                     "textDocumentSync": 1,
                     "workspace": {
                         "workspaceFolders": {
@@ -147,7 +178,84 @@
                                     }
                                 }
                             ]
-                        }
+                        },
+                        "tokens": [
+                            {
+                                "start": 0,
+                                "stop": 3,
+                                "type": "def"
+                            },
+                            {
+                                "start": 4,
+                                "stop": 6,
+                                "type": "ident"
+                            },
+                            {
+                                "start": 6,
+                                "stop": 7,
+                                "type": ":"
+                            },
+                            {
+                                "start": 8,
+                                "stop": 11,
+                                "type": "number"
+                            },
+                            {
+                                "start": 11,
+                                "stop": 12,
+                                "type": ";"
+                            },
+                            {
+                                "start": 13,
+                                "stop": 16,
+                                "type": "def"
+                            },
+                            {
+                                "start": 17,
+                                "stop": 20,
+                                "type": "ident"
+                            },
+                            {
+                                "start": 20,
+                                "stop": 21,
+                                "type": ":"
+                            },
+                            {
+                                "start": 26,
+                                "stop": 29,
+                                "type": "def"
+                            },
+                            {
+                                "start": 30,
+                                "stop": 34,
+                                "type": "ident"
+                            },
+                            {
+                                "start": 34,
+                                "stop": 35,
+                                "type": ":"
+                            },
+                            {
+                                "start": 36,
+                                "stop": 40,
+                                "type": "ident"
+                            },
+                            {
+                                "start": 40,
+                                "stop": 41,
+                                "type": ";"
+                            },
+                            {
+                                "start": 46,
+                                "stop": 49,
+                                "type": "number"
+                            },
+                            {
+                                "start": 49,
+                                "stop": 50,
+                                "type": ";"
+                            }
+                        ]
                     }
                 }
             }
@@ -271,7 +379,84 @@
                                     }
                                 }
                             ]
-                        }
+                        },
+                        "tokens": [
+                            {
+                                "start": 0,
+                                "stop": 3,
+                                "type": "def"
+                            },
+                            {
+                                "start": 4,
+                                "stop": 6,
+                                "type": "ident"
+                            },
+                            {
+                                "start": 6,
+                                "stop": 7,
+                                "type": ":"
+                            },
+                            {
+                                "start": 8,
+                                "stop": 11,
+                                "type": "number"
+                            },
+                            {
+                                "start": 11,
+                                "stop": 12,
+                                "type": ";"
+                            },
+                            {
+                                "start": 13,
+                                "stop": 16,
+                                "type": "def"
+                            },
+                            {
+                                "start": 17,
+                                "stop": 20,
+                                "type": "ident"
+                            },
+                            {
+                                "start": 20,
+                                "stop": 21,
+                                "type": ":"
+                            },
+                            {
+                                "start": 26,
+                                "stop": 29,
+                                "type": "def"
+                            },
+                            {
+                                "start": 30,
+                                "stop": 34,
+                                "type": "ident"
+                            },
+                            {
+                                "start": 34,
+                                "stop": 35,
+                                "type": ":"
+                            },
+                            {
+                                "start": 36,
+                                "stop": 40,
+                                "type": "ident"
+                            },
+                            {
+                                "start": 40,
+                                "stop": 41,
+                                "type": ";"
+                            },
+                            {
+                                "start": 46,
+                                "stop": 49,
+                                "type": "number"
+                            },
+                            {
+                                "start": 49,
+                                "stop": 50,
+                                "type": ";"
+                            }
+                        ]
                     }
                 }
             }
@@ -391,7 +576,84 @@
                                     }
                                 }
                             ]
-                        }
+                        },
+                        "tokens": [
+                            {
+                                "start": 0,
+                                "stop": 3,
+                                "type": "def"
+                            },
+                            {
+                                "start": 4,
+                                "stop": 8,
+                                "type": "ident"
+                            },
+                            {
+                                "start": 8,
+                                "stop": 9,
+                                "type": ":"
+                            },
+                            {
+                                "start": 10,
+                                "stop": 13,
+                                "type": "number"
+                            },
+                            {
+                                "start": 13,
+                                "stop": 14,
+                                "type": ";"
+                            },
+                            {
+                                "start": 15,
+                                "stop": 18,
+                                "type": "def"
+                            },
+                            {
+                                "start": 19,
+                                "stop": 23,
+                                "type": "ident"
+                            },
+                            {
+                                "start": 23,
+                                "stop": 24,
+                                "type": ":"
+                            },
+                            {
+                                "start": 25,
+                                "stop": 28,
+                                "type": "number"
+                            },
+                            {
+                                "start": 28,
+                                "stop": 29,
+                                "type": ";"
+                            },
+                            {
+                                "start": 30,
+                                "stop": 33,
+                                "type": "def"
+                            },
+                            {
+                                "start": 34,
+                                "stop": 39,
+                                "type": "ident"
+                            },
+                            {
+                                "start": 39,
+                                "stop": 40,
+                                "type": ":"
+                            },
+                            {
+                                "start": 41,
+                                "stop": 44,
+                                "type": "number"
+                            },
+                            {
+                                "start": 44,
+                                "stop": 45,
+                                "type": ";"
+                            }
+                        ]
                     },
                     "file:///valid.jq": {
                         "line_lens": [
@@ -458,7 +720,84 @@
                                     }
                                 }
                             ]
-                        }
+                        },
+                        "tokens": [
+                            {
+                                "start": 0,
+                                "stop": 3,
+                                "type": "def"
+                            },
+                            {
+                                "start": 4,
+                                "stop": 6,
+                                "type": "ident"
+                            },
+                            {
+                                "start": 6,
+                                "stop": 7,
+                                "type": ":"
+                            },
+                            {
+                                "start": 8,
+                                "stop": 11,
+                                "type": "number"
+                            },
+                            {
+                                "start": 11,
+                                "stop": 12,
+                                "type": ";"
+                            },
+                            {
+                                "start": 13,
+                                "stop": 16,
+                                "type": "def"
+                            },
+                            {
+                                "start": 17,
+                                "stop": 20,
+                                "type": "ident"
+                            },
+                            {
+                                "start": 20,
+                                "stop": 21,
+                                "type": ":"
+                            },
+                            {
+                                "start": 26,
+                                "stop": 29,
+                                "type": "def"
+                            },
+                            {
+                                "start": 30,
+                                "stop": 34,
+                                "type": "ident"
+                            },
+                            {
+                                "start": 34,
+                                "stop": 35,
+                                "type": ":"
+                            },
+                            {
+                                "start": 36,
+                                "stop": 40,
+                                "type": "ident"
+                            },
+                            {
+                                "start": 40,
+                                "stop": 41,
+                                "type": ";"
+                            },
+                            {
+                                "start": 46,
+                                "stop": 49,
+                                "type": "number"
+                            },
+                            {
+                                "start": 49,
+                                "stop": 50,
+                                "type": ";"
+                            }
+                        ]
                     }
                 }
             }

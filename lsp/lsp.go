@@ -46,12 +46,14 @@ type interp struct {
 type parseError struct {
 	err    error
 	offset int
+	result any
 }
 
 func (ce parseError) Value() any {
 	return map[string]any{
 		"error":  ce.err.Error(),
 		"offset": ce.offset,
+		"result": ce.result,
 	}
 }
 
@@ -285,15 +287,7 @@ func (i *interp) queryFromString(c any, a []any) any {
 	if err != nil {
 		return err
 	}
-	q, err := gojqparser.Parse(s)
-	if err != nil {
-		offset := queryErrorPosition(err)
-		return parseError{
-			err:    err,
-			offset: utf16Pos(s, offset),
-		}
-	}
-
+	q, tokens, parseErr := gojqparser.Parse(s)
 	b, err := json.Marshal(q)
 	if err != nil {
 		return err
@@ -304,10 +298,31 @@ func (i *interp) queryFromString(c any, a []any) any {
 		return err
 	}
 
-	return map[string]any{
+	tokenList := make([]any, len(tokens))
+	for i, t := range tokens {
+		tokenList[i] = map[string]any{
+			"type":  t.Type,
+			"start": t.Start,
+			"stop":  t.Stop,
+		}
+	}
+
+	result := map[string]any{
 		"query":     query,
+		"tokens":    tokenList,
 		"line_lens": utf16LineLens(s),
 	}
+
+	if parseErr != nil {
+		offset := queryErrorPosition(parseErr)
+		return parseError{
+			err:    parseErr,
+			offset: utf16Pos(s, offset),
+			result: result, // include partial result
+		}
+	}
+
+	return result
 }
 
 func (i *interp) queryToString(c any, a []any) any {

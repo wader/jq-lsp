@@ -129,6 +129,57 @@ def SymbolKindEvent: 24;
 def SymbolKindOperator: 25;
 def SymbolKindTypeParameter: 26;
 
+# https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/#semanticTokenTypes
+def SemanticTokenTypes: [
+  "namespace",      # 0
+  "type",           # 1
+  "class",          # 2
+  "enum",           # 3
+  "interface",      # 4
+  "struct",         # 5
+  "typeParameter",  # 6
+  "parameter",      # 7
+  "variable",       # 8
+  "property",       # 9
+  "enumMember",     # 10
+  "event",          # 11
+  "function",       # 12
+  "method",         # 13
+  "macro",          # 14
+  "keyword",        # 15
+  "modifier",       # 16
+  "comment",        # 17
+  "string",         # 18
+  "number",         # 19
+  "regexp",         # 20
+  "operator",       # 21
+  "decorator"       # 22
+];
+
+def SemanticTokenTypeNamespace: 0;
+def SemanticTokenTypeType: 1;
+def SemanticTokenTypeClass: 2;
+def SemanticTokenTypeEnum: 3;
+def SemanticTokenTypeInterface: 4;
+def SemanticTokenTypeStruct: 5;
+def SemanticTokenTypeTypeParameter: 6;
+def SemanticTokenTypeParameter: 7;
+def SemanticTokenTypeVariable: 8;
+def SemanticTokenTypeProperty: 9;
+def SemanticTokenTypeEnumMember: 10;
+def SemanticTokenTypeEvent: 11;
+def SemanticTokenTypeFunction: 12;
+def SemanticTokenTypeMethod: 13;
+def SemanticTokenTypeMacro: 14;
+def SemanticTokenTypeKeyword: 15;
+def SemanticTokenTypeModifier: 16;
+def SemanticTokenTypeComment: 17;
+def SemanticTokenTypeString: 18;
+def SemanticTokenTypeNumber: 19;
+def SemanticTokenTypeRegexp: 20;
+def SemanticTokenTypeOperator: 21;
+def SemanticTokenTypeDecorator: 22;
+
 def env_iter_entries:
   ( reverse
   | .[]
@@ -512,9 +563,103 @@ def query_walk($uri; $start_env; f):
     );
   _t($start_env);
 
+# convert lexer tokens to semantic tokens
+# [{type, type_name, str, start, stop}, ...]
+# -> [{line, character, length, type, modifiers}, ...]
+def tokens_to_semantic_tokens($line_lens):
+  def _map_type:
+    { "def":             SemanticTokenTypeKeyword
+    , "as":              SemanticTokenTypeKeyword
+    , "if":              SemanticTokenTypeKeyword
+    , "then":            SemanticTokenTypeKeyword
+    , "elif":            SemanticTokenTypeKeyword
+    , "else":            SemanticTokenTypeKeyword
+    , "end":             SemanticTokenTypeKeyword
+    , "try":             SemanticTokenTypeKeyword
+    , "catch":           SemanticTokenTypeKeyword
+    , "reduce":          SemanticTokenTypeKeyword
+    , "foreach":         SemanticTokenTypeKeyword
+    , "label":           SemanticTokenTypeKeyword
+    , "break":           SemanticTokenTypeKeyword
+    , "module":          SemanticTokenTypeKeyword
+    , "import":          SemanticTokenTypeKeyword
+    , "include":         SemanticTokenTypeKeyword
+    , "or_op":           SemanticTokenTypeKeyword
+    , "and_op":          SemanticTokenTypeKeyword
+    , "recurse":         SemanticTokenTypeKeyword # ..
+    , "ident":           SemanticTokenTypeFunction
+    , "module_ident":    SemanticTokenTypeFunction
+    , "variable":        SemanticTokenTypeVariable
+    , "module_variable": SemanticTokenTypeVariable
+    , "number":          SemanticTokenTypeNumber
+    , "string":          SemanticTokenTypeString
+    , "string_start":    SemanticTokenTypeString # used by string interpolation
+    , "string_end":      SemanticTokenTypeString # used by string interpolation
+    , "format":          SemanticTokenTypeDecorator # @format
+    , "index":           SemanticTokenTypeProperty # .index
+    , "alt_op":          SemanticTokenTypeOperator # //
+    , "update_op":       SemanticTokenTypeOperator # |=
+    , "dest_alt_op":     SemanticTokenTypeOperator # ?//
+    , "compare_op":      SemanticTokenTypeOperator
+    , "|":               SemanticTokenTypeOperator
+    , ",":               SemanticTokenTypeOperator
+    , "+":               SemanticTokenTypeOperator
+    , "-":               SemanticTokenTypeOperator
+    , "*":               SemanticTokenTypeOperator
+    , "/":               SemanticTokenTypeOperator
+    , "%":               SemanticTokenTypeOperator
+    , "?":               SemanticTokenTypeOperator
+    , "=":               SemanticTokenTypeOperator
+    , "comment":         SemanticTokenTypeComment
+    }[.];
+  map(
+    ( . as $t | (.start | pos_to_lc($line_lens)) as $lc_start
+    | (.stop | pos_to_lc($line_lens)) as $lc_stop
+    | { line: $lc_start.line
+      , character: $lc_start.character
+      , length: ($lc_stop.character - $lc_start.character)
+      # _map_type is null for tokens we don't care about and values/0 will filter out the whole object
+      , type: (.type | _map_type | numbers)
+      , modifiers: 0
+      }
+    )
+  );
+
+# encode semantic tokens in LSP delta format
+# [{line, character, length, type, modifiers}, ...]
+# -> [delta_line, delta_char, length, type, modifiers, ...]
+def encode_semantic_tokens:
+  [ foreach .[] as $token (
+      {prev_line: 0, prev_char: 0, out: null};
+      if $token.line == .prev_line then
+        { prev_line: .prev_line,
+          prev_char: $token.character,
+          out:
+            [ 0
+            , ($token.character - .prev_char)
+            , $token.length
+            , $token.type
+            , $token.modifiers
+            ]
+        }
+      else
+        { prev_line: $token.line,
+          prev_char: $token.character,
+          out:
+            [ ($token.line - .prev_line)
+            , $token.character
+            , $token.length
+            , $token.type
+            , $token.modifiers
+            ]
+        }
+      end;
+      .out[]
+    )
+  ];
 
 def handle($state):
-  def _readfile_uri($state; $uri):
+  def _readfile_uri($state; $uri; fallback):
     ( $state.files[$uri]
     | if (. | not) then
         ( $uri
@@ -523,10 +668,12 @@ def handle($state):
             ( readfile
             | query_fromstring
             )
-          catch null
+          catch fallback
         )
       end
     );
+  def _readfile_uri($state; $uri):
+    _readfile_uri($state; $uri; null);
 
   ( . as {$id, $method, $params}
   | ( def null_result:
@@ -585,6 +732,13 @@ def handle($state):
                 hoverProvider: true,
                 publishDiagnostics: {},
                 documentSymbolProvider: true,
+                semanticTokensProvider: {
+                  legend: {
+                    tokenTypes: SemanticTokenTypes,
+                    tokenModifiers: []
+                  },
+                  full: true
+                },
                 workspace: {
                   workspaceFolders: {
                     supported: true,
@@ -733,6 +887,23 @@ def handle($state):
             ]
           )
         )
+      elif $method == "textDocument/semanticTokens/full" then
+        # "params": {
+        #   "textDocument": {
+        #     "uri": "file:///a"
+        #   }
+        # }
+        ( $params.textDocument.uri as $uri
+        | _readfile_uri($state; $uri; .result) as $file
+        | if $file == null then null_result end
+        | result({
+            data:
+              ( $file.tokens
+              | tokens_to_semantic_tokens($file.line_lens)
+              | encode_semantic_tokens
+              )
+          })
+        )
       elif $method == "textDocument/didSave" then
         # textDocument/didSave:
         # "params": {
@@ -807,7 +978,7 @@ def handle($state):
             .uri
           ) as $def
         | _readfile_uri($state; $def.uri) as $file
-        | if ($file | not) then null_result end
+        | if $file == null then null_result end
         | result({
             uri: $def.uri,
             range: {
