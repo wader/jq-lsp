@@ -70,7 +70,7 @@ def jsonrpc_write:
 def lc_to_byte_pos($l; $c):
   ( split("\n")
   | .[0:$l]
-  | map(utf8bytelength+1)
+  | map(length+1)
   | add
   | . + $c
   );
@@ -78,7 +78,7 @@ def lc_to_byte_pos($l; $c):
 # pos to line/character
 def byte_pos_to_lc($pos):
   ( split("\n")
-  | map(utf8bytelength+1)
+  | map(length+1)
   | . as $lens
   | length as $nr_lines
   | [ {i: 0, p: $pos}

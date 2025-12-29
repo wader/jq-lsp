@@ -1,0 +1,82 @@
+[
+    {
+        "request": {
+            "id": 0,
+            "jsonrpc": "2.0",
+            "method": "initialize"
+        },
+        "response": {
+            "id": 0,
+            "jsonrpc": "2.0",
+            "result": {
+                "capabilities": {
+                    "completionProvider": {},
+                    "definitionProvider": true,
+                    "documentSymbolProvider": true,
+                    "hoverProvider": true,
+                    "publishDiagnostics": {},
+                    "textDocumentSync": 1,
+                    "workspace": {
+                        "workspaceFolders": {
+                            "supported": true
+                        }
+                    }
+                },
+                "serverInfo": {
+                    "name": "jq-lsp",
+                    "version": "test-version"
+                }
+            }
+        }
+    },
+    {
+        "request": {
+            "id": 1,
+            "jsonrpc": "2.0",
+            "method": "textDocument/didOpen",
+            "params": {
+                "textDocument": {
+                    "languageId": "plaintext",
+                    "text": "@encoding.jq",
+                    "uri": "file:///encoding.jq",
+                    "version": 1
+                }
+            }
+        },
+        "response": {
+            "jsonrpc": "2.0",
+            "method": "textDocument/publishDiagnostics",
+            "params": {
+                "diagnostics": [
+                    {
+                        "message": "aaa not found",
+                        "range": {
+                            "end": {
+                                "character": 11,
+                                "line": 0
+                            },
+                            "start": {
+                                "character": 8,
+                                "line": 0
+                            }
+                        }
+                    },
+                    {
+                        "message": "aaa not found",
+                        "range": {
+                            "end": {
+                                "character": 16,
+                                "line": 1
+                            },
+                            "start": {
+                                "character": 13,
+                                "line": 1
+                            }
+                        }
+                    }
+                ],
+                "uri": "file:///encoding.jq"
+            }
+        }
+    }
+]
