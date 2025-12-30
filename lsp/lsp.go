@@ -10,6 +10,7 @@ import (
 	"log"
 	"strings"
 	"unicode/utf16"
+	"unicode/utf8"
 
 	"github.com/itchyny/gojq"
 	"github.com/wader/jq-lsp/gojqparser"
@@ -266,6 +267,19 @@ func (i *interp) stdlog(c any, a []any) gojq.Iter {
 	return gojq.NewIter[any]()
 }
 
+func utf16Pos(s string, o int) int {
+	p := 0
+	for _, r := range s {
+		o -= utf8.RuneLen(r)
+		p += utf16.RuneLen(r)
+		if o <= 0 {
+			break
+		}
+	}
+
+	return p
+}
+
 func (i *interp) queryFromString(c any, a []any) any {
 	s, err := toString(c)
 	if err != nil {
@@ -276,7 +290,7 @@ func (i *interp) queryFromString(c any, a []any) any {
 		offset := queryErrorPosition(err)
 		return parseError{
 			err:    err,
-			offset: offset,
+			offset: utf16Pos(s, offset),
 		}
 	}
 

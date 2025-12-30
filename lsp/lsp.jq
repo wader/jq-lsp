@@ -693,7 +693,7 @@ def handle($state):
             )
           catch
             ( . as $err
-            | ($err.error | utf16_line_lens) as $line_lens
+            | ($text | utf16_line_lens) as $line_lens
             | { response: [{
                   method: "textDocument/publishDiagnostics",
                   params:

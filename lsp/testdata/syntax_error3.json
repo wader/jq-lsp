@@ -31,16 +31,17 @@
     },
     {
         "request": {
+            "id": 1,
             "jsonrpc": "2.0",
             "method": "textDocument/didChange",
             "params": {
                 "contentChanges": [
                     {
-                        "text": "§"
+                        "text": "@syntax_error3.jq"
                     }
                 ],
                 "textDocument": {
-                    "uri": "file:///did_change_regression1.jq",
+                    "uri": "file:///syntax_error3.jq",
                     "version": 2
                 }
             }
@@ -51,20 +52,20 @@
             "params": {
                 "diagnostics": [
                     {
-                        "message": "unexpected token \"§\"",
+                        "message": "unexpected token \"@\"",
                         "range": {
                             "end": {
-                                "character": 1,
-                                "line": 0
+                                "character": 9,
+                                "line": 2
                             },
                             "start": {
-                                "character": 1,
-                                "line": 0
+                                "character": 9,
+                                "line": 2
                             }
                         }
                     }
                 ],
-                "uri": "file:///did_change_regression1.jq"
+                "uri": "file:///syntax_error3.jq"
             }
         }
     }
