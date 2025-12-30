@@ -53,11 +53,11 @@
                         "range": {
                             "end": {
                                 "character": 11,
-                                "line": 0
+                                "line": 1
                             },
                             "start": {
                                 "character": 8,
-                                "line": 0
+                                "line": 1
                             }
                         }
                     },
@@ -66,11 +66,37 @@
                         "range": {
                             "end": {
                                 "character": 16,
-                                "line": 1
+                                "line": 2
                             },
                             "start": {
                                 "character": 13,
-                                "line": 1
+                                "line": 2
+                            }
+                        }
+                    },
+                    {
+                        "message": "aaa not found",
+                        "range": {
+                            "end": {
+                                "character": 10,
+                                "line": 3
+                            },
+                            "start": {
+                                "character": 7,
+                                "line": 3
+                            }
+                        }
+                    },
+                    {
+                        "message": "aaa not found",
+                        "range": {
+                            "end": {
+                                "character": 10,
+                                "line": 4
+                            },
+                            "start": {
+                                "character": 7,
+                                "line": 4
                             }
                         }
                     }

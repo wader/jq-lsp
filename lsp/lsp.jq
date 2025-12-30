@@ -66,32 +66,28 @@ def jsonrpc_write:
   | stdout
   );
 
-# line/character to position
-def lc_to_byte_pos($l; $c):
-  ( split("\n")
-  | .[0:$l]
-  | map(length+1)
-  | add
-  | . + $c
+# line/character to pos
+def lc_to_pos($line_lens):
+  ( . as [$l, $c]
+  | $line_lens[0:$l]
+  | add + $c
   );
 
 # pos to line/character
-def byte_pos_to_lc($pos):
-  ( split("\n")
-  | map(length+1)
-  | . as $lens
-  | length as $nr_lines
-  | [ {i: 0, p: $pos}
+def pos_to_lc($line_lens):
+  ( . as $pos
+  | ($line_lens | length) as $nr_lines
+  | [ {i: 0, p: .}
     | while(
         .p >= 0 and .i < $nr_lines;
-        ( .p -= $lens[.i]
+        ( .p -= $line_lens[.i]
         | .i += 1
         )
       )
     ]
   | length as $lines
   | { line: ($lines-1),
-      character: ($pos - (($lens[0:$lines-1] | add) // 0))
+      character: ($pos - (($line_lens[0:$lines-1] | add) // 0))
     }
   );
 
@@ -353,7 +349,7 @@ def query_walk($uri; $start_env; f):
                   ( . as $include_uri
                   | file_uri_to_local
                   | readfile
-                  | [query_fromstring, $include_uri]
+                  | [query_fromstring.query, $include_uri]
                   )
                 catch empty
               )
@@ -525,7 +521,7 @@ def handle($state):
         | file_uri_to_local
         | try
             ( readfile
-            | {text: ., query: query_fromstring}
+            | query_fromstring
             )
           catch null
         )
@@ -544,10 +540,10 @@ def handle($state):
       def qe_from_params(f):
         ( $params.textDocument.uri as $uri
         | $params.position as $pos
-        | _readfile_uri($state; $uri) as $def_file
-        | if ($def_file | not) then null_result end
-        | ($def_file.text | lc_to_byte_pos($pos.line; $pos.character)) as $file_pos
-        | ( $def_file.query
+        | _readfile_uri($state; $uri) as $file
+        | if ($file | not) then null_result end
+        | ([$pos.line, $pos.character] | lc_to_pos($file.line_lens)) as $file_pos
+        | ( $file.query
           | first(query_walk(
               $uri;
               builtin_env;
@@ -652,17 +648,17 @@ def handle($state):
         ( $params.textDocument as $doc
         | ($doc.text // $params.contentChanges[0].text // "") as $text
         | try
-            ( ($text | query_fromstring) as $text_query
+            ( ($text | query_fromstring) as $file
             | { state:
                   ( $state
-                  | .files[$doc.uri] = {text: $text, query: $text_query}
+                  | .files[$doc.uri] = $file
                   ),
                 response:
                   [ { method: "textDocument/publishDiagnostics",
                       params: {
                         uri: $doc.uri,
                         diagnostics:
-                          [ $text_query
+                          [ $file.query
                           | query_walk($doc.uri; builtin_env; .term.func or .term.format) as {$env, $q}
                           | ($q | query_token) as $token
                           | ($q | query_args) as $args
@@ -683,8 +679,8 @@ def handle($state):
                               )
                             then
                               { range: {
-                                  start: ($text | byte_pos_to_lc($token.start)),
-                                  end: ($text | byte_pos_to_lc($token.stop))
+                                  start: ($token.start | pos_to_lc($file.line_lens)),
+                                  end: ($token.stop | pos_to_lc($file.line_lens))
                                 },
                                 message: "\($q | func_term_name) not found"
                               }
@@ -697,14 +693,15 @@ def handle($state):
             )
           catch
             ( . as $err
+            | ($err.error | utf16_line_lens) as $line_lens
             | { response: [{
                   method: "textDocument/publishDiagnostics",
                   params:
                     { uri: $doc.uri,
                       diagnostics:
                         [ { range: {
-                              start: ($text | byte_pos_to_lc($err.offset)),
-                              end: ($text | byte_pos_to_lc($err.offset))
+                              start: ($err.offset | pos_to_lc($line_lens)),
+                              end: ($err.offset | pos_to_lc($line_lens))
                             },
                             message: $err.error
                           }
@@ -728,8 +725,8 @@ def handle($state):
                 location:
                   { uri: $uri,
                     range:
-                      { start: ($file.text | byte_pos_to_lc($f.name.start)),
-                        end: ($file.text | byte_pos_to_lc($f.name.stop))
+                      { start: ($f.name.start | pos_to_lc($file.line_lens)),
+                        end: ($f.name.stop | pos_to_lc($file.line_lens))
                       }
                   },
               }
@@ -809,13 +806,13 @@ def handle($state):
             .stop and
             .uri
           ) as $def
-        | _readfile_uri($state; $def.uri) as $def_file
-        | if ($def_file | not) then null_result end
+        | _readfile_uri($state; $def.uri) as $file
+        | if ($file | not) then null_result end
         | result({
             uri: $def.uri,
             range: {
-              start: ($def_file.text | byte_pos_to_lc($def.start)),
-              end: ($def_file.text | byte_pos_to_lc($def.stop))
+              start: ($def.start | pos_to_lc($file.line_lens)),
+              end: ($def.stop | pos_to_lc($file.line_lens))
             }
           })
         )
