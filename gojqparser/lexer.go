@@ -2,18 +2,19 @@ package gojqparser
 
 import (
 	"encoding/json"
+	"unicode/utf16"
 	"unicode/utf8"
 )
 
 type lexer struct {
-	source    string
-	offset    int
-	result    *Query
-	token     string
-	tokenType int
-	inString  bool
-	err       error
-	byteToCP  []int
+	source         string
+	offset         int
+	result         *Query
+	token          string
+	tokenType      int
+	inString       bool
+	err            error
+	byteToUTF16Pos []int
 }
 
 type Token struct {
@@ -22,26 +23,31 @@ type Token struct {
 	Stop  int    `json:"stop"`
 }
 
-func buildByteToCP(s string) []int {
-	byteToCP := make([]int, len(s)+1)
+func buildByteToUTF16Pos(s string) []int {
+	byteToUTF16Pos := make([]int, len(s)+1)
 	bytePos := 0
-	ucPos := 0
+	codeUnitPos := 0
 	for _, r := range s {
-		l := utf8.RuneLen(r)
-		for i := 0; i < l; i++ {
-			byteToCP[bytePos] = ucPos
+		for range utf8.RuneLen(r) {
+			byteToUTF16Pos[bytePos] = codeUnitPos
 			bytePos++
 		}
-		ucPos++
-	}
-	byteToCP[bytePos] = ucPos
+		cu := utf16.RuneLen(r)
+		codeUnitPos += cu
 
-	return byteToCP
+	}
+	// gojq lexer might produce positions one byte beyond end
+	byteToUTF16Pos[bytePos] = codeUnitPos
+
+	return byteToUTF16Pos
 }
 
 func newLexer(src string) *lexer {
-	byteToCP := buildByteToCP(src)
-	return &lexer{source: src, byteToCP: byteToCP}
+	byteToUTF16Pos := buildByteToUTF16Pos(src)
+	return &lexer{
+		source:         src,
+		byteToUTF16Pos: byteToUTF16Pos,
+	}
 }
 
 const eof = -1
@@ -75,7 +81,7 @@ func (l *lexer) Lex(lval *yySymType) (tokenType int) {
 	lval.token = &Token{}
 	defer func() {
 		l.tokenType = tokenType
-		lval.token.Stop = l.byteToCP[l.offset]
+		lval.token.Stop = l.byteToUTF16Pos[l.offset]
 	}()
 	if len(l.source) == l.offset {
 		l.token = ""
@@ -87,7 +93,7 @@ func (l *lexer) Lex(lval *yySymType) (tokenType int) {
 		return tok
 	}
 	ch, iseof := l.next()
-	lval.token.Start = l.byteToCP[l.offset-1]
+	lval.token.Start = l.byteToUTF16Pos[l.offset-1]
 	if iseof {
 		l.token = ""
 		return eof

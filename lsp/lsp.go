@@ -9,6 +9,7 @@ import (
 	"io"
 	"log"
 	"strings"
+	"unicode/utf16"
 
 	"github.com/itchyny/gojq"
 	"github.com/wader/jq-lsp/gojqparser"
@@ -77,6 +78,31 @@ func reduceFn[F any, T any](fs []F, v T, fn func(T, F) T) T {
 		v = fn(v, e)
 	}
 	return v
+}
+
+// returns any instead of []int as it's only used
+func utf16LineLens(c any) any {
+	s, err := toString(c)
+	if err != nil {
+		return err
+	}
+
+	var lineLens []any
+	lineLen := 0
+	for _, r := range s {
+		cu := utf16.RuneLen(r)
+		lineLen += cu
+
+		if r == '\n' {
+			lineLens = append(lineLens, lineLen)
+			lineLen = 0
+		}
+	}
+	if lineLen > 0 {
+		lineLens = append(lineLens, lineLen)
+	}
+
+	return lineLens
 }
 
 func Run(env Env) error {
@@ -171,6 +197,7 @@ func (i *interp) Compile(src string) (*gojq.Code, error) {
 	compilerOpts = append(compilerOpts, gojq.WithIterFunction("stdlog", 0, 0, i.stdlog))
 	compilerOpts = append(compilerOpts, gojq.WithFunction("query_fromstring", 0, 0, i.queryFromString))
 	compilerOpts = append(compilerOpts, gojq.WithFunction("query_tostring", 0, 0, i.queryToString))
+	compilerOpts = append(compilerOpts, gojq.WithFunction("utf16_line_lens", 0, 0, i.utf16LineLens))
 	compilerOpts = append(compilerOpts, gojq.WithIterFunction("eval", 1, 1, i.eval))
 
 	gc, err := gojq.Compile(gq, compilerOpts...)
@@ -258,12 +285,15 @@ func (i *interp) queryFromString(c any, a []any) any {
 		return err
 	}
 
-	var v any
-	if err := json.Unmarshal(b, &v); err != nil {
+	var query any
+	if err := json.Unmarshal(b, &query); err != nil {
 		return err
 	}
 
-	return v
+	return map[string]any{
+		"query":     query,
+		"line_lens": utf16LineLens(s),
+	}
 }
 
 func (i *interp) queryToString(c any, a []any) any {
@@ -278,6 +308,14 @@ func (i *interp) queryToString(c any, a []any) any {
 	}
 
 	return q.String()
+}
+
+func (i *interp) utf16LineLens(c any, a []any) any {
+	s, err := toString(c)
+	if err != nil {
+		return err
+	}
+	return utf16LineLens(s)
 }
 
 func (i *interp) eval(c any, a []any) gojq.Iter {

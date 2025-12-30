@@ -5,3 +5,4 @@ def stdin($fd): empty;
 def stdout: empty;
 def stdlog: empty;
 def eval($expr): empty;
+def utf16_line_lens: empty;
