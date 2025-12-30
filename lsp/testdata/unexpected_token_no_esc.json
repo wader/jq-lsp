@@ -37,8 +37,8 @@
             "params": {
                 "textDocument": {
                     "languageId": "plaintext",
-                    "text": "@syntax_error.jq",
-                    "uri": "file:///syntax_error.jq",
+                    "text": "@unexpected_token_no_esc.jq",
+                    "uri": "file:///unexpected_token_no_esc.jq",
                     "version": 1
                 }
             }
@@ -49,20 +49,20 @@
             "params": {
                 "diagnostics": [
                     {
-                        "message": "unexpected token 123",
+                        "message": "unexpected token \"bbb\"",
                         "range": {
                             "end": {
-                                "character": 10,
-                                "line": 0
+                                "character": 9,
+                                "line": 1
                             },
                             "start": {
-                                "character": 10,
-                                "line": 0
+                                "character": 9,
+                                "line": 1
                             }
                         }
                     }
                 ],
-                "uri": "file:///syntax_error.jq"
+                "uri": "file:///unexpected_token_no_esc.jq"
             }
         }
     }

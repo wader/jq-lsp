@@ -52,7 +52,7 @@
             "params": {
                 "diagnostics": [
                     {
-                        "message": "unexpected token \"@\"",
+                        "message": "unexpected token @",
                         "range": {
                             "end": {
                                 "character": 3,

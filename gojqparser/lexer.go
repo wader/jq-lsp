@@ -581,13 +581,13 @@ func (err *ParseError) Error() string {
 	case eof:
 		return "unexpected EOF"
 	case tokInvalid:
-		return "invalid token " + jsonMarshal(err.Token)
+		return "invalid token " + err.Token
 	case tokInvalidEscapeSequence:
 		return `invalid escape sequence "` + err.Token + `" in string literal`
 	case tokUnterminatedString:
 		return "unterminated string literal"
 	default:
-		return "unexpected token " + jsonMarshal(err.Token)
+		return "unexpected token " + err.Token
 	}
 }
 
