@@ -17,3 +17,4 @@ def _foreach: foreach a as $_ (a; a);
 def _foreach2: foreach a as $_ (a; a; a);
 def string: "\(a)";
 def _label: label $a | a | break $a;
+def _index_and_suffix_list: .[$a][$b][$c];
