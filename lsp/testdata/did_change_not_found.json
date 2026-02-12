@@ -648,6 +648,45 @@
                                 "line": 18
                             }
                         }
+                    },
+                    {
+                        "message": "$b not found",
+                        "range": {
+                            "end": {
+                                "character": 36,
+                                "line": 19
+                            },
+                            "start": {
+                                "character": 34,
+                                "line": 19
+                            }
+                        }
+                    },
+                    {
+                        "message": "$c not found",
+                        "range": {
+                            "end": {
+                                "character": 40,
+                                "line": 19
+                            },
+                            "start": {
+                                "character": 38,
+                                "line": 19
+                            }
+                        }
+                    },
+                    {
+                        "message": "$a not found",
+                        "range": {
+                            "end": {
+                                "character": 32,
+                                "line": 19
+                            },
+                            "start": {
+                                "character": 30,
+                                "line": 19
+                            }
+                        }
                     }
                 ],
                 "uri": "file:///not_found.jq"

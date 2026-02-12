@@ -361,18 +361,16 @@ def query_walk($uri; $start_env; f):
       );
 
     def _term_traverse($env):
-      ( if .suffix_list then
-          ( if .index then
-              ( .index.str.queries[]?
-              , (.index.start // empty)
-              , (.index.end // empty)
-              | _t($env)
-              )
-            else empty
-            end
-          )
-        else empty
-        end
+      ( ( .suffix_list[]?
+        | if .index then
+            ( .index.str.queries[]?
+            , (.index.start // empty)
+            , (.index.end // empty)
+            | _t($env)
+            )
+          else empty
+          end
+        )
       , if .index then
           ( .index.str.queries[]?
           , (.index.start // empty)
